@@ -66,8 +66,8 @@ public class Translations
     public Dictionary<Team, string> TeamTranslations { get; set; } = new()
     {
         { Team.SCPs, "SCP" },
-        { Team.FoundationForces, "혼돈의 반란" },
-        { Team.ChaosInsurgency, "NTF" },
+        { Team.FoundationForces, "NTF" },
+        { Team.ChaosInsurgency, "혼돈의 반란" },
         { Team.Scientists, "과학자" },
         { Team.ClassD, "D계급" },
         { Team.Dead, "관전자" },

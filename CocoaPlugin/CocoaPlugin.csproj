@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,11 +35,11 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
-          <HintPath>..\..\SCPSL_References\0Harmony.dll</HintPath>
+          <HintPath>References\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-Publicized.dll</HintPath>
@@ -90,7 +90,7 @@
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\mscorlib.dll</HintPath>
         </Reference>
         <Reference Include="MultiBroadcast">
-          <HintPath>..\..\MultiBroadcast\MultiBroadcast\bin\Release\MultiBroadcast.dll</HintPath>
+          <HintPath>References\MultiBroadcast.dll</HintPath>
         </Reference>
         <Reference Include="netstandard">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\netstandard.dll</HintPath>
@@ -125,6 +125,7 @@
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\KoreanTyperStringExtensions.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
+        <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="Cocoa.cs" />
         <Compile Include="Commands\Chat.cs" />
@@ -146,6 +147,10 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Patches\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="References\0Harmony.dll" />
+      <Content Include="References\MultiBroadcast.dll" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

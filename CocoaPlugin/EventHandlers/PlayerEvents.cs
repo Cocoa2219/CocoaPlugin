@@ -36,7 +36,7 @@ public class PlayerEvents(Cocoa plugin)
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
-        // ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player));
+        ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player));
     }
 
     internal void OnDying(DyingEventArgs ev)
@@ -45,10 +45,17 @@ public class PlayerEvents(Cocoa plugin)
 
         var killType = KillLogs.DamageTypeToKillType(ev.DamageHandler.Type);
 
-        foreach (var dead in Player.Get(Team.Dead))
+        var attackerRole = ev.Attacker?.Role.Type;
+        var targetRole = ev.Player.Role.Type;
+
+        Timing.CallDelayed(0.1f, () =>
         {
-            // dead.AddBroadcast(Config.Broadcasts.KillLogs.KillLog[killType].Duration, Config.Broadcasts.KillLogs.KillLog[killType].Format(ev.Attacker, ev.Player));
-        }
+            foreach (var dead in Player.Get(Team.Dead))
+            {
+                dead.AddBroadcast(Config.Broadcasts.KillLogs.KillLog[killType].Duration,
+                    Config.Broadcasts.KillLogs.KillLog[killType].Format(ev.Attacker, ev.Player, attackerRole, targetRole));
+            }
+        });
 
         if (ev.Attacker == null) return;
 
@@ -56,16 +63,19 @@ public class PlayerEvents(Cocoa plugin)
         {
             var amount = Random.Range(Config.Scps.ScpHealMin, Config.Scps.ScpHealMax + 1);
 
-            ev.Attacker.Heal(amount);
+            ev.Attacker.Health += amount;
 
-            // ev.Attacker.AddBroadcast(Config.Broadcasts.ScpHealMessage.Duration, Config.Broadcasts.ScpHealMessage.Format(amount));
+            ev.Attacker.AddBroadcast(Config.Broadcasts.ScpHealMessage.Duration, Config.Broadcasts.ScpHealMessage.Format(amount));
         }
 
         if (ev.Attacker == ev.Player.Cuffer) return;
 
         if (ev.Player.IsCuffed)
         {
-            // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.CuffedKillMessage.Duration, Config.Broadcasts.CuffedKillMessage.Format(ev.Attacker, ev.Player));
+            var cufferRole = ev.Player.Cuffer.Role.Type;
+            var cuffedRole = ev.Player.Role.Type;
+
+            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.CuffedKillMessage.Duration, Config.Broadcasts.CuffedKillMessage.Format(ev.Attacker, ev.Player, cufferRole, cuffedRole));
         }
     }
 
@@ -75,12 +85,12 @@ public class PlayerEvents(Cocoa plugin)
         {
             if (!ev.Player.IsScp) return;
 
-            // if (ev.Player.HasBroadcast($"ScpSpawn_{ev.Player.UserId}"))
-            // {
-            //     ev.Player.RemoveBroadcast($"ScpSpawn_{ev.Player.UserId}");
-            // }
-            //
-            // ev.Player.AddBroadcast(Config.Broadcasts.ScpSpawnMessage.Duration, Config.Broadcasts.ScpSpawnMessage.Format(Player.Get(Team.SCPs).ToList()), 0, $"ScpSpawn_{ev.Player.UserId}");
+            if (ev.Player.HasBroadcast($"ScpSpawn_{ev.Player.UserId}"))
+            {
+                ev.Player.RemoveBroadcast($"ScpSpawn_{ev.Player.UserId}");
+            }
+
+            ev.Player.AddBroadcast(Config.Broadcasts.ScpSpawnMessage.Duration, Config.Broadcasts.ScpSpawnMessage.Format(Player.Get(Team.SCPs).ToList()), 0, $"ScpSpawn_{ev.Player.UserId}");
         });
     }
 
@@ -92,7 +102,12 @@ public class PlayerEvents(Cocoa plugin)
 
         var player = Player.Get(ev.Player.Role.Team).Except([ev.Player]).First();
 
-        // player.AddBroadcast(Config.Broadcasts.LastOneMessage.Duration, Config.Broadcasts.LastOneMessage.Format(ev.Player.Role.Team));
+        Timing.CallDelayed(0.1f, () =>
+        {
+            if (Player.Get(ev.Player.Role.Team).Count() > 1) return;
+
+            player.AddBroadcast(Config.Broadcasts.LastOneMessage.Duration, Config.Broadcasts.LastOneMessage.Format(ev.Player.Role.Team));
+        });
     }
 
     internal void OnHandcuffing(HandcuffingEventArgs ev)

@@ -42,21 +42,24 @@ public class MapEvents(Cocoa plugin)
         {
             foreach (var player in Player.List.Where(x => x.Zone == ZoneType.LightContainment))
             {
-                // player.AddBroadcast(value.Duration, value.Message);
+                player.AddBroadcast(value.Duration, value.Message);
             }
         }
     }
 
     internal void OnAnnouncingScpTermination(AnnouncingScpTerminationEventArgs ev)
     {
-        // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.ScpTerminationMessage.Duration,
-        //     Config.Broadcasts.ScpTerminationMessage.Format(ev.Attacker, ev.Player));
+        var attackerRole = ev.Attacker?.Role.Type;
+        var targetRole = ev.Player.Role.Type;
+
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.ScpTerminationMessage.Duration,
+        Config.Broadcasts.ScpTerminationMessage.Format(ev.Attacker, ev.Player, attackerRole, targetRole));
     }
 
     internal void OnAnnouncingNtfEntrance(AnnouncingNtfEntranceEventArgs ev)
     {
-        // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.NtfSpawnMessage.Duration,
-        //     Config.Broadcasts.NtfSpawnMessage.Format(ev.UnitNumber, ev.UnitName, ev.ScpsLeft));
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.NtfSpawnMessage.Duration,
+            Config.Broadcasts.NtfSpawnMessage.Format(ev.UnitNumber, ev.UnitName, ev.ScpsLeft));
     }
 
     internal void OnGeneratorActivating(GeneratorActivatingEventArgs ev)
@@ -65,36 +68,38 @@ public class MapEvents(Cocoa plugin)
         {
             if (Config.Broadcasts.GeneratorMessages.TryGetValue(Generator.List.Count(x => x.IsEngaged), out var value))
             {
-                // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(value.Duration, value.Message);
+                MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(value.Duration, value.Message);
             }
         });
     }
 
     internal void OnWarheadStarting(StartingEventArgs ev)
     {
-        // foreach (var player in Player.List)
-        // {
-        //     if (player.HasBroadcast("WarheadStop"))
-        //         player.RemoveBroadcast("WarheadStop");
-        //
-        //     if (player.HasBroadcast("WarheadStart"))
-        //         player.RemoveBroadcast("WarheadStart");
-        // }
+        foreach (var player in Player.List)
+        {
+            if (player.HasBroadcast("WarheadStop"))
+                player.RemoveBroadcast("WarheadStop");
 
-        // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadStartMessage.Duration, Config.Broadcasts.WarheadStartMessage.Message.Format(Exiled.API.Features.Warhead.RealDetonationTimer), 0, "WarheadStart");
+            if (player.HasBroadcast("WarheadStart"))
+                player.RemoveBroadcast("WarheadStart");
+        }
+
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadStartMessage.Duration, Config.Broadcasts.WarheadStartMessage.Format(Exiled.API.Features.Warhead.RealDetonationTimer), 0, "WarheadStart");
     }
 
     internal void OnWarheadStopping(StoppingEventArgs ev)
     {
-        // foreach (var player in Player.List)
-        // {
-        //     if (player.HasBroadcast("WarheadStop"))
-        //         player.RemoveBroadcast("WarheadStop");
-        //
-        //     if (player.HasBroadcast("WarheadStart"))
-        //         player.RemoveBroadcast("WarheadStart");
-        // }
-        //
-        // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadCancelMessage.Duration, Config.Broadcasts.WarheadCancelMessage.Message, 0, "WarheadStop");
+        if (!ev.IsAllowed || Exiled.API.Features.Warhead.IsLocked) return;
+
+        foreach (var player in Player.List)
+        {
+            if (player.HasBroadcast("WarheadStop"))
+                player.RemoveBroadcast("WarheadStop");
+
+            if (player.HasBroadcast("WarheadStart"))
+                player.RemoveBroadcast("WarheadStart");
+        }
+
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadCancelMessage.Duration, Config.Broadcasts.WarheadCancelMessage.Message, 0, "WarheadStop");
     }
 }

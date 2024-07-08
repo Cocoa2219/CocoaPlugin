@@ -30,7 +30,7 @@ public class Broadcast
         set => _message = value;
     }
 
-    public ushort Duration { get; }
+    public ushort Duration { get; set; }
     public bool IsEnabled { get; set; }
 
     public string Format(Player player)
@@ -46,7 +46,7 @@ public class Broadcast
         return sb.ToString();
     }
 
-    public string Format(Player attacker, Player target)
+    public string Format(Player attacker, Player target, RoleTypeId? attackerRole, RoleTypeId targetRole)
     {
         var sb = new StringBuilder(Message);
 
@@ -55,10 +55,10 @@ public class Broadcast
             sb.Replace("%attackerNickname%", attacker.Nickname);
             sb.Replace("%attackerCustomName%", attacker.CustomName);
             sb.Replace("%attackerUserId%", attacker.UserId);
-            sb.Replace("%attackerRoleColor%", attacker.GetRoleColor());
-            sb.Replace("%attackerRoleName%", attacker.GetRoleName());
+            sb.Replace("%attackerRoleColor%", attackerRole?.GetRoleColor());
+            sb.Replace("%attackerRoleName%", attackerRole?.GetRoleName());
             sb.Replace("%attackerNicknameParticle%", Divide(attacker.Nickname[^1]).jongsung == ' ' ? "가" : "이");
-            sb.Replace("%attackerRoleNameParticle%", Divide(attacker.GetRoleName()[^1]).jongsung == ' ' ? "로" : "으로");
+            sb.Replace("%attackerRoleNameParticle%", Divide(attackerRole.GetValueOrDefault().GetRoleName()[^1]).jongsung == ' ' ? "로" : "으로");
         }
         else
         {
@@ -68,16 +68,16 @@ public class Broadcast
             sb.Replace("%attackerRoleColor%", "#737373");
             sb.Replace("%attackerRoleName%", "알 수 없음");
             sb.Replace("%attackerNicknameParticle%", "이");
-            sb.Replace("%attackerRoleNameParticle%", "이");
+            sb.Replace("%attackerRoleNameParticle%", "으로");
         }
 
         sb.Replace("%targetNickname%", target.Nickname);
         sb.Replace("%targetCustomName%", target.CustomName);
         sb.Replace("%targetUserId%", target.UserId);
-        sb.Replace("%targetRoleColor%", target.GetRoleColor());
-        sb.Replace("%targetRoleName%", target.GetRoleName());
+        sb.Replace("%targetRoleColor%", targetRole.GetRoleColor());
+        sb.Replace("%targetRoleName%", targetRole.GetRoleName());
         sb.Replace("%targetNicknameParticle%", Divide(target.Nickname[^1]).jongsung == ' ' ? "가" : "이");
-        sb.Replace("%targetRoleNameParticle%", Divide(target.GetRoleName()[^1]).jongsung == ' ' ? "가" : "이");
+        sb.Replace("%targetRoleNameParticle%", Divide(targetRole.GetRoleName()[^1]).jongsung == ' ' ? "가" : "이");
 
         return sb.ToString();
     }

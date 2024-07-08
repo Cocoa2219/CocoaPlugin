@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using CommandSystem;
 using Exiled.API.Features;
+using MultiBroadcast.API;
 using PlayerRoles;
 
 namespace CocoaPlugin.Commands;
@@ -31,7 +32,7 @@ public class Chat : ICommand
 
         foreach (var receiver in receivers)
         {
-            // receiver.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message));
+            receiver.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message));
         }
 
         response = "채팅을 전송했습니다.";
