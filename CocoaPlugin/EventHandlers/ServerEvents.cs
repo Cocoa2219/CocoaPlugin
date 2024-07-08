@@ -17,21 +17,35 @@ public class ServerEvents(Cocoa plugin)
     private Cocoa Plugin { get; } = plugin;
     private Config Config => Plugin.Config;
 
+    internal bool LastOneEnabled { get; private set; }
+
     internal void SubscribeEvents()
     {
+        Server.WaitingForPlayers += OnWaitingForPlayers;
         Server.RoundStarted += OnRoundStarted;
         Server.RespawningTeam += OnRespawningTeam;
     }
 
     internal void UnsubscribeEvents()
     {
+        Server.WaitingForPlayers -= OnWaitingForPlayers;
         Server.RoundStarted -= OnRoundStarted;
         Server.RespawningTeam -= OnRespawningTeam;
     }
 
+    internal void OnWaitingForPlayers()
+    {
+        LastOneEnabled = false;
+    }
+
     internal void OnRoundStarted()
     {
-        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.Message);
+        // MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.Message);
+
+        Timing.CallDelayed(5f, () =>
+        {
+            LastOneEnabled = true;
+        });
     }
 
     internal void OnRespawningTeam(RespawningTeamEventArgs ev)
@@ -40,7 +54,7 @@ public class ServerEvents(Cocoa plugin)
         {
             foreach (var player in Player.List.Where(player => player.LeadingTeam == LeadingTeam.ChaosInsurgency))
             {
-                player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.Message);
+                // player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.Message);
             }
         }
     }

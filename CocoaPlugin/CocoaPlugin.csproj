@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,11 +35,11 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
-          <HintPath>..\..\Depnd\0Harmony.dll</HintPath>
+          <HintPath>..\..\SCPSL_References\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-Publicized.dll</HintPath>
@@ -127,9 +127,13 @@
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="Cocoa.cs" />
+        <Compile Include="Commands\Chat.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Configs\Broadcasts.cs" />
+        <Compile Include="Configs\Chats.cs" />
         <Compile Include="Configs\Config.cs" />
+        <Compile Include="Configs\KillLogs.cs" />
+        <Compile Include="Configs\Scps.cs" />
         <Compile Include="Configs\Translations.cs" />
         <Compile Include="EventHandlers\MapEvents.cs" />
         <Compile Include="EventHandlers\PlayerEvents.cs" />

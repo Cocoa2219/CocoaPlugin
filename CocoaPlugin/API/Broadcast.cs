@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Exiled.API.Features;
+using PlayerRoles;
 using UnityEngine;
 
 namespace CocoaPlugin.API;
 
 public class Broadcast
 {
-    public Broadcast(string message, ushort duration)
+    private string _message;
+
+    public Broadcast(string message, ushort duration, bool isEnabled = true)
     {
-        Message = message;
+        _message = message;
         Duration = duration;
+        IsEnabled = isEnabled;
     }
 
     public Broadcast()
     {
-
+        IsEnabled = true;
     }
 
-    public string Message { get; set; }
-    public ushort Duration { get; set; }
+    public string Message
+    {
+        get => IsEnabled ? _message : string.Empty;
+        set => _message = value;
+    }
+
+    public ushort Duration { get; }
+    public bool IsEnabled { get; set; }
 
     public string Format(Player player)
     {
@@ -47,6 +58,7 @@ public class Broadcast
             sb.Replace("%attackerRoleColor%", attacker.GetRoleColor());
             sb.Replace("%attackerRoleName%", attacker.GetRoleName());
             sb.Replace("%attackerNicknameParticle%", Divide(attacker.Nickname[^1]).jongsung == ' ' ? "가" : "이");
+            sb.Replace("%attackerRoleNameParticle%", Divide(attacker.GetRoleName()[^1]).jongsung == ' ' ? "로" : "으로");
         }
         else
         {
@@ -56,6 +68,7 @@ public class Broadcast
             sb.Replace("%attackerRoleColor%", "#737373");
             sb.Replace("%attackerRoleName%", "알 수 없음");
             sb.Replace("%attackerNicknameParticle%", "이");
+            sb.Replace("%attackerRoleNameParticle%", "이");
         }
 
         sb.Replace("%targetNickname%", target.Nickname);
@@ -64,6 +77,7 @@ public class Broadcast
         sb.Replace("%targetRoleColor%", target.GetRoleColor());
         sb.Replace("%targetRoleName%", target.GetRoleName());
         sb.Replace("%targetNicknameParticle%", Divide(target.Nickname[^1]).jongsung == ' ' ? "가" : "이");
+        sb.Replace("%targetRoleNameParticle%", Divide(target.GetRoleName()[^1]).jongsung == ' ' ? "가" : "이");
 
         return sb.ToString();
     }
@@ -92,9 +106,50 @@ public class Broadcast
         return sb.ToString();
     }
 
-    private const string chosung = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
-    private const string jungsung = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
-    private const string jongsung = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+    public string Format(Team team)
+    {
+        var sb = new StringBuilder(Message);
+
+        sb.Replace("%teamColor%", Cocoa.Instance.Config.Translations.TeamColors[team]);
+        sb.Replace("%teamName%", Cocoa.Instance.Config.Translations.TeamTranslations[team]);
+
+        return sb.ToString();
+    }
+
+    public string Format(int amount)
+    {
+        var sb = new StringBuilder(Message);
+
+        sb.Replace("%amount%", amount.ToString());
+
+        return sb.ToString();
+    }
+
+    public string Format(float amount)
+    {
+        var sb = new StringBuilder(Message);
+
+        sb.Replace("%amount%", amount.ToString(CultureInfo.InvariantCulture));
+
+        return sb.ToString();
+    }
+
+    public string Format(Player sender, string message)
+    {
+        var sb = new StringBuilder(Message);
+
+        sb.Replace("%nickname%", sender.Nickname);
+        sb.Replace("%customName%", sender.CustomName);
+        sb.Replace("%roleColor%", sender.GetRoleColor());
+        sb.Replace("%roleName%", sender.GetRoleName());
+        sb.Replace("%message%", message);
+
+        return sb.ToString();
+    }
+
+    private const string Chosung = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+    private const string Jungsung = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+    private const string Jongsung = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
 
     private const ushort UnicodeHangeulBase = 0xAC00;
     private const ushort UnicodeHangeulLast = 0xD79F;
@@ -115,9 +170,9 @@ public class Broadcast
 
         var ChosungCode = Code;
 
-        var Chosung = chosung[ChosungCode];
-        var Jungsung = jungsung[JungsungCode];
-        var Jongsung = jongsung[JongsungCode];
+        var Chosung = Broadcast.Chosung[ChosungCode];
+        var Jungsung = Broadcast.Jungsung[JungsungCode];
+        var Jongsung = Broadcast.Jongsung[JongsungCode];
 
         return (Chosung, Jungsung, Jongsung);
     }

@@ -128,4 +128,5 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CPC_005CAppData_005CRoaming_005CEXILED_005CPlugins_005CAudioPlayer_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CPC_005CAppData_005CRoaming_005CEXILED_005CPlugins_005CMultiBroadcast_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CPC_005CDocuments_005CDepnd_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CPC_005CDocuments_005CMultiBroadcast_005CMultiBroadcast_005Cbin_005CRelease_005CMultiBroadcast_002Edll/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005CPC_005CDocuments_005CMultiBroadcast_005CMultiBroadcast_005Cbin_005CRelease_005CMultiBroadcast_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cuser_005CDocuments_005CSCPSL_005FReferences_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

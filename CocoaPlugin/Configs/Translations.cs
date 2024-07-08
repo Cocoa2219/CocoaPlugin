@@ -5,11 +5,6 @@ namespace CocoaPlugin.Configs;
 
 public class Translations
 {
-    public Translations()
-    {
-
-    }
-
     public Dictionary<RoleTypeId, string> RoleTranslations { get; set; } = new()
     {
         { RoleTypeId.None, "없음" },
@@ -66,5 +61,27 @@ public class Translations
         { RoleTypeId.Overwatch, "#FFFFFF" },
         { RoleTypeId.Filmmaker, "#0D0D0D" },
         { RoleTypeId.Scp3114, "#d44b42" }
+    };
+
+    public Dictionary<Team, string> TeamTranslations { get; set; } = new()
+    {
+        { Team.SCPs, "SCP" },
+        { Team.FoundationForces, "혼돈의 반란" },
+        { Team.ChaosInsurgency, "NTF" },
+        { Team.Scientists, "과학자" },
+        { Team.ClassD, "D계급" },
+        { Team.Dead, "관전자" },
+        { Team.OtherAlive , "특수 팀"}
+    };
+
+    public Dictionary<Team, string> TeamColors { get; set; } = new()
+    {
+        { Team.SCPs, "#d44b42" },
+        { Team.FoundationForces, "#0096FF" },
+        { Team.ChaosInsurgency, "#258533" },
+        { Team.Scientists, "#FFFF7C" },
+        { Team.ClassD, "#ff8000" },
+        { Team.Dead, "#737373" },
+        { Team.OtherAlive, "#ffffff" }
     };
 }
