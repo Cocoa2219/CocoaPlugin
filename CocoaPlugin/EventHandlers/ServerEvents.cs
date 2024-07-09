@@ -40,7 +40,7 @@ public class ServerEvents(Cocoa plugin)
 
     internal void OnRoundStarted()
     {
-        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.Message);
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.Message, Config.Broadcasts.RoundStartMessage.Priority);
 
         Timing.CallDelayed(5f, () =>
         {
@@ -56,7 +56,7 @@ public class ServerEvents(Cocoa plugin)
             {
                 foreach (var player in Player.List.Where(player => player.LeadingTeam == LeadingTeam.ChaosInsurgency))
                 {
-                    player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.Message);
+                    player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.Message, Config.Broadcasts.ChaosSpawnMessage.Priority);
                 }
             });
         }

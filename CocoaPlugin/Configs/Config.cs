@@ -10,5 +10,6 @@ namespace CocoaPlugin.Configs
         public Scps Scps { get; set; } = new();
         public Broadcasts Broadcasts { get; set; } = new();
         public Translations Translations { get; set; } = new();
+        public Reconnects Reconnects { get; set; } = new();
     }
 }

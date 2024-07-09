@@ -26,17 +26,22 @@ public class Chat : ICommand
             return false;
         }
 
-        var message = string.Join(" ", arguments);
+        var message = SantizeChat(string.Join(" ", arguments));
 
         var receivers = Player.Get(Team.SCPs);
 
         foreach (var receiver in receivers)
         {
-            receiver.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message));
+            receiver.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message), Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Priority);
         }
 
         response = "채팅을 전송했습니다.";
         return true;
+    }
+
+    public static string SantizeChat(string message)
+    {
+        return message.Replace("<", "").Replace(">", "");
     }
 
     public string Command { get; } = "chat";
