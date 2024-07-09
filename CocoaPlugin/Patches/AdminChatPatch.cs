@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CentralAuth;
 using Exiled.API.Features;
 using HarmonyLib;
@@ -16,8 +17,8 @@ public class AdminChatPatch
         {
             if (sender is PlayerCommandSender playerCommandSender)
             {
-                playerCommandSender.ReferenceHub.gameConsoleTransmission.SendToClient("You don't have permissions to access Admin Chat!", "red");
-                playerCommandSender.RaReply("You don't have permissions to access Admin Chat!", false, true, "");
+                playerCommandSender.ReferenceHub.gameConsoleTransmission.SendToClient("관리자 채팅을 사용할 권한이 없습니다!", "red");
+                playerCommandSender.RaReply("관리자 채팅을 사용할 권한이 없습니다!", false, true, "");
             }
 
             return false;
@@ -34,18 +35,12 @@ public class AdminChatPatch
         }
         if (ServerStatic.IsDedicated)
         {
-            ServerConsole.AddLog("[AC " + sender.LogName + "] " + q, ConsoleColor.DarkYellow);
+            ServerConsole.AddLog("[관리자 " + sender.LogName + "] " + q, ConsoleColor.DarkYellow);
         }
         ServerLogs.AddLog(ServerLogs.Modules.Administrative, "[" + sender.LogName + "] " + q, ServerLogs.ServerLogType.AdminChat, false);
-        foreach (var referenceHub in ReferenceHub.AllHubs)
+        foreach (var player in from referenceHub in ReferenceHub.AllHubs let mode = referenceHub.Mode where mode != ClientInstanceMode.Unverified && mode != ClientInstanceMode.DedicatedServer && referenceHub.serverRoles.AdminChatPerms select Player.Get(referenceHub))
         {
-            var mode = referenceHub.Mode;
-            if (mode != ClientInstanceMode.Unverified && mode != ClientInstanceMode.DedicatedServer && referenceHub.serverRoles.AdminChatPerms)
-            {
-                var player = Player.Get(referenceHub);
-
-                player.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.AdminChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.AdminChatMessage.Format(player, q));
-            }
+            player.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.AdminChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.AdminChatMessage.Format(player, q));
         }
 
         return false;

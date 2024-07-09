@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CocoaPlugin.API;
 using CocoaPlugin.Configs.Broadcast;
@@ -6,11 +8,12 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Server;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
-using UnityEngine;
 using Config = CocoaPlugin.Configs.Config;
+using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
 
 namespace CocoaPlugin.EventHandlers;
@@ -20,7 +23,14 @@ public class PlayerEvents(Cocoa plugin)
     private Cocoa Plugin { get; } = plugin;
     private Config Config => Plugin.Config;
 
-    private List<LeftUser> _leftUsers = new();
+    private List<LeftUser> _leftUsers = [];
+
+    private HashSet<string> _roundStartUsers = [];
+
+    private Dictionary<string, Stopwatch> _userStopwatches = [];
+
+    internal Dictionary<string, Dictionary<string, Time>> UserTimes = [];
+    internal Dictionary<string, Dictionary<string, int>> UserRoundCounts = [];
 
     internal void SubscribeEvents()
     {
@@ -32,6 +42,8 @@ public class PlayerEvents(Cocoa plugin)
         Exiled.Events.Handlers.Player.Handcuffing += OnHandcuffing;
 
         Server.RestartingRound += OnRestartingRound;
+        Server.RoundStarted += OnRoundStarted;
+        Server.RoundEnded += OnRoundEnded;
     }
 
     internal void UnsubscribeEvents()
@@ -44,16 +56,78 @@ public class PlayerEvents(Cocoa plugin)
         Exiled.Events.Handlers.Player.Handcuffing -= OnHandcuffing;
 
         Server.RestartingRound -= OnRestartingRound;
+        Server.RoundStarted -= OnRoundStarted;
+        Server.RoundEnded -= OnRoundEnded;
     }
 
     internal void OnRestartingRound()
     {
+        var today = TodayToString();
+
+        UserTimes.TryAdd(today, []);
+
+        foreach (var stopwatch in _userStopwatches)
+        {
+            stopwatch.Value.Stop();
+
+            var time = new Time
+            {
+                Hours = stopwatch.Value.Elapsed.Hours,
+                Minutes = stopwatch.Value.Elapsed.Minutes,
+                Seconds = stopwatch.Value.Elapsed.Seconds
+            };
+
+            if (!UserTimes[today].TryAdd(stopwatch.Key, time))
+            {
+                UserTimes[today][stopwatch.Key] += time;
+            }
+        }
+
         _leftUsers.Clear();
+        _userStopwatches.Clear();
+    }
+
+    internal void OnRoundStarted()
+    {
+        _roundStartUsers = Player.List.Select(x => x.UserId).ToHashSet();
+    }
+
+    internal string TodayToString()
+    {
+        var today = DateTime.Now;
+
+        return $"{today.Year}-{today.Month}-{today.Day}";
+    }
+
+    internal void OnRoundEnded(RoundEndedEventArgs ev)
+    {
+        var today = TodayToString();
+
+        UserRoundCounts.TryAdd(today, []);
+
+        foreach (var user in Player.List)
+        {
+            if (!_roundStartUsers.Contains(user.UserId)) continue;
+
+            UserRoundCounts[today].TryAdd(user.UserId, 0);
+            UserRoundCounts[today][user.UserId]++;
+        }
     }
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
-        ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player), Config.Broadcasts.VerifiedMessage.Priority);
+        var today = TodayToString();
+
+        UserRoundCounts.TryAdd(today, []);
+        UserTimes.TryAdd(today, []);
+
+        UserRoundCounts[today].TryAdd(ev.Player.UserId, 0);
+        UserTimes[today].TryAdd(ev.Player.UserId, new Time());
+
+        _userStopwatches.TryAdd(ev.Player.UserId, new Stopwatch());
+        _userStopwatches[ev.Player.UserId].Start();
+
+        ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player, UserRoundCounts[today][ev.Player.UserId], UserTimes[today][ev.Player.UserId].ToString()), Config.Broadcasts.VerifiedMessage.Priority);
 
         if (_leftUsers.Any(x => !x.IsReconnected && x.UserId == ev.Player.UserId))
         {
@@ -145,8 +219,21 @@ public class PlayerEvents(Cocoa plugin)
 
     internal void OnLeft(LeftEventArgs ev)
     {
+        if (_userStopwatches.ContainsKey(ev.Player.UserId))
+        {
+            _userStopwatches[ev.Player.UserId].Stop();
+
+            UserTimes[TodayToString()][ev.Player.UserId] += new Time
+            {
+                Hours = _userStopwatches[ev.Player.UserId].Elapsed.Hours,
+                Minutes = _userStopwatches[ev.Player.UserId].Elapsed.Minutes,
+                Seconds = _userStopwatches[ev.Player.UserId].Elapsed.Seconds
+            };
+        }
+
         if (!Round.InProgress) return;
 
+        if (!ev.Player.IsScp) return;
         Timing.RunCoroutine(DestroyCoroutine(ev.Player));
     }
 
@@ -156,6 +243,8 @@ public class PlayerEvents(Cocoa plugin)
 
         if (count >= Config.Reconnects.ReconnectLimit)
         {
+            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectLimitMessage.Duration,
+                Config.Reconnects.ReconnectLimitMessage.Format(player), Config.Reconnects.ReconnectLimitMessage.Priority);
             yield break;
         }
 

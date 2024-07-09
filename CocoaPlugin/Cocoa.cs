@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Emit;
-using CentralAuth;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
-using CommandSystem;
-using Exiled.API.Extensions;
 using Exiled.API.Features;
 using HarmonyLib;
-using Mirror;
-using MultiBroadcast.API;
-using NorthwoodLib.Pools;
-using PlayerRoles;
-using RemoteAdmin.Communication;
 
 namespace CocoaPlugin
 {
@@ -37,6 +26,11 @@ namespace CocoaPlugin
             Instance = this;
 
             PlayerEvents = new PlayerEvents(this);
+            var today = PlayerEvents.TodayToString();
+
+            PlayerEvents.UserTimes.TryAdd(today, new());
+            PlayerEvents.UserRoundCounts.TryAdd(today, new());
+
             ServerEvents = new ServerEvents(this);
             MapEvents = new MapEvents(this);
             SubscribeEvents();

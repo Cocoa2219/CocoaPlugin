@@ -11,5 +11,6 @@ namespace CocoaPlugin.Configs
         public Broadcasts Broadcasts { get; set; } = new();
         public Translations Translations { get; set; } = new();
         public Reconnects Reconnects { get; set; } = new();
+        public Commands Commands { get; set; } = new();
     }
 }

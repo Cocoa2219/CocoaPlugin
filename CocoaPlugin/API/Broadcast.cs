@@ -40,10 +40,27 @@ public class Broadcast
         var sb = new StringBuilder(Message);
 
         sb.Replace("%nickname%", player.Nickname);
+        sb.Replace("%nicknameParticle%", IsKorean(player.Nickname[^1]) ? Divide(player.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
         sb.Replace("%customName%", player.CustomName);
         sb.Replace("%userId%", player.UserId);
         sb.Replace("%roleColor%", player.GetRoleColor());
         sb.Replace("%roleName%", player.GetRoleName());
+
+        return sb.ToString();
+    }
+
+    public string Format(Player player, int amount, string text)
+    {
+        var sb = new StringBuilder(Message);
+
+        sb.Replace("%nickname%", player.Nickname);
+        sb.Replace("%nicknameParticle%", IsKorean(player.Nickname[^1]) ? Divide(player.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
+        sb.Replace("%customName%", player.CustomName);
+        sb.Replace("%userId%", player.UserId);
+        sb.Replace("%roleColor%", player.GetRoleColor());
+        sb.Replace("%roleName%", player.GetRoleName());
+        sb.Replace("%amount%", amount.ToString());
+        sb.Replace("%text%", text);
 
         return sb.ToString();
     }
