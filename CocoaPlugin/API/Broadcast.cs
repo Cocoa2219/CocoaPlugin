@@ -130,8 +130,8 @@ public class Broadcast
     {
         var sb = new StringBuilder(Message);
 
-        sb.Replace("%teamColor%", Cocoa.Instance.Config.Translations.TeamColors[team]);
-        sb.Replace("%teamName%", Cocoa.Instance.Config.Translations.TeamTranslations[team]);
+        sb.Replace("%teamColor%", CocoaPlugin.Instance.Config.Translations.TeamColors[team]);
+        sb.Replace("%teamName%", CocoaPlugin.Instance.Config.Translations.TeamTranslations[team]);
 
         return sb.ToString();
     }
@@ -176,7 +176,7 @@ public class Broadcast
         sb.Replace("%roleColor%", leftUser.Role.GetRoleColor());
         sb.Replace("%roleName%", leftUser.Role.GetRoleName());
         sb.Replace("%nicknameParticle%", IsKorean(leftUser.Nickname[^1]) ? Divide(leftUser.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
-        sb.Replace("%time%", SecondsToMinutes(Cocoa.Instance.Config.Reconnects.ReconnectTime));
+        sb.Replace("%time%", SecondsToMinutes(CocoaPlugin.Instance.Config.Reconnects.ReconnectTime));
 
         return sb.ToString();
     }

@@ -6,11 +6,11 @@ public static class RoleTypeIdExtensions
 {
     public static string GetRoleColor(this RoleTypeId role)
     {
-        return Cocoa.Instance.Config.Translations.RoleColors[role];
+        return CocoaPlugin.Instance.Config.Translations.RoleColors[role];
     }
 
     public static string GetRoleName(this RoleTypeId role)
     {
-        return Cocoa.Instance.Config.Translations.RoleTranslations[role];
+        return CocoaPlugin.Instance.Config.Translations.RoleTranslations[role];
     }
 }

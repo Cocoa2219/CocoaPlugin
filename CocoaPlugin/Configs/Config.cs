@@ -12,5 +12,6 @@ namespace CocoaPlugin.Configs
         public Translations Translations { get; set; } = new();
         public Reconnects Reconnects { get; set; } = new();
         public Commands Commands { get; set; } = new();
+        public Camping Camping { get; set; } = new();
     }
 }

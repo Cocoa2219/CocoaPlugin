@@ -11,9 +11,9 @@ using Warhead = Exiled.Events.Handlers.Warhead;
 
 namespace CocoaPlugin.EventHandlers;
 
-public class MapEvents(Cocoa plugin)
+public class MapEvents(CocoaPlugin plugin)
 {
-    private Cocoa Plugin { get; } = plugin;
+    private CocoaPlugin Plugin { get; } = plugin;
     private Config Config => Plugin.Config;
 
     internal void SubscribeEvents()

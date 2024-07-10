@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
@@ -126,13 +126,15 @@
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\Time.cs" />
         <Compile Include="API\TyperHelper.cs" />
-        <Compile Include="Cocoa.cs" />
+        <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
         <Compile Include="Commands\Chat.cs" />
         <Compile Include="Commands\ScpList.cs" />
+        <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\Broadcasts.cs" />
         <Compile Include="Configs\Broadcast\Chats.cs" />
         <Compile Include="Configs\Broadcast\KillLogs.cs" />
+        <Compile Include="Configs\Camping.cs" />
         <Compile Include="Configs\Commands.cs" />
         <Compile Include="Configs\Config.cs" />
         <Compile Include="Configs\Reconnects.cs" />
@@ -142,6 +144,8 @@
         <Compile Include="EventHandlers\PlayerEvents.cs" />
         <Compile Include="EventHandlers\ServerEvents.cs" />
         <Compile Include="Patches\AdminChatPatch.cs" />
+        <Compile Include="Patches\AfkPatch.cs" />
+        <Compile Include="Patches\QueryProcessorPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>

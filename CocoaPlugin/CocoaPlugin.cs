@@ -6,9 +6,9 @@ using HarmonyLib;
 
 namespace CocoaPlugin
 {
-    public class Cocoa : Plugin<Config>
+    public class CocoaPlugin : Plugin<Config>
     {
-        public static Cocoa Instance { get; private set; }
+        public static CocoaPlugin Instance { get; private set; }
 
         public override string Name { get; } = "CocoaPlugin";
         public override string Author { get; } = "Cocoa";

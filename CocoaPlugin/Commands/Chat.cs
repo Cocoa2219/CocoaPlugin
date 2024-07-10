@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using CommandSystem;
 using Exiled.API.Features;
 using MultiBroadcast.API;
@@ -10,6 +11,13 @@ namespace CocoaPlugin.Commands;
 [CommandHandler(typeof(ClientCommandHandler))]
 public class Chat : ICommand
 {
+    private string LogPath => Path.Combine(Paths.Log, "ScpChat.log");
+
+    private void Log(string sender, string msg)
+    {
+        File.AppendAllText(LogPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {sender} : {msg}\n");
+    }
+
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {
         var player = Player.Get(sender as CommandSender);
@@ -32,8 +40,10 @@ public class Chat : ICommand
 
         foreach (var receiver in receivers)
         {
-            receiver.AddBroadcast(Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message), Cocoa.Instance.Config.Broadcasts.Chats.ScpChatMessage.Priority);
+            receiver.AddBroadcast(CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message), CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Priority);
         }
+
+        Log(player.Nickname, message);
 
         response = "채팅을 전송했습니다.";
         return true;

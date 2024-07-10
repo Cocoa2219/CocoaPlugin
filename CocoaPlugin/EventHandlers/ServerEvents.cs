@@ -12,12 +12,14 @@ using Server = Exiled.Events.Handlers.Server;
 
 namespace CocoaPlugin.EventHandlers;
 
-public class ServerEvents(Cocoa plugin)
+public class ServerEvents(CocoaPlugin plugin)
 {
-    private Cocoa Plugin { get; } = plugin;
+    private CocoaPlugin Plugin { get; } = plugin;
     private Config Config => Plugin.Config;
 
     internal bool LastOneEnabled { get; private set; }
+
+    private Dictionary<>
 
     internal void SubscribeEvents()
     {

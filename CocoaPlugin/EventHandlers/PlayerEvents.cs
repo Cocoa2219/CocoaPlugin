@@ -9,6 +9,7 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
+using GameCore;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
@@ -18,9 +19,9 @@ using Server = Exiled.Events.Handlers.Server;
 
 namespace CocoaPlugin.EventHandlers;
 
-public class PlayerEvents(Cocoa plugin)
+public class PlayerEvents(CocoaPlugin plugin)
 {
-    private Cocoa Plugin { get; } = plugin;
+    private CocoaPlugin Plugin { get; } = plugin;
     private Config Config => Plugin.Config;
 
     private List<LeftUser> _leftUsers = [];
@@ -28,6 +29,9 @@ public class PlayerEvents(Cocoa plugin)
     private HashSet<string> _roundStartUsers = [];
 
     private Dictionary<string, Stopwatch> _userStopwatches = [];
+
+    private Dictionary<Player, (float time, Room currentRoom)> _currentRooms = [];
+    private CoroutineHandle _campingCoroutine;
 
     internal Dictionary<string, Dictionary<string, Time>> UserTimes = [];
     internal Dictionary<string, Dictionary<string, int>> UserRoundCounts = [];
@@ -85,11 +89,16 @@ public class PlayerEvents(Cocoa plugin)
 
         _leftUsers.Clear();
         _userStopwatches.Clear();
+
+        Timing.KillCoroutines(_campingCoroutine);
+        _currentRooms.Clear();
     }
 
     internal void OnRoundStarted()
     {
         _roundStartUsers = Player.List.Select(x => x.UserId).ToHashSet();
+
+        _campingCoroutine = Timing.RunCoroutine(CampingCoroutine());
     }
 
     internal string TodayToString()
@@ -203,6 +212,8 @@ public class PlayerEvents(Cocoa plugin)
 
     internal void OnChangingRole(ChangingRoleEventArgs ev)
     {
+        if (_currentRooms.ContainsKey(ev.Player)) _currentRooms.Remove(ev.Player);
+
         if (!Plugin.ServerEvents.LastOneEnabled) return;
         if (ev.Player.Role.Team == Team.Dead) return;
         if (Player.Get(ev.Player.Role.Team).Count() != 2) return;
@@ -290,5 +301,37 @@ public class PlayerEvents(Cocoa plugin)
 
         ev.Target.AddBroadcast(Config.Broadcasts.HandcuffMessage.Duration, Config.Broadcasts.HandcuffMessage.Format(ev.Player, ev.Target, ev.Player.Role.Type, ev.Target.Role.Type), Config.Broadcasts.HandcuffMessage.Priority);
         ev.Player.AddBroadcast(Config.Broadcasts.HandcuffMessage.Duration, Config.Broadcasts.HandcuffMessage.Format(ev.Player, ev.Target, ev.Player.Role.Type, ev.Target.Role.Type), Config.Broadcasts.HandcuffMessage.Priority);
+    }
+
+    internal IEnumerator<float> CampingCoroutine()
+    {
+        while (!Round.IsEnded)
+        {
+            yield return Timing.WaitForSeconds(Config.Camping.CampingCheckInterval);
+
+            foreach (var player in Player.List.Where(x => x.IsHuman && x.CurrentRoom.Players.Any(y => !y.IsScp)))
+            {
+                if (!_currentRooms.ContainsKey(player)) _currentRooms.Add(player, (0, player.CurrentRoom));
+
+                if (_currentRooms[player].currentRoom != player.CurrentRoom)
+                {
+                    _currentRooms[player] = (_currentRooms[player].time - Config.Camping.CampingCheckInterval * Config.Camping.CampingTimeToleranceMultiplier, player.CurrentRoom);
+
+                    if (_currentRooms[player].time < 0)
+                    {
+                        _currentRooms[player] = (0, player.CurrentRoom);
+                    }
+                }
+                else
+                {
+                    _currentRooms[player] = (_currentRooms[player].time + Config.Camping.CampingCheckInterval, player.CurrentRoom);
+                }
+
+                if (_currentRooms[player].time >= Config.Camping.CampingTime && _currentRooms[player].time % Config.Camping.CampingMessageFrequency == 0)
+                {
+                    player.AddBroadcast(Config.Camping.CampingMessage.Duration, Config.Camping.CampingMessage.Format(player), Config.Camping.CampingMessage.Priority);
+                }
+            }
+        }
     }
 }
