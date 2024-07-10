@@ -13,9 +13,11 @@ using GameCore;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
+using UnityEngine;
 using Config = CocoaPlugin.Configs.Config;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
+using Time = CocoaPlugin.API.Time;
 
 namespace CocoaPlugin.EventHandlers;
 
@@ -303,13 +305,13 @@ public class PlayerEvents(CocoaPlugin plugin)
         ev.Player.AddBroadcast(Config.Broadcasts.HandcuffMessage.Duration, Config.Broadcasts.HandcuffMessage.Format(ev.Player, ev.Target, ev.Player.Role.Type, ev.Target.Role.Type), Config.Broadcasts.HandcuffMessage.Priority);
     }
 
-    internal IEnumerator<float> CampingCoroutine()
+    private IEnumerator<float> CampingCoroutine()
     {
         while (!Round.IsEnded)
         {
             yield return Timing.WaitForSeconds(Config.Camping.CampingCheckInterval);
 
-            foreach (var player in Player.List.Where(x => x.IsHuman && x.CurrentRoom.Players.Any(y => !y.IsScp)))
+            foreach (var player in Player.List.Where(x => x.IsHuman && Player.Get(Team.SCPs).All(y => Vector3.Distance(x.Position, y.Position) > Config.Camping.CampingScpDistance)))
             {
                 if (!_currentRooms.ContainsKey(player)) _currentRooms.Add(player, (0, player.CurrentRoom));
 

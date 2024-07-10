@@ -13,5 +13,7 @@ namespace CocoaPlugin.Configs
         public Reconnects Reconnects { get; set; } = new();
         public Commands Commands { get; set; } = new();
         public Camping Camping { get; set; } = new();
+        public Afk Afk { get; set; } = new();
+        public Spawns Spawns { get; set; } = new();
     }
 }

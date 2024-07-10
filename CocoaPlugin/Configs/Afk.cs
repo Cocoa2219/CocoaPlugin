@@ -10,6 +10,12 @@ public class Afk
             "<cspace=0.05em><size=30><color=#d44b42>💤 플레이어가 비활성 상태임</color>을 확인했습니다.\n<size=25>아무런 입력이 없는 경우 <color=#d44b42>%amount%초 뒤 추방됩니다.</color></size></size></cspace>",
             30, 10);
 
+    public float AfkBroadcastTime { get; set; } = 60f;
+
+    public float AfkKickTime { get; set; } = 90f;
+
+    public string AfkKickMessage { get; set; } = "비활성 상태 (AFK)로 추방되었습니다.";
+
     public float AfkCheckInterval { get; set; } = 1f;
 
     public float AfkSqrMagnitude { get; set; } = 1f;
