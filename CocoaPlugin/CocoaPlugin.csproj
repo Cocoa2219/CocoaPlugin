@@ -119,7 +119,9 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="API\BadgeManager.cs" />
         <Compile Include="API\Broadcast.cs" />
+        <Compile Include="API\FileManager.cs" />
         <Compile Include="API\KoreanTyperStringExtensions.cs" />
         <Compile Include="API\LeftUser.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
@@ -128,10 +130,12 @@
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
+        <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Chat.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Configs\Afk.cs" />
+        <Compile Include="Configs\AutoNuke.cs" />
         <Compile Include="Configs\Broadcasts.cs" />
         <Compile Include="Configs\Broadcast\Chats.cs" />
         <Compile Include="Configs\Broadcast\KillLogs.cs" />
@@ -141,6 +145,7 @@
         <Compile Include="Configs\Reconnects.cs" />
         <Compile Include="Configs\Scps.cs" />
         <Compile Include="Configs\Spawns.cs" />
+        <Compile Include="Configs\Supporters.cs" />
         <Compile Include="Configs\Translations.cs" />
         <Compile Include="EventHandlers\MapEvents.cs" />
         <Compile Include="EventHandlers\PlayerEvents.cs" />

@@ -15,5 +15,6 @@ namespace CocoaPlugin.Configs
         public Camping Camping { get; set; } = new();
         public Afk Afk { get; set; } = new();
         public Spawns Spawns { get; set; } = new();
+        public AutoNuke AutoNuke { get; set; } = new();
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CocoaPlugin.API;
 using CocoaPlugin.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
@@ -29,6 +30,8 @@ public class ServerEvents(CocoaPlugin plugin)
     private Dictionary<Player, (float time, Vector3 position)> _afkPlayers = new();
     private CoroutineHandle _afkCoroutine;
 
+    private CoroutineHandle _autoNukeCoroutine;
+
     internal void SubscribeEvents()
     {
         Exiled.Events.Handlers.Player.ChangingRole += OnChangingRole;
@@ -36,6 +39,7 @@ public class ServerEvents(CocoaPlugin plugin)
         Server.WaitingForPlayers += OnWaitingForPlayers;
         Server.RoundStarted += OnRoundStarted;
         Server.RespawningTeam += OnRespawningTeam;
+        Server.RestartingRound += OnRestartingRound;
     }
 
     internal void UnsubscribeEvents()
@@ -45,6 +49,7 @@ public class ServerEvents(CocoaPlugin plugin)
         Server.WaitingForPlayers -= OnWaitingForPlayers;
         Server.RoundStarted -= OnRoundStarted;
         Server.RespawningTeam -= OnRespawningTeam;
+        Server.RestartingRound -= OnRestartingRound;
     }
 
     internal void OnChangingRole(ChangingRoleEventArgs ev)
@@ -61,6 +66,7 @@ public class ServerEvents(CocoaPlugin plugin)
     internal void OnRoundStarted()
     {
         _afkCoroutine = Timing.RunCoroutine(AfkCoroutine());
+        _autoNukeCoroutine = Timing.RunCoroutine(AutoNukeCoroutine());
 
         Timing.CallDelayed(5f, () =>
         {
@@ -151,5 +157,27 @@ public class ServerEvents(CocoaPlugin plugin)
                 }
             });
         }
+    }
+
+    internal void OnRestartingRound()
+    {
+        Timing.KillCoroutines(_afkCoroutine);
+        _afkPlayers.Clear();
+
+        BadgeManager.SaveBadges();
+    }
+
+    private IEnumerator<float> AutoNukeCoroutine()
+    {
+        yield return Timing.WaitForSeconds(Config.AutoNuke.AutoNukeTimer);
+
+        if (Warhead.IsInProgress)
+        {
+            Warhead.IsLocked = true;
+            yield break;
+        }
+
+        Warhead.Start();
+        Warhead.IsLocked = true;
     }
 }

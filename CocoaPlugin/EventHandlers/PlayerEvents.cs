@@ -50,6 +50,11 @@ public class PlayerEvents(CocoaPlugin plugin)
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
         Server.RoundEnded += OnRoundEnded;
+
+        var today = TodayToString();
+
+        UserTimes.TryAdd(today, new Dictionary<string, Time>());
+        UserRoundCounts.TryAdd(today, new Dictionary<string, int>());
     }
 
     internal void UnsubscribeEvents()
@@ -127,6 +132,13 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
+        var badge = BadgeManager.GetBadge(ev.Player.UserId);
+        if (badge != null)
+        {
+            ev.Player.RankName = badge.Name;
+            ev.Player.RankColor = badge.Color;
+        }
+
         var today = TodayToString();
 
         UserRoundCounts.TryAdd(today, []);

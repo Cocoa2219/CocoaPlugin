@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using CocoaPlugin.API;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
@@ -25,12 +27,10 @@ namespace CocoaPlugin
         {
             Instance = this;
 
+            API.FileManager.CreateFolder();
+            BadgeManager.LoadBadges();
+
             PlayerEvents = new PlayerEvents(this);
-            var today = PlayerEvents.TodayToString();
-
-            PlayerEvents.UserTimes.TryAdd(today, new());
-            PlayerEvents.UserRoundCounts.TryAdd(today, new());
-
             ServerEvents = new ServerEvents(this);
             MapEvents = new MapEvents(this);
             SubscribeEvents();
