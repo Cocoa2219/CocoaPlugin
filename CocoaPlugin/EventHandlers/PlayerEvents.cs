@@ -7,9 +7,9 @@ using CocoaPlugin.Configs.Broadcast;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
-using GameCore;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
@@ -46,6 +46,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.ChangingRole += OnChangingRole;
         Exiled.Events.Handlers.Player.Left += OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing += OnHandcuffing;
+        Exiled.Events.Handlers.Player.Destroying += OnDestroying;
 
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
@@ -65,6 +66,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.ChangingRole -= OnChangingRole;
         Exiled.Events.Handlers.Player.Left -= OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing -= OnHandcuffing;
+        Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
 
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
@@ -132,12 +134,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
-        var badge = BadgeManager.GetBadge(ev.Player.UserId);
-        if (badge != null)
-        {
-            ev.Player.RankName = badge.Name;
-            ev.Player.RankColor = badge.Color;
-        }
+        BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
 
         var today = TodayToString();
 
@@ -211,6 +208,15 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnSpawned(SpawnedEventArgs ev)
     {
+        if (ev.Player.IsScp)
+        {
+            if (Config.Scps.ScpHealth.ContainsKey(ev.Player.Role.Type) && Config.Scps.ScpHealth[ev.Player.Role.Type] > 0)
+            {
+                ev.Player.MaxHealth = Config.Scps.ScpHealth[ev.Player.Role.Type];
+                ev.Player.Health = Config.Scps.ScpHealth[ev.Player.Role.Type];
+            }
+        }
+
         Timing.CallDelayed(0.1f, () =>
         {
             if (!ev.Player.IsScp) return;
@@ -245,7 +251,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnLeft(LeftEventArgs ev)
     {
-        // TODO: Check TodayToString() at UserTimes (in case of day change whil running)
+        UserTimes[TodayToString()].TryAdd(ev.Player.UserId, new Time());
 
         if (_userStopwatches.ContainsKey(ev.Player.UserId))
         {
@@ -349,6 +355,17 @@ public class PlayerEvents(CocoaPlugin plugin)
                     player.AddBroadcast(Config.Camping.CampingMessage.Duration, Config.Camping.CampingMessage.Format(player), Config.Camping.CampingMessage.Priority);
                 }
             }
+        }
+    }
+
+    private void OnDestroying(DestroyingEventArgs ev)
+    {
+        if (Player.List.Where(x => x.Role.Type == RoleTypeId.Scp049).Any(scp049 =>
+                scp049.Role.As<Scp049Role>().RecallingPlayer == ev.Player &&
+                scp049.Role.As<Scp049Role>().IsRecalling) && !Round.IsEnded)
+        {
+            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.LeftWhileReviving.Duration,
+                Config.Broadcasts.LeftWhileReviving.Format(ev.Player), Config.Broadcasts.LeftWhileReviving.Priority);
         }
     }
 }

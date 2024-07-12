@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
@@ -124,14 +124,17 @@
         <Compile Include="API\FileManager.cs" />
         <Compile Include="API\KoreanTyperStringExtensions.cs" />
         <Compile Include="API\LeftUser.cs" />
+        <Compile Include="API\PenaltyManager.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\Time.cs" />
+        <Compile Include="API\Utility.cs" />
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
         <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\Penalty.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Configs\Afk.cs" />
@@ -144,6 +147,7 @@
         <Compile Include="Configs\Config.cs" />
         <Compile Include="Configs\Reconnects.cs" />
         <Compile Include="Configs\Scps.cs" />
+        <Compile Include="Configs\Scp\Scp049.cs" />
         <Compile Include="Configs\Spawns.cs" />
         <Compile Include="Configs\Supporters.cs" />
         <Compile Include="Configs\Translations.cs" />
@@ -153,6 +157,7 @@
         <Compile Include="Patches\AdminChatPatch.cs" />
         <Compile Include="Patches\AfkPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
+        <Compile Include="Patches\ScpPatch\Scp049Patch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>

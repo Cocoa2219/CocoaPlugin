@@ -11,25 +11,30 @@ public static class BadgeManager
 
     public static bool AddBadge(string id, Badge badge)
     {
-        if (!IsUserIdValid(id) || !Badge.IsValid(badge))
+        if (!Utility.IsUserIdValid(id) || !Badge.IsValid(badge))
             return false;
 
         BadgeCache[id] = badge;
 
-        var player = Player.Get(id);
-
-        if (player != null)
-        {
-            player.RankName = badge.Name;
-            player.RankColor = badge.Color;
-        }
+        RefreshBadge(id, badge);
 
         return true;
     }
 
+    public static void RefreshBadge(string id, Badge badge)
+    {
+        var player = Player.Get(id);
+
+        if (player == null || badge == null || !Badge.IsValid(badge))
+            return;
+
+        player.RankName = badge.Name;
+        player.RankColor = badge.Color;
+    }
+
     public static bool RemoveBadge(string id)
     {
-        if (!IsUserIdValid(id))
+        if (!Utility.IsUserIdValid(id))
             return false;
 
         if (!BadgeCache.ContainsKey(id))
@@ -41,7 +46,7 @@ public static class BadgeManager
 
     public static Badge GetBadge(string id)
     {
-        return !IsUserIdValid(id) ? null : BadgeCache.GetValueOrDefault(id);
+        return !Utility.IsUserIdValid(id) ? null : BadgeCache.GetValueOrDefault(id);
     }
 
     public static void SaveBadges()
@@ -74,29 +79,10 @@ public static class BadgeManager
             };
         }
 
-        foreach (var (id, badge) in BadgeCache)
+        foreach (var badge in BadgeCache)
         {
-            var player = Player.Get(id);
-
-            if (player != null)
-            {
-                player.RankName = badge.Name;
-                player.RankColor = badge.Color;
-            }
+            RefreshBadge(badge.Key, badge.Value);
         }
-    }
-
-    private static readonly List<string> ValidUserIds =
-    [
-        "@steam",
-        "@discord",
-        "@northwood",
-        "@localhost"
-    ];
-
-    private static bool IsUserIdValid(string id)
-    {
-        return ValidUserIds.Any(id.EndsWith);
     }
 }
 
@@ -107,7 +93,8 @@ public class Badge
 
     public static bool IsValid(Badge badge)
     {
-        return !string.IsNullOrWhiteSpace(badge.Name) && !badge.Name.Contains(';') && !string.IsNullOrWhiteSpace(badge.Color) && BadgeColor.IsValidColor(badge.Color);
+        return !string.IsNullOrWhiteSpace(badge.Name) && !string.IsNullOrWhiteSpace(badge.Color) &&
+               BadgeColor.IsValidColor(badge.Color) && !badge.Name.Contains(';');
     }
 }
 
