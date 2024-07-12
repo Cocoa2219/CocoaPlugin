@@ -4,12 +4,18 @@ using Respawning;
 
 namespace CocoaPlugin.Configs;
 
+public class StartSpawn
+{
+    public RoleTypeId Role { get; set; }
+    public float Chance { get; set; }
+}
+
 public class Spawns
 {
-    public Dictionary<SpawnableTeamType, (RoleTypeId role, float chance)> StartSpawnChances { get; set; } = new()
+    public Dictionary<SpawnableTeamType, StartSpawn> StartSpawnChances { get; set; } = new()
     {
-        {SpawnableTeamType.ChaosInsurgency, (RoleTypeId.ChaosRifleman, 0.2f)},
-        {SpawnableTeamType.NineTailedFox, (RoleTypeId.NtfPrivate, 0.2f)},
-        { SpawnableTeamType.None , (RoleTypeId.None, 0.6f)}
+        {SpawnableTeamType.ChaosInsurgency, new StartSpawn() {Role = RoleTypeId.ChaosRifleman, Chance = 0.2f}},
+        {SpawnableTeamType.NineTailedFox, new StartSpawn() {Role = RoleTypeId.NtfPrivate, Chance = 0.2f}},
+        { SpawnableTeamType.None , new StartSpawn() { Role = RoleTypeId.Spectator, Chance = 0.2f } }
     };
 }

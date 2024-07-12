@@ -11,10 +11,13 @@ namespace CocoaPlugin.Commands;
 [CommandHandler(typeof(ClientCommandHandler))]
 public class Chat : ICommand
 {
-    private string LogPath => Path.Combine(Paths.Log, "ScpChat.log");
+    private string LogPath => Path.Combine(Paths.Exiled, "Logs", "ScpChat.log");
 
     private void Log(string sender, string msg)
     {
+        if (!File.Exists(LogPath))
+            File.WriteAllText(LogPath, "");
+
         File.AppendAllText(LogPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {sender} : {msg}\n");
     }
 

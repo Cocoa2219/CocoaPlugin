@@ -232,18 +232,21 @@ public class PlayerEvents(CocoaPlugin plugin)
         if (ev.Player.Role.Team == Team.Dead) return;
         if (Player.Get(ev.Player.Role.Team).Count() != 2) return;
 
+        var team = ev.Player.Role.Team;
         var player = Player.Get(ev.Player.Role.Team).Except([ev.Player]).First();
 
         Timing.CallDelayed(0.1f, () =>
         {
             if (Player.Get(ev.Player.Role.Team).Count() > 1) return;
 
-            player.AddBroadcast(Config.Broadcasts.LastOneMessage.Duration, Config.Broadcasts.LastOneMessage.Format(ev.Player.Role.Team), Config.Broadcasts.LastOneMessage.Priority);
+            player.AddBroadcast(Config.Broadcasts.LastOneMessage.Duration, Config.Broadcasts.LastOneMessage.Format(team), Config.Broadcasts.LastOneMessage.Priority);
         });
     }
 
     internal void OnLeft(LeftEventArgs ev)
     {
+        // TODO: Check TodayToString() at UserTimes (in case of day change whil running)
+
         if (_userStopwatches.ContainsKey(ev.Player.UserId))
         {
             _userStopwatches[ev.Player.UserId].Stop();

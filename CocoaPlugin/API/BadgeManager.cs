@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Exiled.API.Features;
 
 namespace CocoaPlugin.API;
 
@@ -14,6 +15,15 @@ public static class BadgeManager
             return false;
 
         BadgeCache[id] = badge;
+
+        var player = Player.Get(id);
+
+        if (player != null)
+        {
+            player.RankName = badge.Name;
+            player.RankColor = badge.Color;
+        }
+
         return true;
     }
 
@@ -41,12 +51,12 @@ public static class BadgeManager
         FileManager.WriteFile(BadgeFileName, text);
     }
 
-    public static bool LoadBadges()
+    public static void LoadBadges()
     {
         var text = FileManager.ReadFile(BadgeFileName);
 
         if (string.IsNullOrWhiteSpace(text))
-            return false;
+            return;
 
         BadgeCache.Clear();
 
@@ -64,7 +74,16 @@ public static class BadgeManager
             };
         }
 
-        return true;
+        foreach (var (id, badge) in BadgeCache)
+        {
+            var player = Player.Get(id);
+
+            if (player != null)
+            {
+                player.RankName = badge.Name;
+                player.RankColor = badge.Color;
+            }
+        }
     }
 
     private static readonly List<string> ValidUserIds =
@@ -88,7 +107,7 @@ public class Badge
 
     public static bool IsValid(Badge badge)
     {
-        return !string.IsNullOrWhiteSpace(badge.Name) && !string.IsNullOrWhiteSpace(badge.Color) && BadgeColor.IsValidColor(badge.Color);
+        return !string.IsNullOrWhiteSpace(badge.Name) && !badge.Name.Contains(';') && !string.IsNullOrWhiteSpace(badge.Color) && BadgeColor.IsValidColor(badge.Color);
     }
 }
 

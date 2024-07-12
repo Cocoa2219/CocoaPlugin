@@ -81,9 +81,9 @@ public class ServerEvents(CocoaPlugin plugin)
 
             var sum = 0f;
 
-            foreach (var (team, (role, chance)) in Config.Spawns.StartSpawnChances)
+            foreach (var (team, startSpawn) in Config.Spawns.StartSpawnChances)
             {
-                sum += chance;
+                sum += startSpawn.Chance;
 
                 if (random <= sum)
                 {
@@ -91,7 +91,7 @@ public class ServerEvents(CocoaPlugin plugin)
 
                     foreach (var player in Player.Get(RoleTypeId.FacilityGuard))
                     {
-                        player.Role.Set(role, SpawnReason.RoundStart, RoleSpawnFlags.All);
+                        player.Role.Set(startSpawn.Role, SpawnReason.RoundStart, RoleSpawnFlags.All);
                     }
 
                     break;
@@ -108,15 +108,17 @@ public class ServerEvents(CocoaPlugin plugin)
 
             foreach (var player in Player.List)
             {
-                if (!_afkPlayers.ContainsKey(player))
-                {
-                    _afkPlayers.Add(player, (0, player.Position));
-                }
+                if (player == null || player.IsNPC) continue;
 
                 if (player.IsDead) continue;
                 if (player.IsGodModeEnabled && Config.Afk.IgnoreGodmode) continue;
                 if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Afk.IgnoreNoclip) continue;
                 if (Config.Afk.ExcludedRoles.Contains(player.Role.Type)) continue;
+
+                if (!_afkPlayers.ContainsKey(player))
+                {
+                    _afkPlayers.Add(player, (0, player.Position));
+                }
 
                 if ((_afkPlayers[player].position - player.Position).sqrMagnitude > Config.Afk.AfkSqrMagnitude)
                 {
