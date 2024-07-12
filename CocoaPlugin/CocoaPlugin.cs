@@ -29,6 +29,7 @@ namespace CocoaPlugin
 
             API.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
+            PenaltyManager.LoadPenalties();
 
             PlayerEvents = new PlayerEvents(this);
             ServerEvents = new ServerEvents(this);

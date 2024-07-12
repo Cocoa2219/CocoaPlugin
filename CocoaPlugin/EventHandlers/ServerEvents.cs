@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using CocoaPlugin.API;
 using CocoaPlugin.Configs;
 using Exiled.API.Enums;
-using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.API.Features.Items;
 using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
@@ -31,6 +27,7 @@ public class ServerEvents(CocoaPlugin plugin)
     private CoroutineHandle _afkCoroutine;
 
     private CoroutineHandle _autoNukeCoroutine;
+    private CoroutineHandle _autoBroadcastCoroutine;
 
     internal void SubscribeEvents()
     {
@@ -67,6 +64,7 @@ public class ServerEvents(CocoaPlugin plugin)
     {
         _afkCoroutine = Timing.RunCoroutine(AfkCoroutine());
         _autoNukeCoroutine = Timing.RunCoroutine(AutoNukeCoroutine());
+        _autoBroadcastCoroutine = Timing.RunCoroutine(AutoBroadcastCoroutine());
 
         Timing.CallDelayed(5f, () =>
         {
@@ -100,6 +98,20 @@ public class ServerEvents(CocoaPlugin plugin)
         });
     }
 
+    private IEnumerator<float> AutoBroadcastCoroutine()
+    {
+        var index = 0;
+
+        while (!Round.IsEnded)
+        {
+            yield return Timing.WaitForSeconds(Config.Broadcasts.AutoBroadcastInterval);
+
+            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.AutoBroadcastMessages[index].Duration, Config.Broadcasts.AutoBroadcastMessages[index].Message, Config.Broadcasts.AutoBroadcastMessages[index].Priority);
+
+            index = (index + 1) % Config.Broadcasts.AutoBroadcastMessages.Count;
+        }
+    }
+
     private IEnumerator<float> AfkCoroutine()
     {
         while (!Round.IsEnded)
@@ -108,15 +120,16 @@ public class ServerEvents(CocoaPlugin plugin)
 
             foreach (var player in Player.List)
             {
-                if (!_afkPlayers.ContainsKey(player))
-                {
-                    _afkPlayers.Add(player, (0, player.Position));
-                }
-
+                if (player == null || player.IsNPC) continue;
                 if (player.IsDead) continue;
                 if (player.IsGodModeEnabled && Config.Afk.IgnoreGodmode) continue;
                 if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Afk.IgnoreNoclip) continue;
                 if (Config.Afk.ExcludedRoles.Contains(player.Role.Type)) continue;
+
+                if (!_afkPlayers.ContainsKey(player))
+                {
+                    _afkPlayers.Add(player, (0, player.Position));
+                }
 
                 if ((_afkPlayers[player].position - player.Position).sqrMagnitude > Config.Afk.AfkSqrMagnitude)
                 {
@@ -164,7 +177,12 @@ public class ServerEvents(CocoaPlugin plugin)
         Timing.KillCoroutines(_afkCoroutine);
         _afkPlayers.Clear();
 
+        Timing.KillCoroutines(_autoNukeCoroutine);
+
+        Timing.KillCoroutines(_autoBroadcastCoroutine);
+
         BadgeManager.SaveBadges();
+        PenaltyManager.SavePenalties();
     }
 
     private IEnumerator<float> AutoNukeCoroutine()

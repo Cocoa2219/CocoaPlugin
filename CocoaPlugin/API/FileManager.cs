@@ -20,6 +20,11 @@ public static class FileManager
 
     public static string ReadFile(string fileName)
     {
-        return !File.Exists(Path.Combine(FolderPath, fileName)) ? null : File.ReadAllText(Path.Combine(FolderPath, fileName));
+        if (!File.Exists(Path.Combine(FolderPath, fileName)))
+        {
+            File.WriteAllText(Path.Combine(FolderPath, fileName), "");
+        }
+
+        return File.ReadAllText(Path.Combine(FolderPath, fileName));
     }
 }

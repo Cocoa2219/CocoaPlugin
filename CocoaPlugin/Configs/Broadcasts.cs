@@ -34,6 +34,8 @@ public class Broadcasts
 
     public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=30>%message%</size></size></cspace>", 10, 10);
 
+    public API.Broadcast LeftWhileReviving { get; set; } = new();
+
     public Dictionary<DecontaminationState, API.Broadcast> DecontaminationMessages { get; set; } = new()
     {
         { DecontaminationState.Start, new API.Broadcast("<cspace=0.05em><size=30><color=#d44b42>💀 저위험군 격리 절차</color>까지 <b><color=#32d15d>15분</color></b> 남았습니다.\n<size=20>모든 생존자 분들은 <color=#d44b42>빠르게 대피해</color> 주십시오.</size></cspace></size>", 10) },
@@ -50,6 +52,10 @@ public class Broadcasts
         { 2, new API.Broadcast("<cspace=0.05em><size=30><color=#d44b42>🔌 3개의 발전기</color> 중 <b><color=#a6c712>2개</color></b>가 활성화 되었습니다.</size></cspace>", 10) },
         { 3, new API.Broadcast("<cspace=0.05em><size=30><color=#d44b42>🔌 3개의 발전기</color> 중 <b><color=#bf0000>3개</color></b>가 활성화 되었습니다.</size></cspace>", 10) },
     };
+
+    public List<API.Broadcast> AutoBroadcastMessages { get; set; } = [new API.Broadcast()];
+
+    public int AutoBroadcastInterval { get; set; } = 180;
 
     public KillLogs KillLogs { get; set; } = new();
 

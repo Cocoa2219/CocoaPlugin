@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Exiled.API.Features;
 
 namespace CocoaPlugin.API;
 
@@ -10,16 +11,30 @@ public static class BadgeManager
 
     public static bool AddBadge(string id, Badge badge)
     {
-        if (!IsUserIdValid(id) || !Badge.IsValid(badge))
+        if (!Utility.IsUserIdValid(id) || !Badge.IsValid(badge))
             return false;
 
         BadgeCache[id] = badge;
+
+        RefreshBadge(id, badge);
+
         return true;
+    }
+
+    public static void RefreshBadge(string id, Badge badge)
+    {
+        var player = Player.Get(id);
+
+        if (player == null || badge == null || !Badge.IsValid(badge))
+            return;
+
+        player.RankName = badge.Name;
+        player.RankColor = badge.Color;
     }
 
     public static bool RemoveBadge(string id)
     {
-        if (!IsUserIdValid(id))
+        if (!Utility.IsUserIdValid(id))
             return false;
 
         if (!BadgeCache.ContainsKey(id))
@@ -31,7 +46,7 @@ public static class BadgeManager
 
     public static Badge GetBadge(string id)
     {
-        return !IsUserIdValid(id) ? null : BadgeCache.GetValueOrDefault(id);
+        return !Utility.IsUserIdValid(id) ? null : BadgeCache.GetValueOrDefault(id);
     }
 
     public static void SaveBadges()
@@ -41,12 +56,12 @@ public static class BadgeManager
         FileManager.WriteFile(BadgeFileName, text);
     }
 
-    public static bool LoadBadges()
+    public static void LoadBadges()
     {
         var text = FileManager.ReadFile(BadgeFileName);
 
         if (string.IsNullOrWhiteSpace(text))
-            return false;
+            return;
 
         BadgeCache.Clear();
 
@@ -64,20 +79,10 @@ public static class BadgeManager
             };
         }
 
-        return true;
-    }
-
-    private static readonly List<string> ValidUserIds =
-    [
-        "@steam",
-        "@discord",
-        "@northwood",
-        "@localhost"
-    ];
-
-    private static bool IsUserIdValid(string id)
-    {
-        return ValidUserIds.Any(id.EndsWith);
+        foreach (var badge in BadgeCache)
+        {
+            RefreshBadge(badge.Key, badge.Value);
+        }
     }
 }
 
@@ -88,7 +93,8 @@ public class Badge
 
     public static bool IsValid(Badge badge)
     {
-        return !string.IsNullOrWhiteSpace(badge.Name) && !string.IsNullOrWhiteSpace(badge.Color) && BadgeColor.IsValidColor(badge.Color);
+        return !string.IsNullOrWhiteSpace(badge.Name) && !string.IsNullOrWhiteSpace(badge.Color) &&
+               BadgeColor.IsValidColor(badge.Color) && !badge.Name.Contains(';');
     }
 }
 
