@@ -1,4 +1,7 @@
-﻿namespace CocoaPlugin.Configs;
+﻿using System.Collections.Generic;
+using PlayerRoles;
+
+namespace CocoaPlugin.Configs;
 
 public class Camping
 {
@@ -13,4 +16,10 @@ public class Camping
     public float CampingMessageFrequency { get; set; } = 10f;
 
     public float CampingScpDistance { get; set; } = 20f;
+
+    public List<RoleTypeId> ExcludedRoles { get; set; } = [];
+
+    public bool IgnoreGodmode { get; set; } = true;
+
+    public bool IgnoreNoclip { get; set; } = true;
 }

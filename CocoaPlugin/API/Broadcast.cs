@@ -154,15 +154,15 @@ public class Broadcast
         return sb.ToString();
     }
 
-    public string Format(Player sender, string message)
+    public string Format(Player player, string text)
     {
         var sb = new StringBuilder(Message);
 
-        sb.Replace("%nickname%", sender.Nickname);
-        sb.Replace("%customName%", sender.CustomName);
-        sb.Replace("%roleColor%", sender.GetRoleColor());
-        sb.Replace("%roleName%", sender.GetRoleName());
-        sb.Replace("%message%", message);
+        sb.Replace("%nickname%", player.Nickname);
+        sb.Replace("%customName%", player.CustomName);
+        sb.Replace("%roleColor%", player.GetRoleColor());
+        sb.Replace("%roleName%", player.GetRoleName());
+        sb.Replace("%text%", text);
 
         return sb.ToString();
     }

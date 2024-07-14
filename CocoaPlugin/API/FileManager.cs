@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Exiled.API.Features;
+using Utf8Json;
 
 namespace CocoaPlugin.API;
 

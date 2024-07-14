@@ -46,10 +46,18 @@ public static class PenaltyManager
         return true;
     }
 
-    private static void RefreshPenalties()
+    public static void RefreshPenalties()
     {
         foreach (var (_, penalties) in PenaltyCache)
             penalties.RemoveAll(penalty => !penalty.IsValid());
+    }
+
+    public static void RefreshPenalty(string id)
+    {
+        if (!PenaltyCache.TryGetValue(id, out var penalties))
+            return;
+
+        penalties.RemoveAll(penalty => !penalty.IsValid());
     }
 
     public static void SavePenalties()

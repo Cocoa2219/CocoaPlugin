@@ -135,6 +135,7 @@ public class PlayerEvents(CocoaPlugin plugin)
     internal void OnVerified(VerifiedEventArgs ev)
     {
         BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
+        PenaltyManager.RefreshPenalty(ev.Player.UserId);
 
         var today = TodayToString();
 
@@ -147,7 +148,11 @@ public class PlayerEvents(CocoaPlugin plugin)
         _userStopwatches.TryAdd(ev.Player.UserId, new Stopwatch());
         _userStopwatches[ev.Player.UserId].Start();
 
-        ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player, UserRoundCounts[today][ev.Player.UserId], UserTimes[today][ev.Player.UserId].ToString()), Config.Broadcasts.VerifiedMessage.Priority);
+        var penaltyCount = ev.Player.GetPenaltyCount();
+
+        ev.Player.AddBroadcast(Config.Broadcasts.VerifiedMessage.Duration, Config.Broadcasts.VerifiedMessage.Format(ev.Player,
+            penaltyCount == 0 ? Config.Broadcasts.VerifiedMessageText.Replace("%amount%", UserRoundCounts[today][ev.Player.UserId].ToString()).Replace("%text%", UserTimes[today][ev.Player.UserId].ToString()) : Config.Broadcasts.VerifiedPenaltyText.Replace("%amount%", penaltyCount.ToString())),
+            Config.Broadcasts.VerifiedMessage.Priority);
 
         if (_leftUsers.Any(x => !x.IsReconnected && x.UserId == ev.Player.UserId))
         {
@@ -251,6 +256,8 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnLeft(LeftEventArgs ev)
     {
+        if (ev.Player == null) return;
+
         UserTimes[TodayToString()].TryAdd(ev.Player.UserId, new Time());
 
         if (_userStopwatches.ContainsKey(ev.Player.UserId))
@@ -334,6 +341,12 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             foreach (var player in Player.List.Where(x => x.IsHuman && Player.Get(Team.SCPs).All(y => Vector3.Distance(x.Position, y.Position) > Config.Camping.CampingScpDistance)))
             {
+                if (player.IsNPC) continue;
+                if (player.IsDead) continue;
+                if (player.IsGodModeEnabled && Config.Camping.IgnoreGodmode) continue;
+                if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Camping.IgnoreNoclip) continue;
+                if (Config.Camping.ExcludedRoles.Contains(player.Role.Type)) continue;
+
                 if (!_currentRooms.ContainsKey(player)) _currentRooms.Add(player, (0, player.CurrentRoom));
 
                 if (_currentRooms[player].currentRoom != player.CurrentRoom)

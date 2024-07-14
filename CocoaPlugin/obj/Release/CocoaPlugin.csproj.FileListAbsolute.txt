@@ -220,3 +220,5 @@ C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.csproj.C
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.csproj.CopyComplete
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.pdb
+C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Newtonsoft.Json.dll
+C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Newtonsoft.Json.xml

@@ -6,7 +6,10 @@ namespace CocoaPlugin.Configs;
 
 public class Broadcasts
 {
-    public API.Broadcast VerifiedMessage { get; set; } = new("<cspace=0.05em><size=30><color=#ffc5c2>%nickname%</color>님, 환영합니다!</size></cspace>\n<cspace=0.05em><size=20><color=#ed9a95>규칙 숙지</color> 부탁드리며, <color=#a5ed95>즐거운 SCP : SL 플레이</color> 되세요!\n오늘 %amount% 라운드, %text% 동안 플레이 중입니다.</size></cspace>", 10);
+    public API.Broadcast VerifiedMessage { get; set; } = new("<cspace=0.05em><size=30><color=#ffc5c2>%nickname%</color>님, 환영합니다!</size></cspace>\n<cspace=0.05em><size=20><color=#ed9a95>규칙 숙지</color> 부탁드리며, <color=#a5ed95>즐거운 SCP : SL 플레이</color> 되세요!\n%text%</size></cspace>", 10);
+
+    public string VerifiedMessageText { get; set; } = "오늘 %amount% 라운드, %text% 동안 플레이 중입니다.";
+    public string VerifiedPenaltyText { get; set; } = "<color=#d44b42>현재 <b>%amount%</b>점의 벌점이 있습니다.</color>";
 
     public API.Broadcast RoundStartMessage { get; set; } = new("<cspace=0.05em><size=30>자, <color=#fcccf0>라운드가 시작되었습니다!</color></size></cspace>", 10);
 
@@ -32,7 +35,7 @@ public class Broadcasts
 
     public API.Broadcast WarheadCancelMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🚀 핵탄두가 폭파 절차가 <b>중지</b></color>되었습니다.</size></cspace>", 10);
 
-    public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=30>%message%</size></size></cspace>", 10, 10);
+    public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=30>%text%</size></size></cspace>", 10, 10);
 
     public API.Broadcast LeftWhileReviving { get; set; } = new();
 

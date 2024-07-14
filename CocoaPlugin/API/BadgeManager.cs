@@ -7,6 +7,7 @@ namespace CocoaPlugin.API;
 public static class BadgeManager
 {
     private const string BadgeFileName = "Badges.txt";
+
     public static Dictionary<string, Badge> BadgeCache { get; } = new();
 
     public static bool AddBadge(string id, Badge badge)
