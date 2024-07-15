@@ -150,10 +150,10 @@ public class NetworkHandler(CocoaPlugin plugin)
     {
         NetworkManager.Send(new
         {
-            Nickname = ev.Target.Nickname,
-            CustomName = ev.Target.CustomName,
-            UserId = ev.Target.UserId,
-            IpAddress = ev.Target.IPAddress,
+            Nickname = ev.Target?.Nickname,
+            CustomName = ev.Target?.CustomName,
+            UserId = ev.Target != null ? ev.Target.UserId : ev.Details.Id,
+            IpAddress = ev.Target != null ? ev.Target.IPAddress : ev.Details.Id,
             IssuerNickname = ev.Player?.Nickname,
             IssuerUserId = ev.Player?.UserId,
             Until = ev.Details.Expires,
@@ -173,7 +173,8 @@ public class NetworkHandler(CocoaPlugin plugin)
             Nickname = ev.Player?.Nickname,
             UserId = ev.Player?.UserId,
             Role = ev.Player?.Role.Type,
-            IsAuto = ev.IsAuto
+            IsAuto = ev.IsAuto,
+            Time = Exiled.API.Features.Warhead.RealDetonationTimer
         }, MessageType.WarheadStarting);
     }
 
