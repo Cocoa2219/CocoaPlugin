@@ -94,7 +94,7 @@ public class NoScp : ICommand
         return true;
     }
 
-    public string Command { get; } = "nscp";
+    public string Command { get; } = "noscp";
     public string[] Aliases { get; } = ["ns"];
     public string Description { get; } = "이번 라운드에 확정적으로 SCP가 되지 않습니다.";
 }

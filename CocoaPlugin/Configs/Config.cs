@@ -17,5 +17,6 @@ namespace CocoaPlugin.Configs
         public Spawns Spawns { get; set; } = new();
         public AutoNuke AutoNuke { get; set; } = new();
         public Supporters Supporters { get; set; } = new();
+        public Network Network { get; set; } = new();
     }
 }

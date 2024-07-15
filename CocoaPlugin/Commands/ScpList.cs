@@ -26,7 +26,6 @@ public class ScpList : ICommand
             return false;
         }
 
-
         var scps = Player.List.Where(x => x.IsScp).OrderBy(x => x.Role.Type.ToString()).ToList();
         var sb = new System.Text.StringBuilder($"\n<color=white>현재 SCP 목록 ({scps.Count}개체 존재):</color>\n\n");
 

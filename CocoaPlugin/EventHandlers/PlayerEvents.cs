@@ -27,6 +27,7 @@ public class PlayerEvents(CocoaPlugin plugin)
     private Config Config => Plugin.Config;
 
     private List<LeftUser> _leftUsers = [];
+    private List<CoroutineHandle> _leftCoroutines = [];
 
     private HashSet<string> _roundStartUsers = [];
 
@@ -101,6 +102,13 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         Timing.KillCoroutines(_campingCoroutine);
         _currentRooms.Clear();
+
+        foreach (var coroutine in _leftCoroutines)
+        {
+            Timing.KillCoroutines(coroutine);
+        }
+
+        _leftCoroutines.Clear();
     }
 
     internal void OnRoundStarted()
@@ -166,6 +174,14 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             leftUser.IsReconnected = true;
 
+            NetworkManager.Send(new
+            {
+                Nickname = leftUser.Nickname,
+                CustomName = ev.Player.CustomName,
+                UserId = leftUser.UserId,
+                IpAddress = ev.Player.IPAddress,
+            }, MessageType.ReconnectSuccess);
+
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectMessage.Duration,
                 Config.Reconnects.ReconnectMessage.Format(leftUser), Config.Reconnects.ReconnectMessage.Priority);
         }
@@ -208,6 +224,17 @@ public class PlayerEvents(CocoaPlugin plugin)
             var cuffedRole = ev.Player.Role.Type;
 
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.HandcuffedKillMessage.Duration, Config.Broadcasts.HandcuffedKillMessage.Format(ev.Attacker, ev.Player, cufferRole, cuffedRole), Config.Broadcasts.HandcuffedKillMessage.Priority);
+
+            NetworkManager.Send(new
+            {
+                PlayerNickname = ev.Player.Nickname,
+                PlayerUserId = ev.Player.UserId,
+                PlayerRole = ev.Player.Role.Type,
+                AttackerNickname = ev.Attacker.Nickname,
+                AttackerUserId = ev.Attacker.UserId,
+                AttackerRole = ev.Attacker.Role.Type,
+                AttackerIpAddress = ev.Attacker.IPAddress,
+            }, MessageType.HandcuffedKill);
         }
     }
 
@@ -275,7 +302,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         if (!Round.InProgress) return;
 
         if (!ev.Player.IsScp) return;
-        Timing.RunCoroutine(DestroyCoroutine(ev.Player));
+        _leftCoroutines.Add(Timing.RunCoroutine(DestroyCoroutine(ev.Player)));
     }
 
     internal IEnumerator<float> DestroyCoroutine(Player player)
@@ -286,8 +313,20 @@ public class PlayerEvents(CocoaPlugin plugin)
         {
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectLimitMessage.Duration,
                 Config.Reconnects.ReconnectLimitMessage.Format(player), Config.Reconnects.ReconnectLimitMessage.Priority);
+
+            NetworkManager.Send(new
+            {
+                Nickname = player.Nickname,
+                CustomName = player.CustomName,
+                UserId = player.UserId,
+                IpAddress = player.IPAddress,
+            }, MessageType.ReconnectLimit);
+
             yield break;
         }
+
+        var ip = player.IPAddress;
+        var customName = player.CustomName;
 
         var leftUser = new LeftUser(player);
 
@@ -295,6 +334,14 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.QuitMessage.Duration,
             Config.Reconnects.QuitMessage.Format(leftUser), Config.Reconnects.QuitMessage.Priority);
+
+        NetworkManager.Send(new
+            {
+                Nickname = player.Nickname,
+                CustomName = player.CustomName,
+                UserId = player.UserId,
+                IpAddress = player.IPAddress,
+            }, MessageType.WaitingReconnect);
 
         yield return Timing.WaitForSeconds(Config.Reconnects.ReconnectTime);
 
@@ -304,6 +351,14 @@ public class PlayerEvents(CocoaPlugin plugin)
         }
 
         leftUser.IsReconnected = true;
+
+        NetworkManager.Send(new
+        {
+            Nickname = leftUser.Nickname,
+            CustomName = customName,
+            UserId = leftUser.UserId,
+            IpAddress = ip,
+        }, MessageType.ReconnectFailed);
 
         if (!Player.Get(RoleTypeId.Spectator).Any())
         {
@@ -379,6 +434,14 @@ public class PlayerEvents(CocoaPlugin plugin)
         {
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.LeftWhileReviving.Duration,
                 Config.Broadcasts.LeftWhileReviving.Format(ev.Player), Config.Broadcasts.LeftWhileReviving.Priority);
+
+            NetworkManager.Send(new
+            {
+                Nickname = ev.Player.Nickname,
+                CustomName = ev.Player.CustomName,
+                UserId = ev.Player.UserId,
+                IpAddress = ev.Player.IPAddress,
+            }, MessageType.LeftWhileReviving);
         }
     }
 }

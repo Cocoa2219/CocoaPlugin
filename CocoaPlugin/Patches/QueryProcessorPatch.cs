@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using CommandSystem;
 using HarmonyLib;
 using PluginAPI.Events;
 using RemoteAdmin;
@@ -23,6 +22,7 @@ public class QueryProcessorPatch
             try
             {
                 var success = command.Execute(arguments.Segment(1), __instance._sender, out var response);
+                // NW Fuck you
                 // if (command.SanitizeResponse)
                 // {
                 //     text = Misc.SanitizeRichText(text);

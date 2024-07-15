@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using CocoaPlugin.API;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
 using HarmonyLib;
+using Newtonsoft.Json;
+using RemoteAdmin;
 
 namespace CocoaPlugin
 {
@@ -20,10 +27,11 @@ namespace CocoaPlugin
         internal PlayerEvents PlayerEvents { get; private set; }
         internal ServerEvents ServerEvents { get; private set; }
         internal MapEvents MapEvents { get; private set; }
+        internal NetworkHandler NetworkHandler { get; private set; }
 
         private Harmony Harmony { get; set; }
 
-        public override void OnEnabled()
+        public override async void OnEnabled()
         {
             Instance = this;
 
@@ -34,10 +42,15 @@ namespace CocoaPlugin
             PlayerEvents = new PlayerEvents(this);
             ServerEvents = new ServerEvents(this);
             MapEvents = new MapEvents(this);
+            NetworkHandler = new NetworkHandler(this);
             SubscribeEvents();
 
             Harmony = new Harmony($"cocoa.cocoaplugin-{DateTime.Now.Ticks}");
             Harmony.PatchAll();
+
+            NetworkManager.StartListener();
+
+            NetworkManager.Send(new {}, MessageType.Started);
 
             base.OnEnabled();
         }
@@ -47,10 +60,15 @@ namespace CocoaPlugin
             PlayerEvents.SubscribeEvents();
             ServerEvents.SubscribeEvents();
             MapEvents.SubscribeEvents();
+            NetworkHandler.SubscribeEvents();
         }
 
         public override void OnDisabled()
         {
+            NetworkManager.Send(new {}, MessageType.Stopped);
+
+            NetworkManager.StopListener();
+
             Harmony.UnpatchAll();
             Harmony = null;
 
@@ -58,6 +76,7 @@ namespace CocoaPlugin
             PlayerEvents = null;
             ServerEvents = null;
             MapEvents = null;
+            NetworkHandler = null;
 
             Instance = null;
 
@@ -69,6 +88,7 @@ namespace CocoaPlugin
             PlayerEvents.UnsubscribeEvents();
             ServerEvents.UnsubscribeEvents();
             MapEvents.UnsubscribeEvents();
+            NetworkHandler.UnsubscribeEvents();
         }
     }
 }

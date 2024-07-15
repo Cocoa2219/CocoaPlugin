@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
@@ -84,7 +84,7 @@
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.Components.dll</HintPath>
         </Reference>
         <Reference Include="mscorlib">
-          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\mscorlib.dll</HintPath>
+          <HintPath>..\..\SCPSL_References\mscorlib.dll</HintPath>
         </Reference>
         <Reference Include="MultiBroadcast">
           <HintPath>References\MultiBroadcast.dll</HintPath>
@@ -124,9 +124,13 @@
     <ItemGroup>
         <Compile Include="API\BadgeManager.cs" />
         <Compile Include="API\Broadcast.cs" />
+        <Compile Include="API\DiscordCommand.cs" />
+        <Compile Include="API\DiscordCommandSender.cs" />
         <Compile Include="API\FileManager.cs" />
         <Compile Include="API\KoreanTyperStringExtensions.cs" />
         <Compile Include="API\LeftUser.cs" />
+        <Compile Include="API\Message.cs" />
+        <Compile Include="API\NetworkManager.cs" />
         <Compile Include="API\PenaltyManager.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
@@ -141,6 +145,7 @@
         <Compile Include="Commands\Penalty.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
+        <Compile Include="Commands\SendPost.cs" />
         <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\AutoNuke.cs" />
         <Compile Include="Configs\Broadcasts.cs" />
@@ -155,7 +160,9 @@
         <Compile Include="Configs\Spawns.cs" />
         <Compile Include="Configs\Supporters.cs" />
         <Compile Include="Configs\Translations.cs" />
+        <Compile Include="Configs\Network.cs" />
         <Compile Include="EventHandlers\MapEvents.cs" />
+        <Compile Include="EventHandlers\NetworkHandler.cs" />
         <Compile Include="EventHandlers\PlayerEvents.cs" />
         <Compile Include="EventHandlers\ServerEvents.cs" />
         <Compile Include="Patches\AdminChatPatch.cs" />

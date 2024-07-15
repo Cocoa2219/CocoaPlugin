@@ -103,7 +103,7 @@ public class PenaltyRemoteAdmin : ICommand
 
                 if (!int.TryParse(arguments.At(2), out var index))
                 {
-                    response = "인덱스가 올바르지 않습니다.";
+                    response = "색인이 올바르지 않습니다.";
                     return false;
                 }
 
