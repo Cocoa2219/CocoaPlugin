@@ -24,7 +24,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +35,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
@@ -123,6 +123,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="API\BadgeManager.cs" />
+        <Compile Include="API\BanCommand.cs" />
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\DiscordCommand.cs" />
         <Compile Include="API\DiscordCommandSender.cs" />
@@ -140,6 +141,7 @@
         <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
         <Compile Include="Commands\Badge.cs" />
+        <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\Chat.cs" />
         <Compile Include="Commands\NoScp.cs" />
         <Compile Include="Commands\Penalty.cs" />

@@ -64,27 +64,89 @@ namespace CocoaPlugin.API
 
         private static async Task ProcessRequest(HttpListenerContext context)
         {
-            try
+            switch (context.Request.RawUrl)
             {
-                using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
-                var requestBody = await reader.ReadToEndAsync();
+                case "/":
+                    try
+                    {
+                        using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
+                        var requestBody = await reader.ReadToEndAsync();
 
-                var command = JsonConvert.DeserializeObject<DiscordCommand>(requestBody);
+                        var command = JsonConvert.DeserializeObject<DiscordCommand>(requestBody);
 
-                var response = CommandProcessor.ProcessQuery(command.Command, new DiscordCommandSender(command.Username + "@discord", command.Username, ulong.MaxValue, byte.MaxValue, true));
+                        var response = CommandProcessor.ProcessQuery(command.Command, new DiscordCommandSender(command.Username + "@discord", command.Username, ulong.MaxValue, byte.MaxValue, true));
 
-                var responseBytes = Encoding.UTF8.GetBytes(response);
-                context.Response.ContentType = "text/plain";
-                context.Response.ContentLength64 = responseBytes.Length;
-                await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error while processing DiscordCommand Request:\n{ex}");
-            }
-            finally
-            {
-                context.Response.OutputStream.Close();
+                        var responseBytes = Encoding.UTF8.GetBytes(response);
+                        context.Response.ContentType = "text/plain";
+                        context.Response.ContentLength64 = responseBytes.Length;
+                        await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error while processing DiscordCommand Request:\n{ex}");
+                    }
+                    finally
+                    {
+                        context.Response.OutputStream.Close();
+                    }
+
+                    break;
+                // case "/ban":
+                //     try
+                //     {
+                //         using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
+                //         var requestBody = await reader.ReadToEndAsync();
+                //
+                //         var command = JsonConvert.DeserializeObject<BanCommand>(requestBody);
+                //
+                //         var player = Player.Get(command.UserId);
+                //
+                //         var idSuccess = BanHandler.IssueBan(new BanDetails
+                //         {
+                //             OriginalName = command.UserId,
+                //             Id = command.UserId,
+                //             IssuanceTime = command.From,
+                //             Expires = command.Until,
+                //             Reason = command.Reason,
+                //             Issuer = command.IssuerId
+                //         }, BanHandler.BanType.UserId);
+                //
+                //         var ipSuccess = BanHandler.IssueBan(new BanDetails
+                //         {
+                //             OriginalName = command.UserId,
+                //             Id = command.IpAddress,
+                //             IssuanceTime = command.From,
+                //             Expires = command.Until,
+                //             Reason = command.Reason,
+                //             Issuer = command.IssuerId
+                //         }, BanHandler.BanType.IP);
+                //
+                //         if (player != null)
+                //             ServerConsole.Disconnect(player.ReferenceHub.gameObject, "You have been banned. Reason: " + command.Reason);
+                //
+                //         var success = idSuccess && ipSuccess;
+                //
+                //         var response = success ? "Successfully banned player." : "Failed to ban player.";
+                //
+                //         var responseBytes = Encoding.UTF8.GetBytes(response);
+                //         context.Response.ContentType = "text/plain";
+                //         context.Response.ContentLength64 = responseBytes.Length;
+                //         await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                //     }
+                //     catch (Exception ex)
+                //     {
+                //         Log.Error($"Error while processing DiscordCommand Request:\n{ex}");
+                //     }
+                //     finally
+                //     {
+                //         context.Response.OutputStream.Close();
+                //     }
+                //
+                //     break;
+                default:
+                    context.Response.StatusCode = 404;
+                    context.Response.OutputStream.Close();
+                    break;
             }
         }
 

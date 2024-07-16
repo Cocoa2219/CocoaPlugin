@@ -1,15 +1,19 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using CocoaPlugin.API;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Events.EventArgs.Warhead;
 using Exiled.Events.Handlers;
+using MEC;
 
 namespace CocoaPlugin.EventHandlers;
 
 public class NetworkHandler(CocoaPlugin plugin)
 {
     private CocoaPlugin Plugin { get; } = plugin;
+
+    private CoroutineHandle ServerInfo { get; set; }
 
     internal void SubscribeEvents()
     {
@@ -26,6 +30,8 @@ public class NetworkHandler(CocoaPlugin plugin)
         Server.RoundStarted += OnRoundStarted;
         Server.RoundEnded += OnRoundEnded;
         Server.RespawningTeam += OnRespawningTeam;
+
+        ServerInfo = Timing.RunCoroutine(ServerInfoCoroutine());
     }
 
     internal void UnsubscribeEvents()
@@ -43,6 +49,22 @@ public class NetworkHandler(CocoaPlugin plugin)
         Server.RoundStarted -= OnRoundStarted;
         Server.RoundEnded -= OnRoundEnded;
         Server.RespawningTeam -= OnRespawningTeam;
+
+        Timing.KillCoroutines(ServerInfo);
+    }
+
+    private IEnumerator<float> ServerInfoCoroutine()
+    {
+        while (true)
+        {
+            NetworkManager.Send(new
+            {
+                PlayerCount = Exiled.API.Features.Player.List.Count,
+                MaxPlayerCount = Exiled.API.Features.Server.MaxPlayerCount,
+            }, MessageType.ServerInfo);
+
+            yield return Timing.WaitForSeconds(Plugin.Config.Network.ServerInfoInterval);
+        }
     }
 
     private void OnVerified(VerifiedEventArgs ev)

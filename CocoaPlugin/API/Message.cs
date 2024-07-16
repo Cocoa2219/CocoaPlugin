@@ -30,5 +30,6 @@ public enum MessageType
     WaitingReconnect,
     ReconnectFailed,
     ReconnectSuccess,
+    ServerInfo,
     Command
 }
