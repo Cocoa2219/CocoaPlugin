@@ -145,6 +145,15 @@ public class PlayerEvents(CocoaPlugin plugin)
         BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
         PenaltyManager.RefreshPenalty(ev.Player.UserId);
 
+        if (ev.Player.IsLinked())
+        {
+            CheckManager.AddCheck(ev.Player.UserId, Check.Today);
+
+            var user = ev.Player.GetUser();
+
+            user.Update(ev.Player);
+        }
+
         var today = TodayToString();
 
         UserRoundCounts.TryAdd(today, []);

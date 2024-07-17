@@ -38,6 +38,9 @@ namespace CocoaPlugin
             API.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
             PenaltyManager.LoadPenalties();
+            CheckManager.LoadChecks();
+            UserManager.LoadUsers();
+            ConnectionManager.LoadConnections();
 
             PlayerEvents = new PlayerEvents(this);
             ServerEvents = new ServerEvents(this);

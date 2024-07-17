@@ -7,7 +7,7 @@ namespace CocoaPlugin.Commands;
 
 [CommandHandler(typeof(RemoteAdminCommandHandler))]
 [CommandHandler(typeof(GameConsoleCommandHandler))]
-public class SendPost : ICommand
+public class SendPost // : ICommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {

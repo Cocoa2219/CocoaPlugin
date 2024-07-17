@@ -13,7 +13,7 @@ public class NetworkHandler(CocoaPlugin plugin)
 {
     private CocoaPlugin Plugin { get; } = plugin;
 
-    private CoroutineHandle ServerInfo { get; set; }
+    // private CoroutineHandle ServerInfo { get; set; }
 
     internal void SubscribeEvents()
     {
@@ -31,7 +31,7 @@ public class NetworkHandler(CocoaPlugin plugin)
         Server.RoundEnded += OnRoundEnded;
         Server.RespawningTeam += OnRespawningTeam;
 
-        ServerInfo = Timing.RunCoroutine(ServerInfoCoroutine());
+        // ServerInfo = Timing.RunCoroutine(ServerInfoCoroutine());
     }
 
     internal void UnsubscribeEvents()
@@ -50,22 +50,22 @@ public class NetworkHandler(CocoaPlugin plugin)
         Server.RoundEnded -= OnRoundEnded;
         Server.RespawningTeam -= OnRespawningTeam;
 
-        Timing.KillCoroutines(ServerInfo);
+        // Timing.KillCoroutines(ServerInfo);
     }
 
-    private IEnumerator<float> ServerInfoCoroutine()
-    {
-        while (true)
-        {
-            NetworkManager.Send(new
-            {
-                PlayerCount = Exiled.API.Features.Player.List.Count,
-                MaxPlayerCount = Exiled.API.Features.Server.MaxPlayerCount,
-            }, MessageType.ServerInfo);
-
-            yield return Timing.WaitForSeconds(Plugin.Config.Network.ServerInfoInterval);
-        }
-    }
+    // private IEnumerator<float> ServerInfoCoroutine()
+    // {
+    //     while (true)
+    //     {
+    //         NetworkManager.Send(new
+    //         {
+    //             PlayerCount = Exiled.API.Features.Player.List.Count,
+    //             MaxPlayerCount = Exiled.API.Features.Server.MaxPlayerCount,
+    //         }, MessageType.ServerInfo);
+    //
+    //         yield return Timing.WaitForSeconds(Plugin.Config.Network.ServerInfoInterval);
+    //     }
+    // }
 
     private void OnVerified(VerifiedEventArgs ev)
     {

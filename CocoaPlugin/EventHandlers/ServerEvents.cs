@@ -183,6 +183,9 @@ public class ServerEvents(CocoaPlugin plugin)
 
         BadgeManager.SaveBadges();
         PenaltyManager.SavePenalties();
+        CheckManager.SaveChecks();
+        UserManager.SaveUsers();
+        ConnectionManager.SaveConnections();
     }
 
     private IEnumerator<float> AutoNukeCoroutine()

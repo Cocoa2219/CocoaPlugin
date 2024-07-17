@@ -125,6 +125,8 @@
         <Compile Include="API\BadgeManager.cs" />
         <Compile Include="API\BanCommand.cs" />
         <Compile Include="API\Broadcast.cs" />
+        <Compile Include="API\CheckManager.cs" />
+        <Compile Include="API\ConnectionManager.cs" />
         <Compile Include="API\DiscordCommand.cs" />
         <Compile Include="API\DiscordCommandSender.cs" />
         <Compile Include="API\FileManager.cs" />
@@ -136,6 +138,7 @@
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\Time.cs" />
+        <Compile Include="API\UserManager.cs" />
         <Compile Include="API\Utility.cs" />
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="CocoaPlugin.cs" />
@@ -143,6 +146,7 @@
         <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\Link.cs" />
         <Compile Include="Commands\NoScp.cs" />
         <Compile Include="Commands\Penalty.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
@@ -169,6 +173,7 @@
         <Compile Include="EventHandlers\ServerEvents.cs" />
         <Compile Include="Patches\AdminChatPatch.cs" />
         <Compile Include="Patches\AfkPatch.cs" />
+        <Compile Include="Patches\MiscPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
         <Compile Include="Patches\ScpPatch\Scp049Patch.cs" />
         <Compile Include="Patches\ScpSpawnPatch.cs" />

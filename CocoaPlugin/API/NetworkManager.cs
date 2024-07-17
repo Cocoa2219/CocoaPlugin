@@ -69,10 +69,31 @@ namespace CocoaPlugin.API
                 case "/":
                     try
                     {
+                        if (context.Request.HttpMethod != "POST")
+                        {
+                            context.Response.StatusCode = 405;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
+
+                        if (context.Request.InputStream == null)
+                        {
+                            context.Response.StatusCode = 400;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
+
                         using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
                         var requestBody = await reader.ReadToEndAsync();
 
                         var command = JsonConvert.DeserializeObject<DiscordCommand>(requestBody);
+
+                        if (command == null)
+                        {
+                            context.Response.StatusCode = 400;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
 
                         var response = CommandProcessor.ProcessQuery(command.Command, new DiscordCommandSender(command.Username + "@discord", command.Username, ulong.MaxValue, byte.MaxValue, true));
 
@@ -91,58 +112,30 @@ namespace CocoaPlugin.API
                     }
 
                     break;
-                // case "/ban":
-                //     try
-                //     {
-                //         using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
-                //         var requestBody = await reader.ReadToEndAsync();
-                //
-                //         var command = JsonConvert.DeserializeObject<BanCommand>(requestBody);
-                //
-                //         var player = Player.Get(command.UserId);
-                //
-                //         var idSuccess = BanHandler.IssueBan(new BanDetails
-                //         {
-                //             OriginalName = command.UserId,
-                //             Id = command.UserId,
-                //             IssuanceTime = command.From,
-                //             Expires = command.Until,
-                //             Reason = command.Reason,
-                //             Issuer = command.IssuerId
-                //         }, BanHandler.BanType.UserId);
-                //
-                //         var ipSuccess = BanHandler.IssueBan(new BanDetails
-                //         {
-                //             OriginalName = command.UserId,
-                //             Id = command.IpAddress,
-                //             IssuanceTime = command.From,
-                //             Expires = command.Until,
-                //             Reason = command.Reason,
-                //             Issuer = command.IssuerId
-                //         }, BanHandler.BanType.IP);
-                //
-                //         if (player != null)
-                //             ServerConsole.Disconnect(player.ReferenceHub.gameObject, "You have been banned. Reason: " + command.Reason);
-                //
-                //         var success = idSuccess && ipSuccess;
-                //
-                //         var response = success ? "Successfully banned player." : "Failed to ban player.";
-                //
-                //         var responseBytes = Encoding.UTF8.GetBytes(response);
-                //         context.Response.ContentType = "text/plain";
-                //         context.Response.ContentLength64 = responseBytes.Length;
-                //         await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
-                //     }
-                //     catch (Exception ex)
-                //     {
-                //         Log.Error($"Error while processing DiscordCommand Request:\n{ex}");
-                //     }
-                //     finally
-                //     {
-                //         context.Response.OutputStream.Close();
-                //     }
-                //
-                //     break;
+                case "/serverinfo":
+                    try
+                    {
+                        var data = new
+                        {
+                            PlayerCount = Player.List.Count,
+                            MaxPlayerCount = Server.MaxPlayerCount,
+                        };
+
+                        var responseBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
+                        context.Response.ContentType = "application/json";
+                        context.Response.ContentLength64 = responseBytes.Length;
+                        await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error while processing ServerInfo Request:\n{ex}");
+                    }
+                    finally
+                    {
+                        context.Response.OutputStream.Close();
+                    }
+
+                    break;
                 default:
                     context.Response.StatusCode = 404;
                     context.Response.OutputStream.Close();
