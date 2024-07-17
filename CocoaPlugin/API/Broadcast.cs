@@ -97,7 +97,7 @@ public class Broadcast
         sb.Replace("%targetRoleColor%", targetRole.GetRoleColor());
         sb.Replace("%targetRoleName%", targetRole.GetRoleName());
         sb.Replace("%targetNicknameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
-        sb.Replace("%targetRoleNameParticle%", Divide(targetRole.GetRoleName()[^1]).jongsung == ' ' ? "가" : "이");
+        sb.Replace("%targetRoleNameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
 
         return sb.ToString();
     }

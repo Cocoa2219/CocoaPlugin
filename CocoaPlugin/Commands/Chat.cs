@@ -37,6 +37,12 @@ public class Chat : ICommand
             return false;
         }
 
+        if (player.Role.Team != Team.SCPs)
+        {
+            response = "SCP만 사용할 수 있습니다.";
+            return false;
+        }
+
         var message = SantizeChat(string.Join(" ", arguments));
 
         var receivers = Player.Get(Team.SCPs);

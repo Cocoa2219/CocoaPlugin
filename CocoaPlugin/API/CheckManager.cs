@@ -31,7 +31,7 @@ public static class CheckManager
 
     public static void SaveChecks()
     {
-        var text = string.Join('\n', CheckCache.Select(pair => $"{pair.Key};{string.Join(',', pair.Value.ToString())}"));
+        var text = string.Join('\n', CheckCache.Select(pair => $"{pair.Key};{string.Join(',', pair.Value)}"));
 
         FileManager.WriteFile(CheckFileName, text);
     }
@@ -106,7 +106,7 @@ public class Check
         return !(a == b);
     }
 
-    public static Check Today => new Check
+    public static Check Today => new()
     {
         Year = DateTime.Now.Year,
         Month = DateTime.Now.Month,

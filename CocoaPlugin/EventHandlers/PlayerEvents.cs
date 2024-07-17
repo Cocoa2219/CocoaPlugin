@@ -152,6 +152,8 @@ public class PlayerEvents(CocoaPlugin plugin)
             var user = ev.Player.GetUser();
 
             user.Update(ev.Player);
+
+            CheckManager.SaveChecks();
         }
 
         var today = TodayToString();
