@@ -40,7 +40,7 @@ public class AdminChatPatch
         ServerLogs.AddLog(ServerLogs.Modules.Administrative, "[" + sender.LogName + "] " + q, ServerLogs.ServerLogType.AdminChat, false);
         foreach (var player in from referenceHub in ReferenceHub.AllHubs let mode = referenceHub.Mode where mode != ClientInstanceMode.Unverified && mode != ClientInstanceMode.DedicatedServer && referenceHub.serverRoles.AdminChatPerms select Player.Get(referenceHub))
         {
-            player.AddBroadcast(CocoaPlugin.Instance.Config.Broadcasts.Chats.AdminChatMessage.Duration, CocoaPlugin.Instance.Config.Broadcasts.Chats.AdminChatMessage.Format(player, q));
+            player.AddBroadcast(CocoaPlugin.Instance.Config.Broadcasts.Chats.AdminChatMessage.Duration, CocoaPlugin.Instance.Config.Broadcasts.Chats.AdminChatMessage.Format(Player.Get(sender), q));
         }
 
         return false;

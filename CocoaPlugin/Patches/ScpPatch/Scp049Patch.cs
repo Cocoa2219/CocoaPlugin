@@ -30,7 +30,7 @@ public class Scp049AttackServerProcessCmdPatch
 
         var isInstaKill = effect.IsEnabled || CocoaPlugin.Instance.Config.Scps.Scp049.OneHitKill;
 
-        __instance.Cooldown.Trigger(isInstaKill ? CocoaPlugin.Instance.Config.Scps.Scp049.FirstAttackCooldown : CocoaPlugin.Instance.Config.Scps.Scp049.SecondAttackCooldown);
+        __instance.Cooldown.Trigger(isInstaKill ? CocoaPlugin.Instance.Config.Scps.Scp049.SecondAttackCooldown : CocoaPlugin.Instance.Config.Scps.Scp049.FirstAttackCooldown);
         __instance._isTarget = __instance._sense.IsTarget(__instance._target);
 
         if (isInstaKill)
