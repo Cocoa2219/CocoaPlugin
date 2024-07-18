@@ -48,6 +48,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Left += OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing += OnHandcuffing;
         Exiled.Events.Handlers.Player.Destroying += OnDestroying;
+        Exiled.Events.Handlers.Player.ReservedSlot += OnReservedSlot;
 
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
@@ -68,6 +69,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Left -= OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing -= OnHandcuffing;
         Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
+        Exiled.Events.Handlers.Player.ReservedSlot -= OnReservedSlot;
 
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
@@ -147,7 +149,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         if (ev.Player.IsLinked())
         {
-            CheckManager.AddCheck(ev.Player.UserId, Check.Today);
+            CheckManager.AddCheck(ev.Player, Check.Today);
 
             var user = ev.Player.GetUser();
 
@@ -453,6 +455,14 @@ public class PlayerEvents(CocoaPlugin plugin)
                 UserId = ev.Player.UserId,
                 IpAddress = ev.Player.IPAddress,
             }, MessageType.LeftWhileReviving);
+        }
+    }
+
+    internal void OnReservedSlot(ReservedSlotsCheckEventArgs ev)
+    {
+        if (ReservedSlotManager.Get(ev.UserId))
+        {
+            ev.Result = ReservedSlotEventResult.AllowConnectionUnconditionally;
         }
     }
 }

@@ -23,12 +23,6 @@ public class NoScp : ICommand
         Server.RestartingRound += OnRestarting;
     }
 
-    ~NoScp()
-    {
-        Exiled.Events.Handlers.Player.Left -= OnLeft;
-        Server.RestartingRound -= OnRestarting;
-    }
-
     private void OnLeft(LeftEventArgs ev)
     {
         if (NoScpPlayers.Contains(ev.Player))
@@ -40,6 +34,9 @@ public class NoScp : ICommand
     private void OnRestarting()
     {
         NoScpPlayers.Clear();
+
+        Exiled.Events.Handlers.Player.Left -= OnLeft;
+        Server.RestartingRound -= OnRestarting;
     }
 
     private static int GetScpCount(int playerCount)

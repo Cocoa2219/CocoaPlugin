@@ -136,6 +136,7 @@
         <Compile Include="API\NetworkManager.cs" />
         <Compile Include="API\PenaltyManager.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
+        <Compile Include="API\ReservedSlotManager.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\Time.cs" />
         <Compile Include="API\UserManager.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Exiled.API.Features;
 using Newtonsoft.Json;
 
 namespace CocoaPlugin.API;
@@ -11,22 +12,24 @@ public static class CheckManager
 
     private static readonly Dictionary<string, List<Check>> CheckCache = new();
 
-    public static bool AddCheck(string id, Check check)
+    public static void AddCheck(Player player, Check check)
     {
-        if (!Utility.IsUserIdValid(id))
-            return false;
+        if (!Utility.IsUserIdValid(player.UserId))
+            return;
 
-        if (!CheckCache.TryGetValue(id, out var checks))
+        if (player.DoNotTrack)
+            return;
+
+        if (!CheckCache.TryGetValue(player.UserId, out var checks))
         {
             checks = [];
-            CheckCache[id] = checks;
+            CheckCache[player.UserId] = checks;
         }
 
         if (checks.Contains(check))
-            return false;
+            return;
 
         checks.Add(check);
-        return true;
     }
 
     public static void SaveChecks()

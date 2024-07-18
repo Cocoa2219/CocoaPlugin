@@ -57,7 +57,7 @@ public class Link : ICommand
 
         UserManager.SaveUsers();
 
-        CheckManager.AddCheck(player.UserId, Check.Today);
+        CheckManager.AddCheck(player, Check.Today);
         CheckManager.SaveChecks();
 
         response = $"<b>{connection.DiscordNickname}</b> 계정이 연결되었습니다.";
