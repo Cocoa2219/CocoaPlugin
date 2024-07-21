@@ -15,6 +15,7 @@ using MultiBroadcast.API;
 using PlayerRoles;
 using UnityEngine;
 using Config = CocoaPlugin.Configs.Config;
+using LogType = CocoaPlugin.API.LogType;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
 using Time = CocoaPlugin.API.Time;
@@ -187,13 +188,13 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             leftUser.IsReconnected = true;
 
-            NetworkManager.Send(new
+            NetworkManager.SendLog(new
             {
                 Nickname = leftUser.Nickname,
                 CustomName = ev.Player.CustomName,
                 UserId = leftUser.UserId,
                 IpAddress = ev.Player.IPAddress,
-            }, MessageType.ReconnectSuccess);
+            }, LogType.ReconnectSuccess);
 
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectMessage.Duration,
                 Config.Reconnects.ReconnectMessage.Format(leftUser), Config.Reconnects.ReconnectMessage.Priority);
@@ -238,7 +239,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.HandcuffedKillMessage.Duration, Config.Broadcasts.HandcuffedKillMessage.Format(ev.Attacker, ev.Player, cufferRole, cuffedRole), Config.Broadcasts.HandcuffedKillMessage.Priority);
 
-            NetworkManager.Send(new
+            NetworkManager.SendLog(new
             {
                 PlayerNickname = ev.Player.Nickname,
                 PlayerUserId = ev.Player.UserId,
@@ -247,7 +248,7 @@ public class PlayerEvents(CocoaPlugin plugin)
                 AttackerUserId = ev.Attacker.UserId,
                 AttackerRole = ev.Attacker.Role.Type,
                 AttackerIpAddress = ev.Attacker.IPAddress,
-            }, MessageType.HandcuffedKill);
+            }, LogType.HandcuffedKill);
         }
     }
 
@@ -327,13 +328,13 @@ public class PlayerEvents(CocoaPlugin plugin)
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectLimitMessage.Duration,
                 Config.Reconnects.ReconnectLimitMessage.Format(player), Config.Reconnects.ReconnectLimitMessage.Priority);
 
-            NetworkManager.Send(new
+            NetworkManager.SendLog(new
             {
                 Nickname = player.Nickname,
                 CustomName = player.CustomName,
                 UserId = player.UserId,
                 IpAddress = player.IPAddress,
-            }, MessageType.ReconnectLimit);
+            }, LogType.ReconnectLimit);
 
             yield break;
         }
@@ -348,13 +349,13 @@ public class PlayerEvents(CocoaPlugin plugin)
         MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.QuitMessage.Duration,
             Config.Reconnects.QuitMessage.Format(leftUser), Config.Reconnects.QuitMessage.Priority);
 
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
             {
                 Nickname = player.Nickname,
                 CustomName = player.CustomName,
                 UserId = player.UserId,
                 IpAddress = player.IPAddress,
-            }, MessageType.WaitingReconnect);
+            }, LogType.WaitingReconnect);
 
         yield return Timing.WaitForSeconds(Config.Reconnects.ReconnectTime);
 
@@ -365,13 +366,13 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         leftUser.IsReconnected = true;
 
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = leftUser.Nickname,
             CustomName = customName,
             UserId = leftUser.UserId,
             IpAddress = ip,
-        }, MessageType.ReconnectFailed);
+        }, LogType.ReconnectFailed);
 
         if (!Player.Get(RoleTypeId.Spectator).Any())
         {
@@ -448,13 +449,13 @@ public class PlayerEvents(CocoaPlugin plugin)
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.LeftWhileReviving.Duration,
                 Config.Broadcasts.LeftWhileReviving.Format(ev.Player), Config.Broadcasts.LeftWhileReviving.Priority);
 
-            NetworkManager.Send(new
+            NetworkManager.SendLog(new
             {
                 Nickname = ev.Player.Nickname,
                 CustomName = ev.Player.CustomName,
                 UserId = ev.Player.UserId,
                 IpAddress = ev.Player.IPAddress,
-            }, MessageType.LeftWhileReviving);
+            }, LogType.LeftWhileReviving);
         }
     }
 

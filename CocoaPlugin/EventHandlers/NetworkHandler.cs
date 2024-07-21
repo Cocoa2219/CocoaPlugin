@@ -69,18 +69,18 @@ public class NetworkHandler(CocoaPlugin plugin)
 
     private void OnVerified(VerifiedEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Player.Nickname,
             CustomName = ev.Player.CustomName,
             UserId = ev.Player.UserId,
             IpAddress = ev.Player.IPAddress
-        }, MessageType.Verified);
+        }, LogType.Verified);
     }
 
     private void OnDied(DiedEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             AttackerNickname = ev.Attacker?.Nickname,
             AttackerUserId = ev.Attacker?.UserId,
@@ -89,48 +89,48 @@ public class NetworkHandler(CocoaPlugin plugin)
             PlayerUserId = ev.Player.UserId,
             PlayerRole = ev.TargetOldRole,
             DamageType = ev.DamageHandler.Type
-        }, MessageType.Died);
+        }, LogType.Died);
     }
 
     private void OnLeft(LeftEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Player.Nickname,
             CustomName = ev.Player.CustomName,
             UserId = ev.Player.UserId,
             IpAddress = ev.Player.IPAddress
-        }, MessageType.Left);
+        }, LogType.Left);
     }
 
     private void OnRespawningTeam(RespawningTeamEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Team = ev.NextKnownTeam,
             PlayerCount = ev.Players.Count
-        }, MessageType.RespawningTeam);
+        }, LogType.RespawningTeam);
     }
 
     private void OnRoundStarted()
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             PlayerCount = Exiled.API.Features.Player.List.Count
-        }, MessageType.RoundStarted);
+        }, LogType.RoundStarted);
     }
 
     private void OnRoundEnded(RoundEndedEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             LeadingTeam = ev.LeadingTeam,
-        }, MessageType.RoundEnded);
+        }, LogType.RoundEnded);
     }
 
     private void OnLocalReporting(LocalReportingEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             ReporterNickname = ev.Player.Nickname,
             ReporterUserId = ev.Player.UserId,
@@ -139,12 +139,12 @@ public class NetworkHandler(CocoaPlugin plugin)
             ReportedUserId = ev.Target.UserId,
             ReportedRole = ev.Target.Role.Type,
             Reason = ev.Reason
-        }, MessageType.LocalReporting);
+        }, LogType.LocalReporting);
     }
 
     private void OnReportingCheater(ReportingCheaterEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             ReporterNickname = ev.Player.Nickname,
             ReporterUserId = ev.Player.UserId,
@@ -153,24 +153,24 @@ public class NetworkHandler(CocoaPlugin plugin)
             ReportedUserId = ev.Target.UserId,
             ReportedRole = ev.Target.Role.Type,
             Reason = ev.Reason
-        }, MessageType.ReportingCheater);
+        }, LogType.ReportingCheater);
     }
 
     private void OnKicked(KickedEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Player.Nickname,
             CustomName = ev.Player.CustomName,
             UserId = ev.Player.UserId,
             IpAddress = ev.Player.IPAddress,
             Reason = ev.Reason
-        }, MessageType.Kicked);
+        }, LogType.Kicked);
     }
 
     private void OnBanned(BannedEventArgs ev)
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Target?.Nickname,
             CustomName = ev.Target?.CustomName,
@@ -183,40 +183,40 @@ public class NetworkHandler(CocoaPlugin plugin)
             Reason = ev.Details.Reason,
             Type = ev.Type,
             Forced = ev.IsForced
-        }, MessageType.Banned);
+        }, LogType.Banned);
     }
 
     private void OnWarheadStarting(StartingEventArgs ev)
     {
         if (!ev.IsAllowed) return;
 
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Player?.Nickname,
             UserId = ev.Player?.UserId,
             Role = ev.Player?.Role.Type,
             IsAuto = ev.IsAuto,
             Time = Exiled.API.Features.Warhead.RealDetonationTimer
-        }, MessageType.WarheadStarting);
+        }, LogType.WarheadStarting);
     }
 
     private void OnWarheadStopping(StoppingEventArgs ev)
     {
         if (!ev.IsAllowed) return;
 
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             Nickname = ev.Player?.Nickname,
             UserId = ev.Player?.UserId,
             Role = ev.Player?.Role.Type,
-        }, MessageType.WarheadStopping);
+        }, LogType.WarheadStopping);
     }
 
     private void OnWarheadDetonated()
     {
-        NetworkManager.Send(new
+        NetworkManager.SendLog(new
         {
             AliveCount = Exiled.API.Features.Player.List.Count(x => x.IsAlive),
-        }, MessageType.WarheadDetonated);
+        }, LogType.WarheadDetonated);
     }
 }

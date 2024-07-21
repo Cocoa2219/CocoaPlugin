@@ -56,7 +56,7 @@ public class Broadcasts
         { 3, new API.Broadcast("<cspace=0.05em><size=30><color=#d44b42>🔌 3개의 발전기</color> 중 <b><color=#bf0000>3개</color></b>가 활성화 되었습니다.</size></cspace>", 10) },
     };
 
-    public List<API.Broadcast> AutoBroadcastMessages { get; set; } = [new API.Broadcast()];
+    public List<API.Broadcast> AutoBroadcastMessages { get; set; } = [];
 
     public int AutoBroadcastInterval { get; set; } = 180;
 

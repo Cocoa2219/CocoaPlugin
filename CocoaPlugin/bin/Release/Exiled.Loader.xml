@@ -880,7 +880,7 @@
         </member>
         <member name="M:Exiled.Loader.Updater.CreateHttpClient">
             <summary>
-            Creates a HTTP Client, and checks at the Exiled-Team GitHub repository.
+            Creates a HTTP Client, and checks at the Exiled-Official GitHub repository.
             </summary>
             <returns>Client determining if it was successful connecting to the Exiled GitHub repository.</returns>
         </member>

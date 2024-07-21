@@ -26,11 +26,7 @@ public class QueryProcessorPatch
             try
             {
                 var success = command.Execute(arguments.Segment(1), __instance._sender, out var response);
-                // NW Fuck you
-                // if (command.SanitizeResponse)
-                // {
-                //     text = Misc.SanitizeRichText(text);
-                // }
+
                 if (!EventManager.ExecuteEvent(new PlayerGameConsoleCommandExecutedEvent(__instance._hub, arguments[0],
                         arguments.Skip(1).ToArray(), success, response)))
                     return false;
@@ -104,7 +100,6 @@ public class CommandProcessorPatch
             try
             {
                 var flag = command.Execute(array2.Segment(1), sender, out var text);
-                if (command.SanitizeResponse) text = Misc.SanitizeRichText(text);
 
                 if (!EventManager.ExecuteEvent(new RemoteAdminCommandExecutedEvent(sender, array2[0],
                         array2.Skip(1).ToArray(), flag, text)))
@@ -119,13 +114,13 @@ public class CommandProcessorPatch
                 var player = Player.Get(sender);
 
                 if (player != null)
-                    NetworkManager.Send(new
+                    NetworkManager.SendLog(new
                     {
                         Nickname = player.Nickname,
                         UserId = player.UserId,
                         Sent = q,
                         Result = text
-                    }, MessageType.Command);
+                    }, LogType.Command);
 
                 __result = text;
                 return false;

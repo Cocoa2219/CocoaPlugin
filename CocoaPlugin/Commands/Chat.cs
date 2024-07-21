@@ -43,7 +43,7 @@ public class Chat : ICommand
             return false;
         }
 
-        var message = SantizeChat(string.Join(" ", arguments));
+        var message = SanitizeChat(string.Join(" ", arguments));
 
         var receivers = Player.Get(Team.SCPs);
 
@@ -58,12 +58,13 @@ public class Chat : ICommand
         return true;
     }
 
-    public static string SantizeChat(string message)
+    public static string SanitizeChat(string message)
     {
-        return message.Replace("<", "").Replace(">", "");
+        return Misc.CloseAllRichTextTags(message);
     }
 
     public string Command { get; } = "chat";
     public string[] Aliases { get; } = { "c", "ㅊ" };
     public string Description { get; } = "채팅을 사용합니다.";
+
 }

@@ -53,7 +53,7 @@ namespace CocoaPlugin
 
             NetworkManager.StartListener();
 
-            NetworkManager.Send(new {}, MessageType.Started);
+            NetworkManager.SendLog(new {}, LogType.Started);
 
             base.OnEnabled();
         }
@@ -68,7 +68,7 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
-            NetworkManager.Send(new {}, MessageType.Stopped);
+            NetworkManager.SendLog(new {}, LogType.Stopped);
 
             NetworkManager.StopListener();
 

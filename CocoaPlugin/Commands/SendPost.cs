@@ -24,12 +24,12 @@ public class SendPost // : ICommand
         var nickname = player?.Nickname ?? "Server";
         var userId = player?.UserId ?? "Server";
 
-        API.NetworkManager.Send(new
+        API.NetworkManager.SendLog(new
         {
             Nickname = nickname,
             UserId = userId,
             Text = string.Join(" ", arguments)
-        }, API.MessageType.Command);
+        }, API.LogType.Command);
 
         response = "Message sent.";
         return true;

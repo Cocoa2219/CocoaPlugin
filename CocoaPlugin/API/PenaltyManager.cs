@@ -50,6 +50,11 @@ public static class PenaltyManager
     {
         foreach (var (_, penalties) in PenaltyCache)
             penalties.RemoveAll(penalty => !penalty.IsValid());
+
+        foreach (var id in PenaltyCache.Keys.ToList().Where(id => PenaltyCache[id].Count == 0))
+        {
+            PenaltyCache.Remove(id);
+        }
     }
 
     public static void RefreshPenalty(string id)

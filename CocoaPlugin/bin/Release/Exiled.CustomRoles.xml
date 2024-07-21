@@ -912,9 +912,6 @@
         <member name="P:Exiled.CustomRoles.Commands.Give.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.CustomRoles.Commands.Give.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.CustomRoles.Commands.Give.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -937,9 +934,6 @@
         <member name="P:Exiled.CustomRoles.Commands.Info.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.CustomRoles.Commands.Info.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.CustomRoles.Commands.Info.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -953,9 +947,6 @@
             <inheritdoc />
         </member>
         <member name="P:Exiled.CustomRoles.Commands.List.Abilities.Description">
-            <inheritdoc />
-        </member>
-        <member name="P:Exiled.CustomRoles.Commands.List.Abilities.SanitizeResponse">
             <inheritdoc />
         </member>
         <member name="M:Exiled.CustomRoles.Commands.List.Abilities.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
@@ -1003,9 +994,6 @@
         <member name="P:Exiled.CustomRoles.Commands.List.Registered.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.CustomRoles.Commands.List.Registered.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.CustomRoles.Commands.List.Registered.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -1047,9 +1035,6 @@
         </member>
         <member name="P:Exiled.CustomRoles.Commands.UseAbility.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.CustomRoles.Commands.UseAbility.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.CustomRoles.Commands.UseAbility.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>

@@ -18,9 +18,6 @@
         <member name="P:Exiled.Permissions.Commands.Permissions.Add.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.Permissions.Commands.Permissions.Add.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.Permissions.Commands.Permissions.Add.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -37,9 +34,6 @@
         </member>
         <member name="P:Exiled.Permissions.Commands.Permissions.Group.Add.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.Permissions.Commands.Permissions.Group.Add.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.Permissions.Commands.Permissions.Group.Add.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
@@ -83,9 +77,6 @@
         <member name="P:Exiled.Permissions.Commands.Permissions.Group.Remove.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.Permissions.Commands.Permissions.Group.Remove.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.Permissions.Commands.Permissions.Group.Remove.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -128,9 +119,6 @@
         <member name="P:Exiled.Permissions.Commands.Permissions.Reload.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.Permissions.Commands.Permissions.Reload.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.Permissions.Commands.Permissions.Reload.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -147,9 +135,6 @@
         </member>
         <member name="P:Exiled.Permissions.Commands.Permissions.Remove.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.Permissions.Commands.Permissions.Remove.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.Permissions.Commands.Permissions.Remove.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>

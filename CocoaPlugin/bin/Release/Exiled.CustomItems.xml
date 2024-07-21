@@ -805,9 +805,6 @@
         <member name="P:Exiled.CustomItems.Commands.Give.Description">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.CustomItems.Commands.Give.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="M:Exiled.CustomItems.Commands.Give.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
         </member>
@@ -834,9 +831,6 @@
         </member>
         <member name="P:Exiled.CustomItems.Commands.Info.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.CustomItems.Commands.Info.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.CustomItems.Commands.Info.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
@@ -880,9 +874,6 @@
         <member name="P:Exiled.CustomItems.Commands.List.Registered.Aliases">
             <inheritdoc/>
         </member>
-        <member name="P:Exiled.CustomItems.Commands.List.Registered.SanitizeResponse">
-            <inheritdoc />
-        </member>
         <member name="P:Exiled.CustomItems.Commands.List.Registered.Description">
             <inheritdoc/>
         </member>
@@ -905,9 +896,6 @@
         </member>
         <member name="P:Exiled.CustomItems.Commands.List.Tracked.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.CustomItems.Commands.List.Tracked.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.CustomItems.Commands.List.Tracked.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>
@@ -955,9 +943,6 @@
         </member>
         <member name="P:Exiled.CustomItems.Commands.Spawn.Description">
             <inheritdoc/>
-        </member>
-        <member name="P:Exiled.CustomItems.Commands.Spawn.SanitizeResponse">
-            <inheritdoc />
         </member>
         <member name="M:Exiled.CustomItems.Commands.Spawn.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
             <inheritdoc/>

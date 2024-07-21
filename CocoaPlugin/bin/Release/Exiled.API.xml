@@ -398,6 +398,51 @@
             Damage caused by the marshmallow man.
             </summary>
         </member>
+        <member name="T:Exiled.API.Enums.DanceType">
+            <summary>
+            All available dance variants being used by SCP-3114.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.BreakDance">
+            <summary>
+            Break-dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.ChickenDance">
+            <summary>
+            Chicken dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.RunningMan">
+            <summary>
+            The "Running Man" dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.Maraschino">
+            <summary>
+            The "Maraschino" dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.Twist">
+            <summary>
+            Twist dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.CabbagePatch">
+            <summary>
+            The "Cabbage Patch" dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.Swing">
+            <summary>
+            Swing dance.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Enums.DanceType.None">
+            <summary>
+            Dance1
+            </summary>
+        </member>
         <member name="T:Exiled.API.Enums.DangerType">
             <summary>
             A list of Types used by exiled for <see cref="T:CustomPlayerEffects.Danger.DangerStackBase"/>.
@@ -1604,6 +1649,11 @@
         <member name="F:Exiled.API.Enums.PluginPriority.First">
             <summary>
             Execute the plugin first, before other ones.
+            </summary>
+        </member>
+        <member name="T:Exiled.API.Enums.PrefabType">
+            <summary>
+            Type of prefab.
             </summary>
         </member>
         <member name="T:Exiled.API.Enums.ProjectileType">
@@ -2914,6 +2964,14 @@
             <param name="target">Only this player can see room color.</param>
             <param name="color">Color to set.</param>
         </member>
+        <member name="M:Exiled.API.Extensions.MirrorExtensions.SetRoomLightsForTargetOnly(Exiled.API.Features.Room,Exiled.API.Features.Player,System.Boolean)">
+            <summary>
+            Sets the lights of a <paramref name="room"/> to be either on or off, visible only to the <paramref name="target"/> player.
+            </summary>
+            <param name="room">The room to modify the lights of.</param>
+            <param name="target">The player who will see the lights state change.</param>
+            <param name="value">The state to set the lights to. True for on, false for off.</param>
+        </member>
         <member name="M:Exiled.API.Extensions.MirrorExtensions.SetName(Exiled.API.Features.Player,Exiled.API.Features.Player,System.String)">
             <summary>
             Sets <see cref="P:Exiled.API.Features.Player.DisplayNickname"/> of a <paramref name="player"/> that only the <paramref name="target"/> player can see.
@@ -3422,6 +3480,26 @@
         <member name="P:Exiled.API.Features.Attributes.PatchGroupAttribute.GroupId">
             <summary>
             Gets the group id.
+            </summary>
+        </member>
+        <member name="T:Exiled.API.Features.Attributes.PrefabAttribute">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.API.Features.Attributes.PrefabAttribute.#ctor(System.UInt32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.API.Features.Attributes.PrefabAttribute"/> class.
+            </summary>
+            <param name="assetId"><inheritdoc cref="P:Exiled.API.Features.Attributes.PrefabAttribute.AssetId"/></param>
+            <param name="name"><inheritdoc cref="P:Exiled.API.Features.Attributes.PrefabAttribute.Name"/></param>
+        </member>
+        <member name="P:Exiled.API.Features.Attributes.PrefabAttribute.AssetId">
+            <summary>
+            Gets the prefab's asset id.
+            </summary>
+        </member>
+        <member name="P:Exiled.API.Features.Attributes.PrefabAttribute.Name">
+            <summary>
+            Gets the prefab's name.
             </summary>
         </member>
         <member name="T:Exiled.API.Features.Badge">
@@ -6299,6 +6377,11 @@
             Gets a value indicating whether or not this door is subdoor belonging to a checkpoint.
             </summary>
         </member>
+        <member name="P:Exiled.API.Features.Doors.Door.ParentCheckpointDoor">
+            <summary>
+            Gets the checkpoint door the door is belonging to, or null if the door doesn't belong to a checkpoint.
+            </summary>
+        </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsKeycardDoor">
             <summary>
             Gets a value indicating whether or not this door requires a keycard to open.
@@ -8517,6 +8600,11 @@
             Gets or sets the amount of time in seconds that the <see cref="T:CustomPlayerEffects.Flashed"/> effect will be applied on being hit.
             </summary>
         </member>
+        <member name="P:Exiled.API.Features.Items.Jailbird.ConcussionDuration">
+            <summary>
+            Gets or sets the amount of time in seconds that the <see cref="T:CustomPlayerEffects.Concussed"/> effect will be applied on being hit.
+            </summary>
+        </member>
         <member name="P:Exiled.API.Features.Items.Jailbird.Radius">
             <summary>
             Gets or sets the radius of the Jailbird's hit register.
@@ -9060,6 +9148,9 @@
             <param name="type">The <see cref="T:ItemType"/> of the throwable item.</param>
             <param name="player">The owner of the throwable item. Leave <see langword="null"/> for no owner.</param>
             <remarks>The player parameter will always need to be defined if this throwable is custom using Exiled.CustomItems.</remarks>
+        </member>
+        <member name="P:Exiled.API.Features.Items.Throwable.Scale">
+            <inheritdoc/>
         </member>
         <member name="P:Exiled.API.Features.Items.Throwable.Base">
             <summary>
@@ -9737,6 +9828,15 @@
             <param name="position">The position where effect will be created.</param>
             <param name="projectileType">The projectile that will create the effect.</param>
         </member>
+        <member name="M:Exiled.API.Features.Map.PlayGunSound(UnityEngine.Vector3,ItemType,System.Byte,System.Byte)">
+            <summary>
+            Plays a gun sound at the specified position.
+            </summary>
+            <param name="position">Position to play the sound at.</param>
+            <param name="firearmType">The type of firearm to play the sound of.</param>
+            <param name="maxDistance">The maximum distance the sound can be heard from.</param>
+            <param name="audioClipId">The audio clip ID to play.</param>
+        </member>
         <member name="M:Exiled.API.Features.Map.ClearCache">
             <summary>
             Clears the lazy loading game object cache.
@@ -10300,6 +10400,11 @@
         <member name="P:Exiled.API.Features.Pickups.JailbirdPickup.FlashDuration">
             <summary>
             Gets or sets the amount of time in seconds that the <see cref="T:CustomPlayerEffects.Flashed"/> effect will be applied on being hit.
+            </summary>
+        </member>
+        <member name="P:Exiled.API.Features.Pickups.JailbirdPickup.ConcussionDuration">
+            <summary>
+            Gets or sets the amount of time in seconds that the <see cref="T:CustomPlayerEffects.Concussed"/> effect will be applied on being hit.
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Pickups.JailbirdPickup.Radius">
@@ -13720,6 +13825,47 @@
             <param name="obj">The <see cref="T:System.Text.StringBuilder"/> to return.</param>
             <returns>The value of the <see cref="T:System.Text.StringBuilder"/>.</returns>
         </member>
+        <member name="T:Exiled.API.Features.PrefabHelper">
+            <summary>
+            Helper for Prefabs.
+            </summary>
+        </member>
+        <member name="P:Exiled.API.Features.PrefabHelper.PrefabToGameObject">
+            <summary>
+            Gets a dictionary of <see cref="T:Exiled.API.Enums.PrefabType"/> to <see cref="T:UnityEngine.GameObject"/>.
+            </summary>
+        </member>
+        <member name="M:Exiled.API.Features.PrefabHelper.GetPrefabAttribute(Exiled.API.Enums.PrefabType)">
+            <summary>
+            Gets the prefab attribute of a prefab type.
+            </summary>
+            <param name="prefabType">The prefab type.</param>
+            <returns>The <see cref="T:Exiled.API.Features.Attributes.PrefabAttribute" />.</returns>
+        </member>
+        <member name="M:Exiled.API.Features.PrefabHelper.Spawn(Exiled.API.Enums.PrefabType,UnityEngine.Vector3,UnityEngine.Quaternion)">
+            <summary>
+            Spawns a prefab on server.
+            </summary>
+            <param name="prefabType">The prefab type.</param>
+            <param name="position">The position to spawn the prefab.</param>
+            <param name="rotation">The rotation of the prefab.</param>
+            <returns>The <see cref="T:UnityEngine.GameObject"/> instantied.</returns>
+        </member>
+        <member name="M:Exiled.API.Features.PrefabHelper.Spawn``1(Exiled.API.Enums.PrefabType,UnityEngine.Vector3,UnityEngine.Quaternion)">
+            <summary>
+            Spawns a prefab on server.
+            </summary>
+            <param name="prefabType">The prefab type.</param>
+            <param name="position">The position to spawn the prefab.</param>
+            <param name="rotation">The rotation of the prefab.</param>
+            <typeparam name="T">The <see cref="T:UnityEngine.Component"/> type.</typeparam>
+            <returns>The <see cref="T:UnityEngine.Component"/> instantied.</returns>
+        </member>
+        <member name="M:Exiled.API.Features.PrefabHelper.LoadPrefabs">
+            <summary>
+            Loads all prefabs.
+            </summary>
+        </member>
         <member name="T:Exiled.API.Features.Ragdoll">
             <summary>
             A set of tools to handle the ragdolls more easily.
@@ -16041,6 +16187,11 @@
             Gets or sets the warning time seconds.
             </summary>
         </member>
+        <member name="P:Exiled.API.Features.Roles.Scp3114Role.DanceType">
+            <summary>
+            Gets or sets the bound dance.
+            </summary>
+        </member>
         <member name="M:Exiled.API.Features.Roles.Scp3114Role.ResetIdentity">
             <summary>
             Reset Scp3114 FakeIdentity.
@@ -16381,6 +16532,11 @@
             Using that will make sense only for rooms with more than one light controller, in other cases better to use <see cref="P:Exiled.API.Features.Room.RoomLightController"/>.
             </remarks>
         </member>
+        <member name="P:Exiled.API.Features.Room.NearestRooms">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> of <see cref="T:Exiled.API.Features.Room"/> around the <see cref="T:Exiled.API.Features.Room"/>.
+            </summary>
+        </member>
         <member name="P:Exiled.API.Features.Room.Pickups">
             <summary>
             Gets a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.API.Features.Pickups.Pickup"/> in the <see cref="T:Exiled.API.Features.Room"/>.
@@ -16430,6 +16586,11 @@
         <member name="P:Exiled.API.Features.Room.RoomLightControllersValue">
             <summary>
             Gets a <see cref="T:System.Collections.Generic.List`1"/> containing all known <see cref="P:Exiled.API.Features.Room.RoomLightController"/>s in that <see cref="T:Exiled.API.Features.Room"/>.
+            </summary>
+        </member>
+        <member name="P:Exiled.API.Features.Room.NearestRoomsValue">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.List`1"/> containing all known <see cref="T:Exiled.API.Features.Room"/>s around that <see cref="T:Exiled.API.Features.Room"/>.
             </summary>
         </member>
         <member name="M:Exiled.API.Features.Room.Get(Exiled.API.Enums.RoomType)">
@@ -16992,6 +17153,14 @@
             <summary>
             Shutdowns the server, disconnects all players.
             </summary>
+            <seealso cref="M:Exiled.API.Features.Server.ShutdownRedirect(System.UInt16)"/>
+        </member>
+        <member name="M:Exiled.API.Features.Server.Shutdown(System.Boolean,System.Boolean)">
+            <summary>
+            Shutdowns the server, disconnects all players.
+            </summary>
+            <param name="quit">Indicates whether to terminate the application after shutting down the server.</param>
+            <param name="suppressShutdownBroadcast">Indicates whether to suppress the broadcast notification about the shutdown.</param>
             <seealso cref="M:Exiled.API.Features.Server.ShutdownRedirect(System.UInt16)"/>
         </member>
         <member name="M:Exiled.API.Features.Server.RestartRedirect(System.UInt16)">

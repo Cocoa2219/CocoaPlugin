@@ -161,16 +161,37 @@ namespace CocoaPlugin.API
 
         #region Network Sender
 
-        public static void Send(object content, MessageType type)
+        public static bool CanSend = true;
+
+        public static void SendDm(object content)
         {
-            _ = SendAsync(new Message { Content = content, Type = type });
+            if (!CanSend)
+            {
+                Log.Warn("NetworkManager is disabled.");
+                return;
+            }
+
+            _ = SendAsync(content, PostType.LinkDm);
         }
 
-        private static async Task SendAsync(Message message)
+        public static void SendLog(object content, LogType type)
         {
+            if (!CanSend)
+            {
+                Log.Warn("NetworkManager is disabled.");
+                return;
+            }
+
+            _ = SendAsync(new { Content = content, Type = type }, PostType.Log);
+        }
+
+        private static async Task SendAsync(object message, PostType type)
+        {
+            var url = CocoaPlugin.Instance.Config.Network.PostBaseUrl + CocoaPlugin.Instance.Config.Network.SubUrl[type];
+
             try
             {
-                var request = WebRequest.Create(CocoaPlugin.Instance.Config.Network.PostUrl);
+                var request = WebRequest.Create(url);
                 request.Method = "POST";
                 request.ContentType = "application/json";
 
@@ -183,11 +204,11 @@ namespace CocoaPlugin.API
                 using var reader = new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException(), Encoding.UTF8);
                 var responseBody = await reader.ReadToEndAsync();
 
-                Log.Debug($"Response from {CocoaPlugin.Instance.Config.Network.PostUrl}:\n{responseBody}");
+                Log.Debug($"Response from {url}:\n{responseBody}");
             }
             catch (Exception ex)
             {
-                Log.Error($"Error while sending message to {CocoaPlugin.Instance.Config.Network.PostUrl}:\n{ex.Message}");
+                Log.Error($"Error while sending message to {url}:\n{ex.Message}");
             }
         }
 
