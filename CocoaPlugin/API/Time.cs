@@ -8,7 +8,7 @@ public class Time
 
     public override string ToString()
     {
-        return $"{Hours:D2}시간 {Minutes:D2}분 {Seconds:D2}초";
+        return $"{Hours:D1}시간 {Minutes:D2}분 {Seconds:D2}초";
     }
 
     public static Time operator -(Time a, Time b)

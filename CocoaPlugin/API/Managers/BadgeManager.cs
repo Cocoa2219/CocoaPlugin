@@ -2,7 +2,7 @@
 using System.Linq;
 using Exiled.API.Features;
 
-namespace CocoaPlugin.API;
+namespace CocoaPlugin.API.Managers;
 
 public static class BadgeManager
 {

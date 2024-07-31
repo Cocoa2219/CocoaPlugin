@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs.Broadcast;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Roles;
+using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using MEC;
@@ -49,6 +51,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Left += OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing += OnHandcuffing;
         Exiled.Events.Handlers.Player.Destroying += OnDestroying;
+        Exiled.Events.Handlers.Player.InteractingDoor += OnInteractingDoor;
         Exiled.Events.Handlers.Player.ReservedSlot += OnReservedSlot;
 
         Server.RestartingRound += OnRestartingRound;
@@ -70,6 +73,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Left -= OnLeft;
         Exiled.Events.Handlers.Player.Handcuffing -= OnHandcuffing;
         Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
+        Exiled.Events.Handlers.Player.InteractingDoor -= OnInteractingDoor;
         Exiled.Events.Handlers.Player.ReservedSlot -= OnReservedSlot;
 
         Server.RestartingRound -= OnRestartingRound;
@@ -299,6 +303,8 @@ public class PlayerEvents(CocoaPlugin plugin)
     {
         if (ev.Player == null) return;
 
+        UserTimes.TryAdd(TodayToString(), []);
+
         UserTimes[TodayToString()].TryAdd(ev.Player.UserId, new Time());
 
         if (_userStopwatches.ContainsKey(ev.Player.UserId))
@@ -464,6 +470,91 @@ public class PlayerEvents(CocoaPlugin plugin)
         if (ReservedSlotManager.Get(ev.UserId))
         {
             ev.Result = ReservedSlotEventResult.AllowConnectionUnconditionally;
+        }
+    }
+
+    internal void OnInteractingDoor(InteractingDoorEventArgs ev)
+    {
+        // Timing.RunCoroutine(DoorTrolling(ev));
+    }
+
+    // internal IEnumerator<float> DoorTrolling(InteractingDoorEventArgs ev)
+    // {
+    //     // if (!ev.Door.Base.NetworkTargetState) yield break;
+    //     //
+    //     // var colliders = new Collider[32];
+    //     // var players = new HashSet<Player>();
+    //     //
+    //     // var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
+    //     //     Config.Others.DoorTrollingSphereRadius, colliders);
+    //     //
+    //     // for (var i = 0; i < num; i++)
+    //     // {
+    //     //     var player = Player.Get(colliders[i].GetComponentInParent<ReferenceHub>());
+    //     //
+    //     //     if (player == null) continue;
+    //     //
+    //     //     players.Add(player);
+    //     // }
+    //     //
+    //     // foreach (var player in players.ToList())
+    //     // {
+    //     //     var curDis = Vector3.Distance(player.Position, ev.Door.Position);
+    //     //
+    //     //     yield return Timing.WaitForSeconds(0.05f);
+    //     //
+    //     //     if (Vector3.Distance(player.Position, ev.Door.Position) > curDis) players.Remove(player);
+    //     // }
+    //     //
+    //     // var friendly = players.Where(x => x.LeadingTeam == ev.Player.LeadingTeam && x != ev.Player).ToList();
+    //     //
+    //     // if (friendly.Count == 0) yield break;
+    //     //
+    //     // var troller = ev.Player;
+    //     //
+    //     // troller.AddBroadcast(Config.Others.DoorTrollingMessage.Duration, Config.Others.DoorTrollingMessage.Format(troller), Config.Others.DoorTrollingMessage.Priority);
+    //     //
+    //     // friendly.First().Broadcast(5, "방금 문트롤 당함");
+    // }
+
+    private IEnumerator<float> SendTypingText(Player player, string text, ushort time, float delay = 0.1f, byte priority = 0, string tag = "")
+    {
+        if (!KoreanTyperStringExtensions.ContainsTags(text))
+        {
+            for (var i = 1; i <= text.GetTypingLength(); i++)
+            {
+                player.AddBroadcast(time, text.Typing(i), priority, tag);
+                yield return Timing.WaitForSeconds(delay);
+            }
+            yield break;
+        }
+
+        var groups = KoreanTyperStringExtensions.GroupCharactersWithinSameTag(text);
+
+        var totalTypingLength = groups.Sum(x => x.GetTypingLength());
+
+        var broadcast = player.AddBroadcast((ushort)(time + totalTypingLength), text, priority, tag);
+
+        for (var i = 0; i < groups.Count; i++)
+        {
+            var group = groups[i];
+            var count = group.GetTypingLength();
+
+            for (var j = 1; j <= count; j++)
+            {
+                var newText = group.Typing(j);
+
+                var newTaggedText = KoreanTyperStringExtensions.ReplaceTaggedText(text, i, newText);
+
+                for (var k = groups.Count - 1; k > i; k--)
+                {
+                    newTaggedText = KoreanTyperStringExtensions.ReplaceTaggedText(newTaggedText, k, "");
+                }
+
+                broadcast.Edit(newTaggedText);
+
+                yield return Timing.WaitForSeconds(delay);
+            }
         }
     }
 }

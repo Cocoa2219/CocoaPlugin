@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Managers;
 using CommandSystem;
 
 namespace CocoaPlugin.Commands;
@@ -28,7 +29,7 @@ public class Badge : ICommand
                     return false;
                 }
 
-                result = BadgeManager.AddBadge(arguments.At(1), new API.Badge()
+                result = BadgeManager.AddBadge(arguments.At(1), new API.Managers.Badge()
                 {
                     Color = arguments.At(2),
                     Name = string.Join(" ", arguments.Skip(3))

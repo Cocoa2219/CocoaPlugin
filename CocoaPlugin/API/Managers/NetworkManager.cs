@@ -4,12 +4,11 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Exiled.API.Features;
 using Newtonsoft.Json;
 using RemoteAdmin;
 
-namespace CocoaPlugin.API
+namespace CocoaPlugin.API.Managers
 {
     public static class NetworkManager
     {
@@ -208,7 +207,14 @@ namespace CocoaPlugin.API
             }
             catch (Exception ex)
             {
-                Log.Error($"Error while sending message to {url}:\n{ex.Message}");
+                if (ex.Message.Contains("ConnectFailure"))
+                {
+                    Log.Warn("Cannot connect to the server. Is the bot server running?");
+                }
+                else
+                {
+                    Log.Error($"Error while sending message to {url}:\n{ex.Message}");
+                }
             }
         }
 

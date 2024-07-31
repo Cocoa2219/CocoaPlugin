@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace CocoaPlugin.API;
+namespace CocoaPlugin.API.Managers;
 
 public static class ConnectionManager
 {

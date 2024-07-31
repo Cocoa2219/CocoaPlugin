@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Features;
@@ -71,7 +72,7 @@ public class ServerEvents(CocoaPlugin plugin)
             LastOneEnabled = true;
         });
 
-        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.Message, Config.Broadcasts.RoundStartMessage.Priority);
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.ParsedMessage, Config.Broadcasts.RoundStartMessage.Priority);
 
         Timing.CallDelayed(0.1f, () =>
         {
@@ -106,7 +107,7 @@ public class ServerEvents(CocoaPlugin plugin)
         {
             yield return Timing.WaitForSeconds(Config.Broadcasts.AutoBroadcastInterval);
 
-            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.AutoBroadcastMessages[index].Duration, Config.Broadcasts.AutoBroadcastMessages[index].Message, Config.Broadcasts.AutoBroadcastMessages[index].Priority);
+            MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.AutoBroadcastMessages[index].Duration, Config.Broadcasts.AutoBroadcastMessages[index].ParsedMessage, Config.Broadcasts.AutoBroadcastMessages[index].Priority);
 
             index = (index + 1) % Config.Broadcasts.AutoBroadcastMessages.Count;
         }
@@ -166,7 +167,7 @@ public class ServerEvents(CocoaPlugin plugin)
             {
                 foreach (var player in Player.List.Where(player => player.LeadingTeam == LeadingTeam.ChaosInsurgency))
                 {
-                    player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.Message, Config.Broadcasts.ChaosSpawnMessage.Priority);
+                    player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.ParsedMessage, Config.Broadcasts.ChaosSpawnMessage.Priority);
                 }
             });
         }

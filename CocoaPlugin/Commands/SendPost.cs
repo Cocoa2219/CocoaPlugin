@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using CocoaPlugin.API.Managers;
 using CommandSystem;
 using Exiled.API.Features;
 
@@ -24,7 +25,7 @@ public class SendPost // : ICommand
         var nickname = player?.Nickname ?? "Server";
         var userId = player?.UserId ?? "Server";
 
-        API.NetworkManager.SendLog(new
+        NetworkManager.SendLog(new
         {
             Nickname = nickname,
             UserId = userId,

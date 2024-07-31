@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using Exiled.API.Features;
-using Utf8Json;
 
-namespace CocoaPlugin.API;
+namespace CocoaPlugin.API.Managers;
 
 public static class FileManager
 {

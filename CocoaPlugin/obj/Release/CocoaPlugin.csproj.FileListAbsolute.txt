@@ -107,7 +107,6 @@ C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlu.1B4583AC.Up2D
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.dll
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.pdb
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\0Harmony.dll
-C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MultiBroadcast.dll
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll.config
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll.config
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll

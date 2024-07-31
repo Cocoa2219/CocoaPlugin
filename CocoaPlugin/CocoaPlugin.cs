@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
@@ -31,11 +32,11 @@ namespace CocoaPlugin
 
         private Harmony Harmony { get; set; }
 
-        public override async void OnEnabled()
+        public override void OnEnabled()
         {
             Instance = this;
 
-            API.FileManager.CreateFolder();
+            API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
             PenaltyManager.LoadPenalties();
             CheckManager.LoadChecks();

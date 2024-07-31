@@ -18,5 +18,6 @@ namespace CocoaPlugin.Configs
         public AutoNuke AutoNuke { get; set; } = new();
         public Supporters Supporters { get; set; } = new();
         public Network Network { get; set; } = new();
+        public Others Others { get; set; } = new();
     }
 }

@@ -36,12 +36,17 @@
 //====================================================================================================================================================================
 //    KoreanTyper 네임 스페이스 사용
 //====================================================================================================================================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace CocoaPlugin.API;
 
 //================================================================================================================================================================
 //    string 자료형의 Extention class
 //================================================================================================================================================================
-public static class stringExtensions
+public static class KoreanTyperStringExtensions
 {
     #region MemberVariables
 
@@ -676,4 +681,50 @@ public static class stringExtensions
     //==========================================================================================================================================================
 
     #endregion
+
+    public static List<string> GroupCharactersWithinSameTag(string input)
+    {
+        const string pattern = @"(<[^>]+>)+(.*?)(<\/[^>]+>)";
+        var matches = Regex.Matches(input, pattern);
+        List<string> result = [];
+        result.AddRange(from Match match in matches select match.Groups[2].Value);
+
+        return result.ToList();
+    }
+
+    public static string ReplaceTaggedText(string input, int index, string newText)
+    {
+        const string pattern = @"(<[^>]+>)+.*?(<\/[^>]+>)+";
+        var matches = Regex.Matches(input, pattern);
+
+        if (index < 0 || index >= matches.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+        }
+
+        var match = matches[index];
+        var originalText = match.Value;
+
+        const string openingTagPattern = @"(<[^>]+>)+";
+        const string closingTagPattern = @"(</[^>]+>)+";
+        var openingTagsMatch = Regex.Match(originalText, openingTagPattern);
+        var closingTagsMatch = Regex.Match(originalText, closingTagPattern);
+
+        if (!openingTagsMatch.Success || !closingTagsMatch.Success)
+        {
+            throw new InvalidOperationException("Invalid tag structure.");
+        }
+
+        var openingTags = openingTagsMatch.Value;
+        var closingTags = closingTagsMatch.Value;
+
+        var newTaggedText = $"{openingTags}{newText}{closingTags}";
+
+        return input.Replace(originalText, newTaggedText);
+    }
+
+    public static bool ContainsTags(string input)
+    {
+        return Regex.IsMatch(input, @"<[^>]+>");
+    }
 }

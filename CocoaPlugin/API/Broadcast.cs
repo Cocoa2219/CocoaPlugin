@@ -5,6 +5,7 @@ using System.Text;
 using Exiled.API.Features;
 using PlayerRoles;
 using UnityEngine;
+using YamlDotNet.Serialization;
 
 namespace CocoaPlugin.API;
 
@@ -31,6 +32,9 @@ public class Broadcast
         set => _message = value;
     }
 
+    [YamlIgnore]
+    public string ParsedMessage => Message.ParseGradient();
+
     public ushort Duration { get; set; }
     public byte Priority { get; set; }
     public bool IsEnabled { get; set; }
@@ -46,7 +50,7 @@ public class Broadcast
         sb.Replace("%roleColor%", player.GetRoleColor());
         sb.Replace("%roleName%", player.GetRoleName());
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(Player player, int amount, string text)
@@ -62,7 +66,7 @@ public class Broadcast
         sb.Replace("%amount%", amount.ToString());
         sb.Replace("%text%", text);
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(Player attacker, Player target, RoleTypeId? attackerRole, RoleTypeId targetRole)
@@ -77,7 +81,7 @@ public class Broadcast
             sb.Replace("%attackerRoleColor%", attackerRole?.GetRoleColor());
             sb.Replace("%attackerRoleName%", attackerRole?.GetRoleName());
             sb.Replace("%attackerNicknameParticle%",
-                IsKorean(attacker.Nickname[^1]) ? Divide(attacker.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
+                IsKorean(attacker.Nickname[^1]) ? Divide(attacker.Nickname[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");
             sb.Replace("%attackerRoleNameParticle%", Divide(attackerRole.GetValueOrDefault().GetRoleName()[^1]).jongsung == ' ' ? "로" : "으로");
         }
         else
@@ -96,10 +100,10 @@ public class Broadcast
         sb.Replace("%targetUserId%", target.UserId);
         sb.Replace("%targetRoleColor%", targetRole.GetRoleColor());
         sb.Replace("%targetRoleName%", targetRole.GetRoleName());
-        sb.Replace("%targetNicknameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
-        sb.Replace("%targetRoleNameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
+        sb.Replace("%targetNicknameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");
+        sb.Replace("%targetRoleNameParticle%", IsKorean(targetRole.GetRoleName()[^1]) ? Divide(targetRole.GetRoleName()[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(int unitNumber, string unitName, int scpsLeft)
@@ -110,7 +114,7 @@ public class Broadcast
         sb.Replace("%unitName%", unitName);
         sb.Replace("%scpsLeft%", scpsLeft.ToString());
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(List<Player> scpList)
@@ -123,7 +127,7 @@ public class Broadcast
         sb.Replace("%scpCount%", scpCount.ToString());
         sb.Replace("%scpList%", scpString);
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(Team team)
@@ -133,7 +137,7 @@ public class Broadcast
         sb.Replace("%teamColor%", CocoaPlugin.Instance.Config.Translations.TeamColors[team]);
         sb.Replace("%teamName%", CocoaPlugin.Instance.Config.Translations.TeamTranslations[team]);
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(int amount)
@@ -142,7 +146,7 @@ public class Broadcast
 
         sb.Replace("%amount%", amount.ToString());
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(float amount)
@@ -151,7 +155,7 @@ public class Broadcast
 
         sb.Replace("%amount%", amount.ToString(CultureInfo.InvariantCulture));
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(Player player, string text)
@@ -164,7 +168,7 @@ public class Broadcast
         sb.Replace("%roleName%", player.GetRoleName());
         sb.Replace("%text%", text);
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public string Format(LeftUser leftUser)
@@ -175,10 +179,10 @@ public class Broadcast
         sb.Replace("%userId%", leftUser.UserId);
         sb.Replace("%roleColor%", leftUser.Role.GetRoleColor());
         sb.Replace("%roleName%", leftUser.Role.GetRoleName());
-        sb.Replace("%nicknameParticle%", IsKorean(leftUser.Nickname[^1]) ? Divide(leftUser.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
+        sb.Replace("%nicknameParticle%", IsKorean(leftUser.Nickname[^1]) ? Divide(leftUser.Nickname[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");
         sb.Replace("%time%", SecondsToMinutes(CocoaPlugin.Instance.Config.Reconnects.ReconnectTime));
 
-        return sb.ToString();
+        return sb.ToString().ParseGradient();
     }
 
     public static string SecondsToMinutes(int seconds)
@@ -196,16 +200,37 @@ public class Broadcast
     private const ushort UnicodeHangeulBase = 0xAC00;
     private const ushort UnicodeHangeulLast = 0xD79F;
 
+    private static Dictionary<char, char> Number = new()
+    {
+        {'0', '영'},
+        {'1', '일'},
+        {'2', '이'},
+        {'3', '삼'},
+        {'4', '사'},
+        {'5', '오'},
+        {'6', '육'},
+        {'7', '칠'},
+        {'8', '팔'},
+        {'9', '구'}
+    };
+
     private static bool IsKorean(char ch)
     {
-        return (0xAC00 <= ch && ch <= 0xD7A3) || (0x3131 <= ch && ch <= 0x318E);
+        return (0xAC00 <= ch && ch <= 0xD7A3) || (0x3131 <= ch && ch <= 0x318E) || (0x30 <= ch && ch <= 0x39);
     }
 
     private static (char chosung, char jungsung, char? jongsung) Divide(char c)
     {
+        if (0x30 <= c && c <= 0x39)
+        {
+            c = Number[c];
+        }
+
         var check = Convert.ToUInt16(c);
 
-        if (check is > UnicodeHangeulLast or < UnicodeHangeulBase) return (' ', ' ', ' ');
+        if (!IsKorean(c)) return (' ', ' ', ' ');
+
+        // Log.Info(c);
 
         var Code = check - UnicodeHangeulBase;
 

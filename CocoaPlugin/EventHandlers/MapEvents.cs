@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using CocoaPlugin.Configs;
 using Exiled.API.Enums;
 using Exiled.API.Features;
@@ -40,10 +41,16 @@ public class MapEvents(CocoaPlugin plugin)
     {
         if (Config.Broadcasts.DecontaminationMessages.TryGetValue(ev.State, out var value))
         {
-            foreach (var player in Player.List.Where(x => x.Zone == ZoneType.LightContainment))
-            {
-                player.AddBroadcast(value.Duration, value.Message, value.Priority);
-            }
+            if (ev.State != DecontaminationState.Lockdown)
+                foreach (var player in Player.List.Where(x => x.Zone == ZoneType.LightContainment))
+                {
+                    player.AddBroadcast(value.Duration, value.ParsedMessage, value.Priority);
+                }
+            else if (ev.State == DecontaminationState.Lockdown)
+                foreach (var player in Player.List)
+                {
+                    player.AddBroadcast(value.Duration, value.ParsedMessage, value.Priority);
+                }
         }
     }
 
@@ -68,7 +75,7 @@ public class MapEvents(CocoaPlugin plugin)
         {
             if (Config.Broadcasts.GeneratorMessages.TryGetValue(Generator.List.Count(x => x.IsEngaged), out var value))
             {
-                MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(value.Duration, value.Message, value.Priority);
+                MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(value.Duration, value.ParsedMessage, value.Priority);
             }
         });
     }
@@ -100,6 +107,6 @@ public class MapEvents(CocoaPlugin plugin)
                 player.RemoveBroadcast("WarheadStart");
         }
 
-        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadCancelMessage.Duration, Config.Broadcasts.WarheadCancelMessage.Message, Config.Broadcasts.WarheadCancelMessage.Priority, "WarheadStop");
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.WarheadCancelMessage.Duration, Config.Broadcasts.WarheadCancelMessage.ParsedMessage, Config.Broadcasts.WarheadCancelMessage.Priority, "WarheadStop");
     }
 }

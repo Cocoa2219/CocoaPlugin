@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Managers;
+using Exiled.API.Enums;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Events.EventArgs.Warhead;

@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Exiled.API.Features;
+﻿using System.Linq;
 
-namespace CocoaPlugin.API;
+namespace CocoaPlugin.API.Managers;
 
 public static class ReservedSlotManager
 {
