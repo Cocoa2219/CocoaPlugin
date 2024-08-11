@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
+using MEC;
 using PlayerRoles.PlayableScps;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class SightManager : MonoBehaviour
 {
     private Player _player;
     private HashSet<Player> _seenPlayers;
+    private Dictionary<Player, CoroutineHandle> _coroutines;
 
     public void Start()
     {
@@ -22,19 +24,35 @@ public class SightManager : MonoBehaviour
         if (_player is not { IsAlive: true })
             return;
 
-        foreach (var player in Player.List)
+        foreach (var player in Player.List.Where(x => x != _player))
         {
+            _coroutines.TryAdd(player, new CoroutineHandle());
+
             if (VisionInformation.IsInView(_player.ReferenceHub, player.ReferenceHub))
             {
+                if (_coroutines.TryGetValue(player, out var coroutine))
+                    Timing.KillCoroutines(coroutine);
                 _seenPlayers.Add(player);
             }
             else
             {
-                _seenPlayers.Remove(player);
+                if (_seenPlayers.Contains(player))
+                {
+                    _coroutines[player] = Timing.CallDelayed(3f, () =>
+                    {
+                        _seenPlayers.Remove(player);
+                        _coroutines.Remove(player);
+                    });
+                }
             }
         }
 
-        Log.Info(string.Join(", ", _seenPlayers.Select(x => x.Nickname)));
+        // Log.Info($"{_player.Nickname} - " + string.Join(", ", _seenPlayers.Select(x => x.Nickname)));
+    }
+
+    public bool IsSeen(Player player)
+    {
+        return _seenPlayers.Contains(player);
     }
 
     public static SightManager Get(Player player)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CocoaPlugin.API.Managers;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
@@ -15,6 +16,7 @@ public class Pacifist : Achievement
     public override string Description { get; set; } = "한 게임에서 아무에게 피해를 입히지 않고 라운드를 끝내십시오.";
 
     private List<string> _attackedPlayers;
+    private List<string> _startPlayers;
 
     public override void RegisterEvents()
     {
@@ -23,6 +25,7 @@ public class Pacifist : Achievement
         Player.Hurting += OnHurting;
         Player.Dying += OnDying;
         Server.RoundEnded += OnRoundEnded;
+        Server.RoundStarted += OnRoundStarted;
     }
 
     public override void UnregisterEvents()
@@ -30,6 +33,17 @@ public class Pacifist : Achievement
         Player.Hurting -= OnHurting;
         Player.Dying -= OnDying;
         Server.RoundEnded -= OnRoundEnded;
+        Server.RoundStarted -= OnRoundStarted;
+    }
+
+    private void OnRoundStarted()
+    {
+        _startPlayers = [];
+
+        foreach (var player in Exiled.API.Features.Player.List)
+        {
+            _startPlayers.Add(player.UserId);
+        }
     }
 
     private void OnHurting(HurtingEventArgs ev)
@@ -56,10 +70,16 @@ public class Pacifist : Achievement
 
         _endLock = true;
 
-        foreach (var player in Exiled.API.Features.Player.List)
+        foreach (var player in _startPlayers.Where(player => !_attackedPlayers.Contains(player)))
         {
-            if (!_attackedPlayers.Contains(player.UserId))
-                Achieve(player.UserId);
+            Achieve(player);
         }
+    }
+
+    public override void OnRoundRestarting()
+    {
+        _attackedPlayers.Clear();
+        _startPlayers.Clear();
+        _endLock = false;
     }
 }

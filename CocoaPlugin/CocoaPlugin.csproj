@@ -77,6 +77,9 @@
         <Reference Include="Facepunch.Steamworks.Win64">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Facepunch.Steamworks.Win64.dll</HintPath>
         </Reference>
+        <Reference Include="MapEditorReborn">
+          <HintPath>..\..\..\AppData\Roaming\EXILED\Plugins\MapEditorReborn.dll</HintPath>
+        </Reference>
         <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
         </Reference>
@@ -163,9 +166,23 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="API\Achievements\Challenge\AllCalculated.cs" />
+        <Compile Include="API\Achievements\Challenge\GhostInTheShadows.cs" />
         <Compile Include="API\Achievements\Challenge\Pacifist.cs" />
+        <Compile Include="API\Achievements\Challenge\ResourceManagement.cs" />
+        <Compile Include="API\Achievements\Challenge\Rich.cs" />
+        <Compile Include="API\Achievements\Challenge\Speedrun.cs" />
+        <Compile Include="API\Achievements\Challenge\WaitAlready.cs" />
         <Compile Include="API\Achievements\Combat\FirstBlood.cs" />
+        <Compile Include="API\Achievements\Survival\BloodedItem.cs" />
+        <Compile Include="API\Achievements\Survival\BlurryFace.cs" />
+        <Compile Include="API\Achievements\Survival\DimensionEscape.cs" />
+        <Compile Include="API\Achievements\Survival\EncounterMachine.cs" />
+        <Compile Include="API\Achievements\Survival\HideAndSeekExpert.cs" />
+        <Compile Include="API\Achievements\Survival\JustWasAHuman.cs" />
         <Compile Include="API\Achievements\Survival\No914.cs" />
+        <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
+        <Compile Include="API\Beta\Minimap.cs" />
         <Compile Include="API\Beta\Store.cs" />
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\DiscordCommand.cs" />
@@ -195,6 +212,7 @@
         <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\Knockback.cs" />
         <Compile Include="Commands\Link.cs" />
         <Compile Include="Commands\NetworkManagerCommand.cs" />
         <Compile Include="Commands\NoScp.cs" />
@@ -237,6 +255,12 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="References\0Harmony.dll" />
+      <Content Include="References\Curve\Curve.json" />
+      <Content Include="References\Endroom\Endroom.json" />
+      <Content Include="References\MultiBroadcast.dll" />
+      <Content Include="References\Straight\Straight.json" />
+      <Content Include="References\TShape\TShape.json" />
+      <Content Include="References\XShape\XShape.json" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Achievements;
 using AdminToys;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
@@ -533,19 +534,11 @@ public class PlayerEvents(CocoaPlugin plugin)
     {
         if (!ev.Door.Base.NetworkTargetState) yield break;
 
-        // var primitive = Primitive.Create(PrimitiveType.Sphere, PrimitiveFlags.Visible,
-        //     ev.Door.Position + new Vector3(0f, 1.2f, 0f), Vector3.one, Vector3.one * 14f, true, Color.white);
-        //
-        // Timing.CallDelayed(1.5f, () =>
-        // {
-        //     primitive.Destroy();
-        // });
-
         var colliders = new Collider[32];
         var players = new HashSet<Player>();
 
         var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
-            7f, colliders);
+            Config.Others.DoorTrollingSphereRadius, colliders);
 
         for (var i = 0; i < num; i++)
         {
@@ -559,13 +552,11 @@ public class PlayerEvents(CocoaPlugin plugin)
         foreach (var player in players.ToList())
         {
             var curDis = Vector3.Distance(player.Position, ev.Door.Position);
-            Log.Info($"curDis: {curDis} | {player.Nickname}");
 
             yield return Timing.WaitForSeconds(0.05f);
 
             if (Vector3.Distance(player.Position, ev.Door.Position) >= curDis)
             {
-                Log.Info($"curDis: {curDis} | {player.Nickname} | {Vector3.Distance(player.Position, ev.Door.Position)}, removed");
                 players.Remove(player);
             }
         }
@@ -576,9 +567,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         var troller = ev.Player;
 
-        troller.AddBroadcast(5, "문트롤 함");
-
-        friendly.First().AddBroadcast(5, "방금 문트롤 당함");
+        troller.AddBroadcast(Config.Others.DoorTrollingMessage.Duration, Config.Others.DoorTrollingMessage.Message, Config.Others.DoorTrollingMessage.Priority);
     }
 
     // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();

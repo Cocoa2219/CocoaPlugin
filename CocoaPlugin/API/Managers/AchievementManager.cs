@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CommandSystem;
 using Exiled.API.Features;
+using RemoteAdmin;
+using Server = Exiled.Events.Handlers.Server;
 
 namespace CocoaPlugin.API.Managers;
 
@@ -28,6 +31,8 @@ public static class AchievementManager
 
         foreach (var instance in achievements.Select(achievement => (Achievement)Activator.CreateInstance(achievement)))
         {
+            Server.RestartingRound += instance.OnRoundRestarting;
+
             instance.RegisterEvents();
             Log.Info($"Loaded achievement: {instance.Type} / {instance.Name}");
             Achievements.Add(instance);
@@ -66,6 +71,7 @@ public static class AchievementManager
 
         foreach (var achievement in Achievements)
         {
+            Server.RestartingRound -= achievement.OnRoundRestarting;
             achievement.UnregisterEvents();
         }
     }
@@ -76,7 +82,10 @@ public static class AchievementManager
 
         if (Directory.Exists(path))
         {
-            Directory.Delete(path, true);
+            foreach (var file in Directory.GetFiles(path))
+            {
+                File.Delete(file);
+            }
         }
 
         Directory.CreateDirectory(path);
@@ -159,6 +168,21 @@ public static class AchievementManager
         FileManager.WriteFile(path, sb.ToString());
     }
 
+    public static void ResetAchievements()
+    {
+        foreach (var achievement in Achievements)
+        {
+            achievement.AchievedUsers.Clear();
+
+            if (achievement is ProgressiveAchievement progressiveAchievement)
+            {
+                progressiveAchievement.Progresses.Clear();
+            }
+        }
+
+        SaveAchievementStats();
+    }
+
     public static (Dictionary<string, bool> AchievedUsers, Dictionary<string, int> Progresses) LoadAchievementStats(Achievement achievement)
     {
         var path = FileManager.GetPath(Path.Combine(AchievementStatsFolder, $"{achievement.Type}.txt"));
@@ -223,16 +247,28 @@ public abstract class Achievement
 
     public void Achieve(string userId)
     {
+        var player = Player.Get(userId);
+
+        if (!UserManager.IsUserExist(userId)) return;
+
         if (AchievedUsers.ContainsKey(userId) && AchievedUsers[userId])
             return;
 
         AchievedUsers[userId] = true;
 
-        var player = Player.Get(userId);
-
         player?.SendConsoleMessage($"You've just achieved {Name}!", "white");
 
         AchievementManager.SaveAchievementStat(this);
+
+        object achievement = new
+        {
+            Type = Type,
+            Name = Name,
+            UserId = userId,
+            DiscordId = UserManager.GetUser(userId).DiscordId
+        };
+
+        NetworkManager.SendAchievement(achievement);
     }
 
     public void Revoke(string userId)
@@ -240,6 +276,11 @@ public abstract class Achievement
         AchievedUsers[userId] = false;
 
         AchievementManager.SaveAchievementStat(this);
+    }
+
+    public virtual void OnRoundRestarting()
+    {
+
     }
 
     public virtual void RegisterEvents()
@@ -328,7 +369,21 @@ public enum AchievementType
 {
     FirstBlood,
     Pacifist,
-    No914
+    No914,
+    OneShotOneKill,
+    GhostInTheShadows,
+    Rich,
+    WaitAlready,
+    AllCalculated,
+    Speedrun,
+    ResourceManagement,
+    HideAndSeekExpert,
+    JustWasAHuman,
+    BloodedItem,
+    BlurryFace,
+    DimensionEscape,
+    UncomfortableCohabitation,
+    EncounterMachine
 }
 
 public enum AchievementCategory
@@ -453,5 +508,44 @@ public class Category
     public override string ToString()
     {
         return AchievementCategory + "\n" + Name + "\n" + DiscordEmojiId + "\n" + Description;
+    }
+}
+
+[CommandHandler(typeof(RemoteAdminCommandHandler))]
+public class AchievementCommand : ICommand
+{
+    public string Command { get; } = "achievement";
+    public string[] Aliases { get; } = { "ach" };
+    public string Description { get; } = "업적을 확인합니다.";
+
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
+    {
+        if (sender is not PlayerCommandSender commandSender)
+        {
+            response = "This command must be executed in-game.";
+            return false;
+        }
+
+        var player = Player.Get(commandSender.SenderId);
+
+        if (player == null)
+        {
+            response = "You must be in-game to use this command.";
+            return false;
+        }
+
+        var subcommand = arguments.At(0);
+
+        switch (subcommand)
+        {
+            case "reset":
+                AchievementManager.ResetAchievements();
+
+                response = "Achievements have been reset.";
+                return true;
+            default:
+                response = "Usage: achievement <reset>";
+                return false;
+        }
     }
 }

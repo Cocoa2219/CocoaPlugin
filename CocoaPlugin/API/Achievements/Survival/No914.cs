@@ -13,7 +13,7 @@ public class No914 : Achievement
     public override AchievementType Type { get; set; } = AchievementType.No914;
     public override Category Category { get; set; } = Category.Categories[AchievementCategory.Survival];
     public override string Name { get; set; } = "914? 그게 뭔데?";
-    public override string Description { get; set; } = "라운드가 시작한 뒤, SCP-914에 들어가지 않고 라운드를 끝내십시오.";
+    public override string Description { get; set; } = "한 게임에서 SCP-914에 들어가지 않고 라운드를 끝내십시오.";
 
     private CoroutineHandle _coroutine;
     private HashSet<string> _players;
@@ -21,8 +21,6 @@ public class No914 : Achievement
 
     public override void RegisterEvents()
     {
-        _coroutine = Timing.RunCoroutine(Check914());
-
         _players = new HashSet<string>();
 
         Exiled.Events.Handlers.Server.RoundStarted += OnRoundStarted;
@@ -31,8 +29,6 @@ public class No914 : Achievement
 
     public override void UnregisterEvents()
     {
-        Timing.KillCoroutines(_coroutine);
-
         Exiled.Events.Handlers.Server.RoundStarted -= OnRoundStarted;
         Exiled.Events.Handlers.Server.RoundEnded -= OnRoundEnded;
     }
@@ -45,6 +41,8 @@ public class No914 : Achievement
         {
             _startPlayers.Add(player.UserId);
         }
+
+        _coroutine = Timing.RunCoroutine(Check914());
     }
 
     private IEnumerator<float> Check914()
@@ -53,7 +51,7 @@ public class No914 : Achievement
 
         var scp914 = Room.Get(RoomType.Lcz914);
 
-        while (true)
+        while (!Round.IsEnded)
         {
             foreach (var pl in scp914.Players)
             {
@@ -62,6 +60,14 @@ public class No914 : Achievement
 
             yield return Timing.WaitForSeconds(0.1f);
         }
+    }
+
+    public override void OnRoundRestarting()
+    {
+        _players.Clear();
+        _endLock = false;
+
+        Timing.KillCoroutines(_coroutine);
     }
 
     private bool _endLock;

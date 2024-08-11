@@ -6,6 +6,7 @@ using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
 using HarmonyLib;
+using Map = Exiled.Events.Handlers.Map;
 
 namespace CocoaPlugin
 {
@@ -26,6 +27,8 @@ namespace CocoaPlugin
         private Harmony Harmony { get; set; }
 
         internal Store Store { get; private set; }
+
+        internal Minimap Minimap { get; private set; }
 
         public override void OnEnabled()
         {
@@ -57,6 +60,9 @@ namespace CocoaPlugin
             Store = new Store();
             Store.RegisterEvents();
 
+            Minimap = new Minimap();
+            Map.Generated += Minimap.OnMapGenerated;
+
             base.OnEnabled();
         }
 
@@ -70,6 +76,9 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
+            Map.Generated -= Minimap.OnMapGenerated;
+            Minimap = null;
+
             Store.UnregisterEvents();
             Store = null;
 

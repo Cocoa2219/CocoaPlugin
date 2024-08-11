@@ -11,7 +11,8 @@ public class Network
     {
         {PostType.None, ""},
         {PostType.Log, "log"},
-        {PostType.LinkDm, "linkdm"}
+        {PostType.LinkDm, "linkdm"},
+        {PostType.Achievement, "achieve"},
     };
 
     public string ListenUrl { get; set; } = "http://localhost:8081/";

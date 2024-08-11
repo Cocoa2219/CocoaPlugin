@@ -248,3 +248,4 @@ C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Text.Json.xml
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Threading.Tasks.Extensions.xml
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.ValueTuple.xml
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\UnityEditor.dll
+C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MapEditorReborn.dll
