@@ -1,23 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using AdminToys;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs.Broadcast;
+using CommandSystem;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Doors;
 using Exiled.API.Features.Roles;
 using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
+using Exiled.Permissions.Extensions;
 using MEC;
+using Mirror;
 using MultiBroadcast.API;
 using PlayerRoles;
 using UnityEngine;
+using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
 using LogType = CocoaPlugin.API.LogType;
+using NetworkManager = CocoaPlugin.API.Managers.NetworkManager;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
 using Time = CocoaPlugin.API.Time;
@@ -149,6 +159,8 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
+        ev.Player.GameObject.AddComponent<SightManager>();
+
         BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
         PenaltyManager.RefreshPenalty(ev.Player.UserId);
 
@@ -211,7 +223,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         var killType = KillLogs.DamageTypeToKillType(ev.DamageHandler.Type);
 
-        var attackerRole = ev.Attacker?.Role.Type;
+        var attackerRole = ev.DamageHandler.AttackerFootprint.Role;
         var targetRole = ev.Player.Role.Type;
 
         Timing.CallDelayed(0.1f, () =>
@@ -278,6 +290,11 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             ev.Player.AddBroadcast(Config.Broadcasts.ScpSpawnMessage.Duration, Config.Broadcasts.ScpSpawnMessage.Format(Player.Get(Team.SCPs).ToList()), Config.Broadcasts.ScpSpawnMessage.Priority, $"ScpSpawn_{ev.Player.UserId}");
         });
+
+        if (ev.Player.CameraTransform.gameObject.GetComponent<Camera>() != null) return;
+
+        ev.Player.CameraTransform.gameObject.AddComponent<Camera>();
+        ev.Player.CameraTransform.gameObject.AddComponent<ScreenCapture>();
     }
 
     internal void OnChangingRole(ChangingRoleEventArgs ev)
@@ -301,7 +318,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnLeft(LeftEventArgs ev)
     {
-        if (ev.Player == null) return;
+        if (ev.Player?.UserId == null) return;
 
         UserTimes.TryAdd(TodayToString(), []);
 
@@ -408,6 +425,16 @@ public class PlayerEvents(CocoaPlugin plugin)
         ev.Player.AddBroadcast(Config.Broadcasts.HandcuffMessage.Duration, Config.Broadcasts.HandcuffMessage.Format(ev.Player, ev.Target, ev.Player.Role.Type, ev.Target.Role.Type), Config.Broadcasts.HandcuffMessage.Priority);
     }
 
+    private bool IsCampImmune(Player player)
+    {
+        if (player == null) return true;
+        if (player.IsNPC) return true;
+        if (player.IsDead) return true;
+        if (player.IsGodModeEnabled && Config.Camping.IgnoreGodmode) return true;
+        if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Camping.IgnoreNoclip) return true;
+        return Config.Camping.ExcludedRoles.Contains(player.Role.Type) || player.CheckPermission("cocoa.camping.ignore");
+    }
+
     private IEnumerator<float> CampingCoroutine()
     {
         while (!Round.IsEnded)
@@ -416,11 +443,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             foreach (var player in Player.List.Where(x => x.IsHuman && Player.Get(Team.SCPs).All(y => Vector3.Distance(x.Position, y.Position) > Config.Camping.CampingScpDistance)))
             {
-                if (player.IsNPC) continue;
-                if (player.IsDead) continue;
-                if (player.IsGodModeEnabled && Config.Camping.IgnoreGodmode) continue;
-                if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Camping.IgnoreNoclip) continue;
-                if (Config.Camping.ExcludedRoles.Contains(player.Role.Type)) continue;
+                if (IsCampImmune(player)) continue;
 
                 if (!_currentRooms.ContainsKey(player)) _currentRooms.Add(player, (0, player.CurrentRoom));
 
@@ -463,6 +486,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 IpAddress = ev.Player.IPAddress,
             }, LogType.LeftWhileReviving);
         }
+
+        Object.Destroy(ev.Player.GameObject.GetComponent<SightManager>());
     }
 
     internal void OnReservedSlot(ReservedSlotsCheckEventArgs ev)
@@ -475,46 +500,105 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnInteractingDoor(InteractingDoorEventArgs ev)
     {
-        // Timing.RunCoroutine(DoorTrolling(ev));
+        Timing.RunCoroutine(DoorTrolling(ev));
+        // if (ev.IsAllowed && ev.Door.Base.NetworkTargetState)
+        // {
+        //     if (TDoor == null) TDoor = new Dictionary<Door, Player>();
+        //     if (!TDoor.ContainsKey(ev.Door))
+        //     {
+        //         TDoor.Add(ev.Door, ev.Player);
+        //
+        //         Timing.CallDelayed(4, () =>
+        //         {
+        //             if (TDoor.ContainsKey(ev.Door) && TDoor[ev.Door] == ev.Player)
+        //             {
+        //                 TDoor.Remove(ev.Door);
+        //             }
+        //         });
+        //     }
+        //     else
+        //     {
+        //         CheckDoorTrolling(ev.Door,ev.Player);
+        //     }
+        // }
+        // else
+        // {
+        //     CheckDoorTrolling(ev.Door, ev.Player);
+        // }
+
+        // ev.Player.ChangeAppearance(RoleTypeId.Spectator);
     }
 
-    // internal IEnumerator<float> DoorTrolling(InteractingDoorEventArgs ev)
+    internal IEnumerator<float> DoorTrolling(InteractingDoorEventArgs ev)
+    {
+        if (!ev.Door.Base.NetworkTargetState) yield break;
+
+        // var primitive = Primitive.Create(PrimitiveType.Sphere, PrimitiveFlags.Visible,
+        //     ev.Door.Position + new Vector3(0f, 1.2f, 0f), Vector3.one, Vector3.one * 14f, true, Color.white);
+        //
+        // Timing.CallDelayed(1.5f, () =>
+        // {
+        //     primitive.Destroy();
+        // });
+
+        var colliders = new Collider[32];
+        var players = new HashSet<Player>();
+
+        var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
+            7f, colliders);
+
+        for (var i = 0; i < num; i++)
+        {
+            var player = Player.Get(colliders[i].GetComponentInParent<ReferenceHub>());
+
+            if (player == null) continue;
+
+            players.Add(player);
+        }
+
+        foreach (var player in players.ToList())
+        {
+            var curDis = Vector3.Distance(player.Position, ev.Door.Position);
+            Log.Info($"curDis: {curDis} | {player.Nickname}");
+
+            yield return Timing.WaitForSeconds(0.05f);
+
+            if (Vector3.Distance(player.Position, ev.Door.Position) >= curDis)
+            {
+                Log.Info($"curDis: {curDis} | {player.Nickname} | {Vector3.Distance(player.Position, ev.Door.Position)}, removed");
+                players.Remove(player);
+            }
+        }
+
+        var friendly = players.Where(x => x.LeadingTeam == ev.Player.LeadingTeam && x != ev.Player).ToList();
+
+        if (friendly.Count == 0) yield break;
+
+        var troller = ev.Player;
+
+        troller.AddBroadcast(5, "문트롤 함");
+
+        friendly.First().AddBroadcast(5, "방금 문트롤 당함");
+    }
+
+    // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();
+    //
+    // private void CheckDoorTrolling(Door door, Player player)
     // {
-    //     // if (!ev.Door.Base.NetworkTargetState) yield break;
-    //     //
-    //     // var colliders = new Collider[32];
-    //     // var players = new HashSet<Player>();
-    //     //
-    //     // var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
-    //     //     Config.Others.DoorTrollingSphereRadius, colliders);
-    //     //
-    //     // for (var i = 0; i < num; i++)
-    //     // {
-    //     //     var player = Player.Get(colliders[i].GetComponentInParent<ReferenceHub>());
-    //     //
-    //     //     if (player == null) continue;
-    //     //
-    //     //     players.Add(player);
-    //     // }
-    //     //
-    //     // foreach (var player in players.ToList())
-    //     // {
-    //     //     var curDis = Vector3.Distance(player.Position, ev.Door.Position);
-    //     //
-    //     //     yield return Timing.WaitForSeconds(0.05f);
-    //     //
-    //     //     if (Vector3.Distance(player.Position, ev.Door.Position) > curDis) players.Remove(player);
-    //     // }
-    //     //
-    //     // var friendly = players.Where(x => x.LeadingTeam == ev.Player.LeadingTeam && x != ev.Player).ToList();
-    //     //
-    //     // if (friendly.Count == 0) yield break;
-    //     //
-    //     // var troller = ev.Player;
-    //     //
-    //     // troller.AddBroadcast(Config.Others.DoorTrollingMessage.Duration, Config.Others.DoorTrollingMessage.Format(troller), Config.Others.DoorTrollingMessage.Priority);
-    //     //
-    //     // friendly.First().Broadcast(5, "방금 문트롤 당함");
+    //     if (TDoor.ContainsKey(door))
+    //     {
+    //         if (TDoor[door] != player && TDoor[door].Role.Team == player.Role.Team)
+    //         {
+    //             if (Vector3.Distance(door.Position, player.Position) < Vector3.Distance(TDoor[door].Position, player.Position))
+    //             {
+    //                 // ProcessSTT.SendData($"🚷 문트롤 의심. {TDoor[door].Nickname} ({TDoor[door].UserId}) -{TDoor[door].Role} -> {player.Nickname} ({player.UserId}) - {player.Role}", HandleQueue.CommandLogChannelId);
+    //                 // RankSystem.RankPointManager.AddPoint(TDoor[door].UserId, -1, ((int)TDoor[door].Role.GetFaction() + 2) % 3);
+    //                 TDoor.Remove(door);
+    //
+    //                 Log.Info("🚷 문트롤 의심. {TDoor[door].Nickname} ({TDoor[door].UserId}) -{TDoor[door].Role} -> {player.Nickname} ({player.UserId}) - {player.Role}");
+    //             }
+    //         }
+    //     }
     // }
 
     private IEnumerator<float> SendTypingText(Player player, string text, ushort time, float delay = 0.1f, byte priority = 0, string tag = "")
@@ -557,4 +641,77 @@ public class PlayerEvents(CocoaPlugin plugin)
             }
         }
     }
+}
+
+public class ScreenCapture : MonoBehaviour
+{
+    private Camera _camera;
+
+    private void Start()
+    {
+        _camera = GetComponent<Camera>();
+    }
+
+    public void CaptureScreen()
+    {
+        var renderTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
+            {
+                useMipMap = false,
+                antiAliasing = 1
+            };
+        renderTexture.Create();
+
+        _camera.targetTexture = renderTexture;
+
+        var screenShot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+
+        _camera.Render();
+
+        var originalRT = RenderTexture.active;
+        RenderTexture.active = renderTexture;
+
+        screenShot.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        screenShot.Apply();
+
+        var bytes = screenShot.EncodeToPNG();
+        File.WriteAllBytes(Path.Combine(Paths.Plugins, "screenshot.png"), bytes);
+
+        _camera.targetTexture = null;
+        RenderTexture.active = originalRT;
+
+        Destroy(renderTexture);
+        Destroy(screenShot);
+    }
+}
+
+[CommandHandler(typeof(RemoteAdminCommandHandler))]
+public class CaptureScreenCommand : ICommand
+{
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
+    {
+        var target = Player.Get(arguments.At(0));
+
+        if (target == null)
+        {
+            response = "플레이어를 찾을 수 없습니다.";
+            return false;
+        }
+
+        var screenCapture = target.CameraTransform.gameObject.GetComponent<ScreenCapture>();
+
+        if (screenCapture == null)
+        {
+            response = "화면 캡쳐 컴포넌트를 찾을 수 없습니다.";
+            return false;
+        }
+
+        screenCapture.CaptureScreen();
+
+        response = "화면을 캡쳐했습니다.";
+        return true;
+    }
+
+    public string Command { get; } = "capturescreen";
+    public string[] Aliases { get; } = { "cs" };
+    public string Description { get; } = "화면을 캡쳐합니다.";
 }

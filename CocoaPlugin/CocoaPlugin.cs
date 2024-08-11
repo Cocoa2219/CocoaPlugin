@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using CocoaPlugin.API;
+using CocoaPlugin.API.Beta;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
 using HarmonyLib;
-using Newtonsoft.Json;
-using RemoteAdmin;
 
 namespace CocoaPlugin
 {
@@ -32,10 +25,15 @@ namespace CocoaPlugin
 
         private Harmony Harmony { get; set; }
 
+        internal Store Store { get; private set; }
+
         public override void OnEnabled()
         {
+            // PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new[] {GraphicsDeviceType.Direct3D11});
+
             Instance = this;
 
+            AchievementManager.Initialize();
             API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
             PenaltyManager.LoadPenalties();
@@ -56,6 +54,9 @@ namespace CocoaPlugin
 
             NetworkManager.SendLog(new {}, LogType.Started);
 
+            Store = new Store();
+            Store.RegisterEvents();
+
             base.OnEnabled();
         }
 
@@ -69,6 +70,9 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
+            Store.UnregisterEvents();
+            Store = null;
+
             NetworkManager.SendLog(new {}, LogType.Stopped);
 
             NetworkManager.StopListener();

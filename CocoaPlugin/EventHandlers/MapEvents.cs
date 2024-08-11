@@ -47,16 +47,13 @@ public class MapEvents(CocoaPlugin plugin)
                     player.AddBroadcast(value.Duration, value.ParsedMessage, value.Priority);
                 }
             else if (ev.State == DecontaminationState.Lockdown)
-                foreach (var player in Player.List)
-                {
-                    player.AddBroadcast(value.Duration, value.ParsedMessage, value.Priority);
-                }
+                MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(value.Duration, value.ParsedMessage, value.Priority);
         }
     }
 
     internal void OnAnnouncingScpTermination(AnnouncingScpTerminationEventArgs ev)
     {
-        var attackerRole = ev.Attacker?.Role.Type;
+        var attackerRole = ev.DamageHandler.AttackerFootprint.Role;
         var targetRole = ev.Player.Role.Type;
 
         MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.ScpTerminationMessage.Duration,

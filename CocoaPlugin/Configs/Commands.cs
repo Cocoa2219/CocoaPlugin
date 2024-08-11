@@ -4,7 +4,7 @@ namespace CocoaPlugin.Configs;
 
 public class Commands
 {
-    public string CommandNotFound { get; set; } = "해당 명령어를 찾을 수 없습니다.";
+    public string CommandNotFound { get; set; } = "\n해당 명령어를 찾을 수 없습니다.\n%similars%";
 
     public string ExecuteSuccessColor { get; set; } = "white";
     public string ExecuteFailColor { get; set; } = "red";

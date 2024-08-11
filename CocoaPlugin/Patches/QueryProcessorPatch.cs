@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
@@ -52,13 +53,83 @@ public class QueryProcessorPatch
             return false;
         }
 
+        var closestCommands = FindClosestStrings(arguments[0], QueryProcessor.DotCommandHandler.AllCommands.Select(x => x.Command).ToList());
+        for (var i = 0; i < closestCommands.Count; i++)
+        {
+            closestCommands[i] = closestCommands[i].Insert(0, ".");
+        }
+
+        string responseText;
+
+        if (closestCommands.Count > 0)
+        {
+            responseText = CocoaPlugin.Instance.Config.Commands.CommandNotFound.Replace("%similars%", $"혹시 {string.Join(", ", closestCommands)} 명령어를 찾으셨나요?").Replace("\\n", "\n");
+
+            if (!EventManager.ExecuteEvent(new PlayerGameConsoleCommandExecutedEvent(__instance._hub, arguments[0],
+                    arguments.Skip(1).ToArray(), false, responseText)))
+                return false;
+
+            __instance._hub.gameConsoleTransmission.SendToClient(responseText,
+                CocoaPlugin.Instance.Config.Commands.ExecuteFailColor);
+            return false;
+        }
+
+        responseText = CocoaPlugin.Instance.Config.Commands.CommandNotFound.Replace("%similars%", "");
+
         if (!EventManager.ExecuteEvent(new PlayerGameConsoleCommandExecutedEvent(__instance._hub, arguments[0],
-                arguments.Skip(1).ToArray(), false, CocoaPlugin.Instance.Config.Commands.CommandNotFound)))
+                arguments.Skip(1).ToArray(), false, responseText)))
             return false;
 
-        __instance._hub.gameConsoleTransmission.SendToClient(CocoaPlugin.Instance.Config.Commands.CommandNotFound,
+        __instance._hub.gameConsoleTransmission.SendToClient(responseText,
             CocoaPlugin.Instance.Config.Commands.ExecuteFailColor);
         return false;
+    }
+
+    private static int LevenshteinDistance(string a, string b)
+    {
+        if (string.IsNullOrEmpty(a)) return string.IsNullOrEmpty(b) ? 0 : b.Length;
+        if (string.IsNullOrEmpty(b)) return a.Length;
+
+        var costs = new int[a.Length + 1, b.Length + 1];
+
+        for (var i = 0; i <= a.Length; i++)
+            costs[i, 0] = i;
+        for (var j = 0; j <= b.Length; j++)
+            costs[0, j] = j;
+
+        for (var i = 1; i <= a.Length; i++)
+        for (var j = 1; j <= b.Length; j++)
+        {
+            var cost = b[j - 1] == a[i - 1] ? 0 : 1;
+            costs[i, j] = Math.Min(
+                Math.Min(costs[i - 1, j] + 1, costs[i, j - 1] + 1),
+                costs[i - 1, j - 1] + cost);
+        }
+
+        return costs[a.Length, b.Length];
+    }
+
+    public static List<string> FindClosestStrings(string target, List<string> list)
+    {
+        var closestStrings = new List<string>();
+        var minDistance = int.MaxValue;
+
+        foreach (var s in list)
+        {
+            var distance = LevenshteinDistance(target, s);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestStrings.Clear();
+                closestStrings.Add(s);
+            }
+            else if (distance == minDistance)
+            {
+                closestStrings.Add(s);
+            }
+        }
+
+        return closestStrings;
     }
 }
 

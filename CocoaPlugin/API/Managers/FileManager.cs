@@ -27,4 +27,9 @@ public static class FileManager
 
         return File.ReadAllText(Path.Combine(FolderPath, fileName));
     }
+
+    public static string GetPath(string path)
+    {
+        return Path.Combine(FolderPath, path);
+    }
 }

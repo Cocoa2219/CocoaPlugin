@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
@@ -8,9 +9,11 @@ using Exiled.API.Features;
 using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
+using Exiled.Permissions.Extensions;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
+using PlayerRoles.FirstPersonControl;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
@@ -60,6 +63,52 @@ public class ServerEvents(CocoaPlugin plugin)
     {
         LastOneEnabled = false;
     }
+
+    // private IEnumerator<float> LookAtPlayer()
+    // {
+    //     while (!Round.IsEnded)
+    //     {
+    //         var npcs = Player.List.Where(x => x.IsNPC);
+    //
+    //         foreach (var npc in npcs)
+    //         {
+    //             var mouseLook = ((IFpcRole)npc.ReferenceHub.roleManager.CurrentRole).FpcModule.MouseLook;
+    //
+    //             var closestPlayer = Player.List.OrderBy(x => Vector3.Distance(x.Position, npc.Position)).FirstOrDefault(x => x != npc);
+    //
+    //             if (closestPlayer == null) continue;
+    //
+    //             var rotation = Quaternion.LookRotation(closestPlayer.Position - npc.Position, Vector3.up);
+    //
+    //             mouseLook.ApplySyncValues(ToClientUShorts(rotation).horizontal, ToClientUShorts(rotation).vertical);
+    //         }
+    //
+    //         yield return Timing.WaitForSeconds(0.1f);
+    //     }
+    // }
+    //
+    // private (ushort horizontal, ushort vertical) ToClientUShorts(Quaternion rotation)
+    // {
+    //     const float ToHorizontal = ushort.MaxValue / 360f;
+    //     const float ToVertical = ushort.MaxValue / 176f;
+    //
+    //     var fixVertical = -rotation.eulerAngles.x;
+    //
+    //     switch (fixVertical)
+    //     {
+    //         case < -90f:
+    //             fixVertical += 360f;
+    //             break;
+    //         case > 270f:
+    //             fixVertical -= 360f;
+    //             break;
+    //     }
+    //
+    //     var horizontal = Mathf.Clamp(rotation.eulerAngles.y, 0f, 360f);
+    //     var vertical = Mathf.Clamp(fixVertical, -88f, 88f) + 88f;
+    //
+    //     return ((ushort)Math.Round(horizontal * ToHorizontal), (ushort)Math.Round(vertical * ToVertical));
+    // }
 
     internal void OnRoundStarted()
     {
@@ -113,6 +162,16 @@ public class ServerEvents(CocoaPlugin plugin)
         }
     }
 
+    private bool IsAfkImmume(Player player)
+    {
+        if (player == null) return true;
+        if (player.IsNPC) return true;
+        if (player.IsDead) return true;
+        if (player.IsGodModeEnabled && Config.Afk.IgnoreGodmode) return true;
+        if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Afk.IgnoreNoclip) return true;
+        return Config.Afk.ExcludedRoles.Contains(player.Role.Type) || player.CheckPermission("cocoa.afk.ignore");
+    }
+
     private IEnumerator<float> AfkCoroutine()
     {
         while (!Round.IsEnded)
@@ -121,11 +180,7 @@ public class ServerEvents(CocoaPlugin plugin)
 
             foreach (var player in Player.List)
             {
-                if (player == null || player.IsNPC) continue;
-                if (player.IsDead) continue;
-                if (player.IsGodModeEnabled && Config.Afk.IgnoreGodmode) continue;
-                if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Afk.IgnoreNoclip) continue;
-                if (Config.Afk.ExcludedRoles.Contains(player.Role.Type)) continue;
+                if (IsAfkImmume(player)) continue;
 
                 if (!_afkPlayers.ContainsKey(player))
                 {

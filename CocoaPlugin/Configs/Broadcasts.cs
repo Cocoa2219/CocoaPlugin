@@ -35,7 +35,7 @@ public class Broadcasts
 
     public API.Broadcast WarheadCancelMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🚀 핵탄두가 폭파 절차가 <b>중지</b></color>되었습니다.</size></cspace>", 10);
 
-    public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=30>%text%</size></size></cspace>", 10, 10);
+    public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=40>%text%</size></size></cspace>", 10, 10);
 
     public API.Broadcast LeftWhileReviving { get; set; } = new();
 

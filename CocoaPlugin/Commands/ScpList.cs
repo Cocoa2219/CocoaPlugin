@@ -31,7 +31,7 @@ public class ScpList : ICommand
 
         foreach (var scp in scps)
         {
-            sb.AppendLine(scp.HasCustomName ? $"<color=white><color={scp.GetRoleColor()}>{scp.GetRoleName()}</color> | {scp.Nickname} ({scp.DisplayNickname}) | {scp.UserId}</color>" : $"<color=white><color={scp.GetRoleColor()}>{scp.GetRoleName()}</color> | {scp.Nickname} | {scp.UserId}</color>");
+            sb.AppendLine(scp.HasCustomName ? $"<color=white><color={scp.GetRoleColor()}>{scp.GetRoleName()}</color> | {scp.DisplayNickname} ({scp.Nickname}) | {scp.UserId}</color>" : $"<color=white><color={scp.GetRoleColor()}>{scp.GetRoleName()}</color> | {scp.Nickname} | {scp.UserId}</color>");
         }
 
         response = sb.ToString();

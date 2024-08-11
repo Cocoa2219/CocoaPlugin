@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -65,7 +67,7 @@ namespace CocoaPlugin.API.Managers
         {
             switch (context.Request.RawUrl)
             {
-                case "/":
+                case "/cmd":
                     try
                     {
                         if (context.Request.HttpMethod != "POST")
@@ -135,6 +137,36 @@ namespace CocoaPlugin.API.Managers
                     }
 
                     break;
+                case "/playerlist":
+                    try
+                    {
+                        var data = Player.List.Select(player => new
+                        {
+                            NetId = player.Id,
+                            UserId = player.UserId,
+                            Nickname = player.Nickname,
+                            Role = player.Role.Type,
+                        });
+
+                        var responseBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
+                        context.Response.ContentType = "application/json";
+                        context.Response.ContentLength64 = responseBytes.Length;
+                        await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error while processing PlayerList Request:\n{ex}");
+                    }
+                    finally
+                    {
+                        context.Response.OutputStream.Close();
+                    }
+
+                    break;
+                case "/":
+                    context.Response.StatusCode = 200;
+                    context.Response.OutputStream.Close();
+                    break;
                 default:
                     context.Response.StatusCode = 404;
                     context.Response.OutputStream.Close();
@@ -161,6 +193,17 @@ namespace CocoaPlugin.API.Managers
         #region Network Sender
 
         public static bool CanSend = true;
+
+        public static void SendAchievement(object achievement)
+        {
+            if (!CanSend)
+            {
+                Log.Warn("NetworkManager is disabled.");
+                return;
+            }
+
+            _ = SendAsync(new { Achievement = achievement }, PostType.Achievement);
+        }
 
         public static void SendDm(object content)
         {
@@ -209,7 +252,7 @@ namespace CocoaPlugin.API.Managers
             {
                 if (ex.Message.Contains("ConnectFailure"))
                 {
-                    Log.Warn("Cannot connect to the server. Is the bot server running?");
+                    Log.Warn("Cannot connect to the server.");
                 }
                 else
                 {

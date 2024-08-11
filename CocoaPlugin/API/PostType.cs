@@ -4,5 +4,6 @@ public enum PostType
 {
     None,
     Log,
-    LinkDm
+    LinkDm,
+    Achievement,
 }
