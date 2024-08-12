@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CocoaPlugin.API.Managers;
 using Exiled.API.Features;
 using Exiled.API.Features.Roles;
@@ -19,6 +20,7 @@ public class EncounterMachine : Achievement
 
     private HashSet<string> _startPlayers;
     private CoroutineHandle _coroutine;
+    private bool _scp079;
 
     public override void RegisterEvents()
     {
@@ -42,13 +44,18 @@ public class EncounterMachine : Achievement
 
         foreach (var player in Exiled.API.Features.Player.List) _startPlayers.Add(player.UserId);
         _coroutine = Timing.RunCoroutine(Check079());
+
+        _scp079 = Exiled.API.Features.Player.Get(RoleTypeId.Scp079).Any();
     }
 
     private void OnEscaping(EscapingEventArgs ev)
     {
         if (ev.Player == null) return;
 
-        if (_startPlayers.Contains(ev.Player.UserId)) Achieve(ev.Player.UserId);
+        if (_startPlayers.Contains(ev.Player.UserId))
+        {
+            if (_scp079) Achieve(ev.Player.UserId);
+        }
     }
 
     public override void OnRoundRestarting()

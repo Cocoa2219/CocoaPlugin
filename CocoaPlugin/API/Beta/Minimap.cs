@@ -123,7 +123,7 @@ public class Minimap
             Log.Info("\n\n");
         }
 
-        Player.ChangingItem += OnChangingItem;
+        // Player.ChangingItem += OnChangingItem;
     }
 
     public Vector2 GetRoomPosition(Room room)
@@ -165,7 +165,7 @@ public class Minimap
 
                 var dist = Vector3.Distance(ev.Player.Position, roomStruct.Position);
 
-                if (dist <= 30)
+                if (dist <= 500)
                 {
                     roomsToShow.Add((roomStruct, new Vector2(newX, newZ)));
                 }
@@ -173,31 +173,23 @@ public class Minimap
         }
 
         var curRoom = roomsToShow.Find(x => x.room.Name == ev.Player.CurrentRoom);
-        var centerX = curRoom.gridPosition.x;
-        var centerZ = curRoom.gridPosition.y;
-
-        roomsToShow = roomsToShow.Select(x => (x.room, new Vector2(x.gridPosition.x - centerX, x.gridPosition.y - centerZ))).ToList();
 
         foreach (var (room, gridPosition) in roomsToShow)
         {
             var relativePosition = new Vector3(gridPosition.x, 0, gridPosition.y);
 
             var spawnPosition = ev.Player.Position
-                                + Vector3.forward * relativePosition.z
-                                + Vector3.right * relativePosition.x;
-
-            spawnPosition -= new Vector3(0f, 1.5f, 0f);
+                                + Vector3.forward * relativePosition.z * 0.5f
+                                + Vector3.right * relativePosition.x * 0.5f;
 
             var sc = ObjectSpawner.SpawnSchematic(
                 new SchematicSerializable(room.Type.ToString()),
                 spawnPosition,
                 Quaternion.Euler(room.Rotation),
-                Vector3.one, isStatic: false);
+                Vector3.one * 0.5f, isStatic: false);
 
-            Log.Info(sc.Position);
         }
     }
-
 }
 
 public struct RoomStruct

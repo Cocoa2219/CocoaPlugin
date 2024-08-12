@@ -275,6 +275,10 @@ public abstract class Achievement
     {
         AchievedUsers[userId] = false;
 
+        var player = Player.Get(userId);
+
+        player?.SendConsoleMessage($"You've just lost {Name}!", "white");
+
         AchievementManager.SaveAchievementStat(this);
     }
 
@@ -346,7 +350,8 @@ public abstract class ProgressiveAchievement : Achievement
 
         if (player != null)
         {
-            player.SendConsoleMessage($"You've just lost progress on {Name}! ({Progresses[userId]}/{NeededProgress})", "white");
+            player.
+                SendConsoleMessage($"You've just lost progress on {Name}! ({Progresses[userId]}/{NeededProgress})", "white");
         }
 
         AchievementManager.SaveAchievementStat(this);
@@ -391,7 +396,11 @@ public enum AchievementType
     GhostLight,
     ReturnedPeace,
     CannotSee,
-    OwMyEyes
+    OwMyEyes,
+    FaintGuilt,
+    InsurgencyCoin,
+    ToTheIsekai,
+    QuietSurface
 }
 
 public enum AchievementCategory
@@ -401,14 +410,7 @@ public enum AchievementCategory
     Teamwork,
     Challenge,
     Etc,
-    Scp049,
-    Scp079,
-    Scp096,
-    Scp106,
-    Scp173,
-    Scp939,
-    Scp0492,
-    Scp3114
+    Scp
 }
 
 public class Category
@@ -455,61 +457,12 @@ public class Category
             DiscordEmojiId = "🎉",
             Description = "그 외 웃기거나 특별한 업적입니다."
         },
-        [AchievementCategory.Scp049] = new Category
+        [AchievementCategory.Scp] = new Category
         {
-            AchievementCategory = AchievementCategory.Scp049,
-            Name = "SCP-049",
+            AchievementCategory = AchievementCategory.Scp,
+            Name = "SCP",
             DiscordEmojiId = "",
-            Description = "SCP-049와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp079] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp079,
-            Name = "SCP-079",
-            DiscordEmojiId = "",
-            Description = "SCP-079와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp096] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp096,
-            Name = "SCP-096",
-            DiscordEmojiId = "",
-            Description = "SCP-096와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp106] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp106,
-            Name = "SCP-106",
-            DiscordEmojiId = "",
-            Description = "SCP-106와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp173] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp173,
-            Name = "SCP-173",
-            DiscordEmojiId = "",
-            Description = "SCP-173와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp939] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp939,
-            Name = "SCP-939",
-            DiscordEmojiId = "",
-            Description = "SCP-939와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp0492] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp0492,
-            Name = "SCP-049-2",
-            DiscordEmojiId = "",
-            Description = "SCP-049-2와 관련된 업적입니다."
-        },
-        [AchievementCategory.Scp3114] = new Category
-        {
-            AchievementCategory = AchievementCategory.Scp3114,
-            Name = "SCP-3114",
-            DiscordEmojiId = "",
-            Description = "SCP-3114와 관련된 업적입니다."
+            Description = "SCP와 관련된 업적입니다."
         }
     };
 

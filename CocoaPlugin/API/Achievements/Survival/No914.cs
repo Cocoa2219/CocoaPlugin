@@ -12,7 +12,7 @@ public class No914 : Achievement
 {
     public override AchievementType Type { get; set; } = AchievementType.No914;
     public override Category Category { get; set; } = Category.Categories[AchievementCategory.Survival];
-    public override string Name { get; set; } = "914? 그게 뭔데?";
+    public override string Name { get; set; } = "914? 그게 뭔데?!";
     public override string Description { get; set; } = "한 게임에서 SCP-914에 들어가지 않고 라운드를 끝내십시오.";
 
     private CoroutineHandle _coroutine;

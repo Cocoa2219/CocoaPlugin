@@ -26,7 +26,7 @@ public class AllCalculated : Achievement
         if (ev.Player == null || ev.Attacker == null) return;
         if (!ev.Attacker.IsScp) return;
 
-        if (ev.Player.Health <= 1)
+        if (ev.Player.Health - ev.Amount <= 1)
         {
             Achieve(ev.Player.UserId);
         }

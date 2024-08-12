@@ -177,18 +177,22 @@
         <Compile Include="API\Achievements\Combat\BehindYou.cs" />
         <Compile Include="API\Achievements\Combat\CannotSee.cs" />
         <Compile Include="API\Achievements\Combat\ChainReaction.cs" />
+        <Compile Include="API\Achievements\Combat\FaintGuilt.cs" />
         <Compile Include="API\Achievements\Combat\FirstBlood.cs" />
         <Compile Include="API\Achievements\Combat\GhostLight.cs" />
         <Compile Include="API\Achievements\Combat\NowMyTurn.cs" />
         <Compile Include="API\Achievements\Combat\OwMyEyes.cs" />
+        <Compile Include="API\Achievements\Combat\QuietSurface.cs" />
         <Compile Include="API\Achievements\Combat\ReturnedPeace.cs" />
         <Compile Include="API\Achievements\Survival\BloodedItem.cs" />
         <Compile Include="API\Achievements\Survival\BlurryFace.cs" />
         <Compile Include="API\Achievements\Survival\DimensionEscape.cs" />
         <Compile Include="API\Achievements\Survival\EncounterMachine.cs" />
         <Compile Include="API\Achievements\Survival\HideAndSeekExpert.cs" />
+        <Compile Include="API\Achievements\Survival\InsurgencyCoin.cs" />
         <Compile Include="API\Achievements\Survival\JustWasAHuman.cs" />
         <Compile Include="API\Achievements\Survival\No914.cs" />
+        <Compile Include="API\Achievements\Survival\ToTheIsekai.cs" />
         <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
         <Compile Include="API\Beta\Minimap.cs" />
         <Compile Include="API\Beta\Store.cs" />
@@ -263,12 +267,8 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="References\0Harmony.dll" />
-      <Content Include="References\Curve\Curve.json" />
-      <Content Include="References\Endroom\Endroom.json" />
       <Content Include="References\MultiBroadcast.dll" />
-      <Content Include="References\Straight\Straight.json" />
-      <Content Include="References\TShape\TShape.json" />
-      <Content Include="References\XShape\XShape.json" />
+      <Content Include="References\Rooms.zip" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

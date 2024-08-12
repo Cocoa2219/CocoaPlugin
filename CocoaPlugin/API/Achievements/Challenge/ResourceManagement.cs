@@ -83,9 +83,18 @@ public class ResourceManagement : Achievement
                     _startPlayers.Remove(player.UserId);
                 }
 
+                items[player.UserId] = player.Items.Count;
+
                 if (player.Ammo.Any(x => x.Value < ammo[player.UserId][x.Key]))
                 {
                     _startPlayers.Remove(player.UserId);
+                }
+
+                foreach (var ammoType in player.Ammo)
+                {
+                    ammo[player.UserId].TryAdd(ammoType.Key, 0);
+
+                    ammo[player.UserId][ammoType.Key] = ammoType.Value;
                 }
             }
 
