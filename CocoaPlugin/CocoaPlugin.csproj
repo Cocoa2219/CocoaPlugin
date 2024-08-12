@@ -173,7 +173,15 @@
         <Compile Include="API\Achievements\Challenge\Rich.cs" />
         <Compile Include="API\Achievements\Challenge\Speedrun.cs" />
         <Compile Include="API\Achievements\Challenge\WaitAlready.cs" />
+        <Compile Include="API\Achievements\Combat\BeepBeepBeep.cs" />
+        <Compile Include="API\Achievements\Combat\BehindYou.cs" />
+        <Compile Include="API\Achievements\Combat\CannotSee.cs" />
+        <Compile Include="API\Achievements\Combat\ChainReaction.cs" />
         <Compile Include="API\Achievements\Combat\FirstBlood.cs" />
+        <Compile Include="API\Achievements\Combat\GhostLight.cs" />
+        <Compile Include="API\Achievements\Combat\NowMyTurn.cs" />
+        <Compile Include="API\Achievements\Combat\OwMyEyes.cs" />
+        <Compile Include="API\Achievements\Combat\ReturnedPeace.cs" />
         <Compile Include="API\Achievements\Survival\BloodedItem.cs" />
         <Compile Include="API\Achievements\Survival\BlurryFace.cs" />
         <Compile Include="API\Achievements\Survival\DimensionEscape.cs" />

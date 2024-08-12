@@ -144,41 +144,27 @@ public class Minimap
         return new Vector2(-1, -1);
     }
 
-    public Vector3 GetWorldPosition(Room room)
+    private void OnChangingItem(ChangingItemEventArgs ev)
     {
-        var position = GetRoomPosition(room);
-
-        return new Vector3(position.x * 15, 0, position.y * 15);
-    }
-
-    public void OnChangingItem(ChangingItemEventArgs ev)
-    {
-        // Check if the item being changed to is of type Adrenaline
         if (ev.Item?.Type != ItemType.Adrenaline) return;
 
-        // Apply the "Ensnared" effect to the player
         ev.Player.EnableEffect(EffectType.Ensnared);
 
-        // List to store the nearby rooms
         var roomsToShow = new List<(RoomStruct room, Vector2 gridPosition)>();
 
-        // Get the player's current room's grid
         var currentZoneRooms = Rooms[ev.Player.CurrentRoom.Zone];
 
         int newX = 0;
         int newZ = 0;
 
-        // Loop through each room in the grid
         for (int x = 0; x < currentZoneRooms.GetLength(0); x++)
         {
             for (int z = 0; z < currentZoneRooms.GetLength(1); z++)
             {
                 var roomStruct = currentZoneRooms[x, z];
 
-                // Calculate the distance from the player to the room
                 var dist = Vector3.Distance(ev.Player.Position, roomStruct.Position);
 
-                // If the room is within 60 units from the player, add it to the list along with its grid position
                 if (dist <= 30)
                 {
                     roomsToShow.Add((roomStruct, new Vector2(newX, newZ)));
@@ -194,17 +180,14 @@ public class Minimap
 
         foreach (var (room, gridPosition) in roomsToShow)
         {
-            // Calculate the relative position of the room based on the grid position
-            Vector3 relativePosition = new Vector3(gridPosition.x, 0, gridPosition.y);
+            var relativePosition = new Vector3(gridPosition.x, 0, gridPosition.y);
 
-            // Convert the relative position to the world position in front of the player
-            Vector3 spawnPosition = ev.Player.Position
-                                    + Vector3.forward * relativePosition.z
-                                    + Vector3.right * relativePosition.x;
+            var spawnPosition = ev.Player.Position
+                                + Vector3.forward * relativePosition.z
+                                + Vector3.right * relativePosition.x;
 
             spawnPosition -= new Vector3(0f, 1.5f, 0f);
 
-            // Spawn the schematic at the calculated position
             var sc = ObjectSpawner.SpawnSchematic(
                 new SchematicSerializable(room.Type.ToString()),
                 spawnPosition,

@@ -383,7 +383,15 @@ public enum AchievementType
     BlurryFace,
     DimensionEscape,
     UncomfortableCohabitation,
-    EncounterMachine
+    EncounterMachine,
+    ChainReaction,
+    NowMyTurn,
+    BeepBeepBeep,
+    BehindYou,
+    GhostLight,
+    ReturnedPeace,
+    CannotSee,
+    OwMyEyes
 }
 
 public enum AchievementCategory
