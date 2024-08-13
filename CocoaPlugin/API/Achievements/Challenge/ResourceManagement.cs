@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API.Managers;
+using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs.Server;
 using MEC;
 using Server = Exiled.Events.Handlers.Server;
@@ -85,6 +87,20 @@ public class ResourceManagement : Achievement
 
                 items[player.UserId] = player.Items.Count;
 
+                var ammos = new Dictionary<ItemType, ushort>();
+
+                foreach (var ammoType in player.Ammo)
+                {
+                    ammos.TryAdd(ammoType.Key, 0);
+
+                    ammos[ammoType.Key] = ammoType.Value;
+
+                    if (player.Items.Any(x => x is Firearm firearm && firearm.AmmoType == ammoType.Key))
+                    {
+                        ammos[ammoType.Key] += firearm.Ammo;
+                    }
+                }
+
                 if (player.Ammo.Any(x => x.Value < ammo[player.UserId][x.Key]))
                 {
                     _startPlayers.Remove(player.UserId);
@@ -100,5 +116,18 @@ public class ResourceManagement : Achievement
 
             yield return Timing.WaitForOneFrame;
         }
+    }
+
+    private AmmoType ItemTypeToAmmoType(ItemType type)
+    {
+        return type switch
+        {
+            ItemType.Ammo556x45 => AmmoType.Nato556,
+            ItemType.Ammo762x39 => AmmoType.Nato762,
+            ItemType.Ammo9x19 => AmmoType.Nato9,
+            ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
+            ItemType.Ammo44cal => AmmoType.Ammo44Cal,
+            _ => AmmoType.None
+        };
     }
 }

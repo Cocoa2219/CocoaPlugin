@@ -26,6 +26,7 @@ public class CannotSee : Achievement
     private void OnDying(DyingEventArgs ev)
     {
         if (ev.Attacker == null) return;
+        if (ev.Attacker.IsScp) return;
 
         if (ev.Player.CurrentRoom != ev.Attacker.CurrentRoom) return;
 

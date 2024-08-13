@@ -26,6 +26,7 @@ public class FirstBlood : Achievement
     private void OnDying(DyingEventArgs ev)
     {
         if (ev.Attacker == null) return;
+        if (ev.Attacker.IsScp) return;
 
         if (_canAchieve)
         {

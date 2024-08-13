@@ -5,12 +5,12 @@ using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Scp079;
 using MEC;
 
-namespace CocoaPlugin.API.Achievements.Combat;
+namespace CocoaPlugin.API.Achievements.SCP;
 
 public class ChainReaction : Achievement
 {
     public override AchievementType Type { get; set; } = AchievementType.ChainReaction;
-    public override Category Category { get; set; } = Category.Categories[AchievementCategory.Combat];
+    public override Category Category { get; set; } = Category.Categories[AchievementCategory.Scp];
     public override string Name { get; set; } = "연쇄 반응";
     public override string Description { get; set; } = "SCP-079로 테슬라를 통해 동시에 5명 이상을 사살하십시오.";
 

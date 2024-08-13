@@ -400,7 +400,13 @@ public enum AchievementType
     FaintGuilt,
     InsurgencyCoin,
     ToTheIsekai,
-    QuietSurface
+    QuietSurface,
+    FirstSteps,
+    EscapeExpert,
+    Invincible,
+    BloodInMyHand,
+    WetWithBlood,
+    NightmareOfSky
 }
 
 public enum AchievementCategory
@@ -461,7 +467,7 @@ public class Category
         {
             AchievementCategory = AchievementCategory.Scp,
             Name = "SCP",
-            DiscordEmojiId = "",
+            DiscordEmojiId = "😈",
             Description = "SCP와 관련된 업적입니다."
         }
     };

@@ -31,6 +31,7 @@ public class BehindYou : Achievement
     private void OnDying(Exiled.Events.EventArgs.Player.DyingEventArgs ev)
     {
         if (ev.Attacker == null) return;
+        if (ev.Attacker.IsScp) return;
 
         if (SightManager.Get(ev.Player).IsSeen(ev.Attacker)) return;
 

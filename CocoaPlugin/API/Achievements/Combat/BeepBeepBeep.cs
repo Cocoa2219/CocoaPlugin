@@ -27,6 +27,7 @@ public class BeepBeepBeep : Achievement
     private void OnExplodingGrenade(ExplodingGrenadeEventArgs ev)
     {
         if (ev.Player == null) return;
+        if (ev.Player.IsScp) return;
         if (ev.Projectile.Type != ItemType.GrenadeHE) return;
 
         Timing.CallDelayed(0.1f, () =>
