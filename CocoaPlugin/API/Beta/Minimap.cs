@@ -41,8 +41,9 @@ public class Minimap
             rooms[xIndex, zIndex] = new RoomStruct
             {
                 Type = room.RoomShape,
+                Name = room,
                 Position = room.Position,
-                Rotation = room.Rotation.eulerAngles
+                Rotation = room.Rotation
             };
         }
 
@@ -66,8 +67,9 @@ public class Minimap
             rooms[xIndex, zIndex] = new RoomStruct
             {
                 Type = room.RoomShape,
+                Name = room,
                 Position = room.Position,
-                Rotation = room.Rotation.eulerAngles
+                Rotation = room.Rotation
             };
         }
 
@@ -93,35 +95,11 @@ public class Minimap
                 Type = room.RoomShape,
                 Name = room,
                 Position = room.Position,
-                Rotation = room.Rotation.eulerAngles
+                Rotation = room.Rotation
             };
         }
 
         Rooms.Add(ZoneType.Entrance, rooms);
-
-        foreach (var room in Rooms)
-        {
-            for (int z = 0; z < room.Value.GetLength(1); z++)
-            {
-                string line = "";
-                for (int x = 0; x < room.Value.GetLength(0); x++)
-                {
-                    line += room.Value[x, z].Type switch
-                    {
-                        RoomShape.Endroom => room.Value[x, z].Rotation == Vector3.zero ? "E" : "F",
-                        RoomShape.TShape => room.Value[x, z].Rotation == Vector3.zero ? "T" : "S",
-                        RoomShape.Curve => room.Value[x, z].Rotation == Vector3.zero ? "C" : "L",
-                        RoomShape.Straight => room.Value[x, z].Rotation == Vector3.zero ? "I" : "J",
-                        RoomShape.XShape => "X",
-                        _ => " "
-                    };
-                }
-
-                Log.Info(line);
-            }
-
-            Log.Info("\n\n");
-        }
 
         // Player.ChangingItem += OnChangingItem;
     }
@@ -144,9 +122,69 @@ public class Minimap
         return new Vector2(-1, -1);
     }
 
+    public Dictionary<Exiled.API.Features.Player, Dictionary<SchematicObject, RoomStruct>> Minimaps { get; set; } = new();
+
     private void OnChangingItem(ChangingItemEventArgs ev)
     {
-        if (ev.Item?.Type != ItemType.Adrenaline) return;
+        if (ev.Item?.Type == ItemType.KeycardO5)
+        {
+            if (!Minimaps.ContainsKey(ev.Player)) return;
+
+            var results = new RaycastHit[10];
+            var size = Physics.RaycastNonAlloc(ev.Player.CameraTransform.position, ev.Player.CameraTransform.forward, results, 10f);
+
+            if (size > 0)
+            {
+                foreach (var hit in results)
+                {
+                    if (hit.collider == null)
+                    {
+                        continue;
+                    }
+
+                    if (hit.transform.GetComponentInParent<SchematicObject>() != null)
+                    {
+                        var schematic = hit.transform.GetComponentInParent<SchematicObject>();
+
+                        if (Minimaps[ev.Player].TryGetValue(schematic, out var room))
+                        {
+                            ev.Player.Position = room.Name.Position + Vector3.up * 1.5f;
+
+                            ev.Player.ClearInventory();
+                            ev.Player.DisableEffect(EffectType.Ensnared);
+
+                            foreach (var s in Minimaps[ev.Player])
+                            {
+                                s.Key.Destroy();
+                            }
+
+                            Minimaps.Remove(ev.Player);
+
+                            return;
+                        }
+                    }
+                }
+            }
+
+            return;
+        }
+
+        if (ev.Item?.Type != ItemType.Adrenaline)
+        {
+            if (Minimaps.TryGetValue(ev.Player, out var schematics))
+            {
+                foreach (var schematic in schematics)
+                {
+                    schematic.Key.Destroy();
+                }
+
+                Minimaps.Remove(ev.Player);
+            }
+
+            ev.Player.DisableEffect(EffectType.Ensnared);
+
+            return;
+        }
 
         ev.Player.EnableEffect(EffectType.Ensnared);
 
@@ -154,41 +192,60 @@ public class Minimap
 
         var currentZoneRooms = Rooms[ev.Player.CurrentRoom.Zone];
 
-        int newX = 0;
-        int newZ = 0;
+        var schs = new Dictionary<SchematicObject, RoomStruct>();
 
-        for (int x = 0; x < currentZoneRooms.GetLength(0); x++)
-        {
-            for (int z = 0; z < currentZoneRooms.GetLength(1); z++)
+        for (var x = 0; x < currentZoneRooms.GetLength(0); x++)
+            for (var z = 0; z < currentZoneRooms.GetLength(1); z++)
             {
                 var roomStruct = currentZoneRooms[x, z];
 
                 var dist = Vector3.Distance(ev.Player.Position, roomStruct.Position);
 
-                if (dist <= 500)
-                {
-                    roomsToShow.Add((roomStruct, new Vector2(newX, newZ)));
-                }
+                if (dist <= 30) roomsToShow.Add((roomStruct, new Vector2(x, z)));
             }
-        }
 
-        var curRoom = roomsToShow.Find(x => x.room.Name == ev.Player.CurrentRoom);
+        var curRoomPos = GetRoomPosition(ev.Player.CurrentRoom);
+        var curRoomIndex = new Vector3(curRoomPos.x, 0, curRoomPos.y);
+
+        Minimaps.TryAdd(ev.Player, []);
 
         foreach (var (room, gridPosition) in roomsToShow)
         {
             var relativePosition = new Vector3(gridPosition.x, 0, gridPosition.y);
 
+            relativePosition -= curRoomIndex;
+
             var spawnPosition = ev.Player.Position
                                 + Vector3.forward * relativePosition.z * 0.5f
                                 + Vector3.right * relativePosition.x * 0.5f;
 
-            var sc = ObjectSpawner.SpawnSchematic(
-                new SchematicSerializable(room.Type.ToString()),
-                spawnPosition,
-                Quaternion.Euler(room.Rotation),
-                Vector3.one * 0.5f, isStatic: false);
+            spawnPosition = new Vector3(spawnPosition.x, spawnPosition.y - 0.8f, spawnPosition.z);
 
+            var rot = room.Rotation;
+
+            if (room.Name?.Type == RoomType.LczClassDSpawn)
+            {
+                schs.Add(ObjectSpawner.SpawnSchematic(
+                    new SchematicSerializable("ClassDCell"),
+                    spawnPosition,
+                    rot,
+                    Vector3.one * 0.5f, isStatic: false), room);
+            }
+            else
+            {
+                schs.Add(ObjectSpawner.SpawnSchematic(
+                    new SchematicSerializable(room.Type.ToString()),
+                    spawnPosition,
+                    rot,
+                    Vector3.one * 0.5f, isStatic: false), room);
+            }
+
+            // Log.Info(sc.Position);
         }
+
+        schs = schs.Where(x => x.Key != null).ToDictionary(x => x.Key, x => x.Value);
+
+        Minimaps[ev.Player] = schs;
     }
 }
 
@@ -197,5 +254,5 @@ public struct RoomStruct
     public RoomShape Type { get; set; }
     public Room Name { get; set; }
     public Vector3 Position { get; set; }
-    public Vector3 Rotation { get; set; }
+    public Quaternion Rotation { get; set; }
 }
