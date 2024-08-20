@@ -1,7 +1,6 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs;
 using Exiled.API.Enums;
@@ -13,7 +12,7 @@ using Exiled.Permissions.Extensions;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
-using PlayerRoles.FirstPersonControl;
+using Respawning;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
@@ -32,6 +31,7 @@ public class ServerEvents(CocoaPlugin plugin)
 
     private CoroutineHandle _autoNukeCoroutine;
     private CoroutineHandle _autoBroadcastCoroutine;
+    private CoroutineHandle _elevatorCoroutine;
 
     internal void SubscribeEvents()
     {
@@ -226,6 +226,39 @@ public class ServerEvents(CocoaPlugin plugin)
                 }
             });
         }
+
+        Timing.KillCoroutines(_elevatorCoroutine);
+
+        _elevatorCoroutine = Timing.RunCoroutine(ElevatorCoroutine(
+            ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? ElevatorType.GateA : ElevatorType.GateB,
+            ev.Players.Count));
+    }
+
+    private IEnumerator<float> ElevatorCoroutine(ElevatorType type, int spawnCount)
+    {
+        var lift = Lift.Get(type);
+        var counter = 0;
+
+        while (true)
+        {
+            counter++;
+
+            if (counter >= 300) yield break;
+
+            var players = lift.Players.ToList();
+
+            foreach (var player in players)
+            {
+                if (player.HasBroadcast("Elevator"))
+                {
+                    player.RemoveBroadcast("Elevator");
+                }
+
+                player.AddBroadcast(Config.Broadcasts.ElevatorMessage.Duration, Config.Broadcasts.ElevatorMessage.Format(players.Count, spawnCount), Config.Broadcasts.ElevatorMessage.Priority, "Elevator");
+            }
+
+            yield return Timing.WaitForSeconds(0.1f);
+        }
     }
 
     internal void OnRestartingRound()
@@ -234,8 +267,8 @@ public class ServerEvents(CocoaPlugin plugin)
         _afkPlayers.Clear();
 
         Timing.KillCoroutines(_autoNukeCoroutine);
-
         Timing.KillCoroutines(_autoBroadcastCoroutine);
+        Timing.KillCoroutines(_elevatorCoroutine);
 
         BadgeManager.SaveBadges();
         PenaltyManager.SavePenalties();

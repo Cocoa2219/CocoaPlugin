@@ -249,3 +249,4 @@ C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Threading.Tasks
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.ValueTuple.xml
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\UnityEditor.dll
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MapEditorReborn.dll
+C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MultiBroadcast.dll

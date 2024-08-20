@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <doc>
     <assembly>
         <name>Microsoft.IdentityModel.Logging</name>
@@ -782,7 +782,7 @@
         <member name="T:System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes">
              <summary>
              Specifies the types of members that are dynamically accessed.
-            
+
              This enumeration has a <see cref="T:System.FlagsAttribute"/> attribute that allows a
              bitwise combination of its member values.
              </summary>

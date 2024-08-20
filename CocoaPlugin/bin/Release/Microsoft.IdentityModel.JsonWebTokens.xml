@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <doc>
     <assembly>
         <name>Microsoft.IdentityModel.JsonWebTokens</name>
@@ -6,17 +6,17 @@
     <members>
         <member name="M:Microsoft.IdentityModel.JsonWebTokens.ClaimTypeMapping.#cctor">
             <summary>
-            Initializes static members of the <see cref="T:Microsoft.IdentityModel.JsonWebTokens.ClaimTypeMapping"/> class. 
+            Initializes static members of the <see cref="T:Microsoft.IdentityModel.JsonWebTokens.ClaimTypeMapping"/> class.
             </summary>
         </member>
         <member name="P:Microsoft.IdentityModel.JsonWebTokens.ClaimTypeMapping.InboundClaimTypeMap">
             <summary>
-            Gets the InboundClaimTypeMap used by JwtSecurityTokenHandler when producing claims from jwt. 
+            Gets the InboundClaimTypeMap used by JwtSecurityTokenHandler when producing claims from jwt.
             </summary>
         </member>
         <member name="P:Microsoft.IdentityModel.JsonWebTokens.ClaimTypeMapping.OutboundClaimTypeMap">
             <summary>
-            Gets the OutboundClaimTypeMap is used by JwtSecurityTokenHandler to shorten claim types when creating a jwt. 
+            Gets the OutboundClaimTypeMap is used by JwtSecurityTokenHandler to shorten claim types when creating a jwt.
             </summary>
         </member>
         <member name="T:Microsoft.IdentityModel.JsonWebTokens.JsonClaimValueTypes">
@@ -1162,7 +1162,7 @@
         </member>
         <member name="T:Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames">
             <summary>
-            Defines the standard claim names as per the JWT (JSON Web Token) specification. 
+            Defines the standard claim names as per the JWT (JSON Web Token) specification.
             See: <see href="https://datatracker.ietf.org/doc/html/rfc7519#section-4"/>.
             See: <see href="https://openid.net/specs/openid-connect-core-1_0.html#IDToken"/>.
             See: <see href="https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims"/>.
@@ -1373,7 +1373,7 @@
         <member name="T:Microsoft.IdentityModel.JsonWebTokens.JwtTokenDecryptionParameters">
             <summary>
             Represents the parameters needed to decrypt a JSON Web Token.
-            The JwtSecurityTokenHandler uses this as a helper when decrypting a JwtSecurityToken, the JsonWebTokenHandler sets the JsonWebToken property. 
+            The JwtSecurityTokenHandler uses this as a helper when decrypting a JwtSecurityToken, the JsonWebTokenHandler sets the JsonWebToken property.
             </summary>
         </member>
         <member name="P:Microsoft.IdentityModel.JsonWebTokens.JwtTokenDecryptionParameters.Alg">

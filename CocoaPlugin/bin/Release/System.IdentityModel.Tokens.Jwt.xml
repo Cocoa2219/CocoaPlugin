@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <doc>
     <assembly>
         <name>System.IdentityModel.Tokens.Jwt</name>
@@ -361,7 +361,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with no claims. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with no claims. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             Creates a empty <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/>
             </summary>
         </member>
@@ -373,7 +373,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.Security.Claims.Claim},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             </summary>
             <param name="issuer">If this value is not null, a { iss, 'issuer' } claim will be added, overwriting any 'iss' claim in 'claims' if present.</param>
             <param name="audience">If this value is not null, a { aud, 'audience' } claim will be added, appending to any 'aud' claims in 'claims' if present.</param>
@@ -383,7 +383,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.Security.Claims.Claim},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             </summary>
             <param name="issuer">If this value is not null, a { iss, 'issuer' } claim will be added, overwriting any 'iss' claim in 'claims' if present.</param>
             <param name="audience">If this value is not null, a { aud, 'audience' } claim will be added, appending to any 'aud' claims in 'claims' if present.</param>
@@ -397,7 +397,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor(System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IEnumerable{System.Security.Claims.Claim},System.Collections.Generic.IDictionary{System.String,System.Object},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             </summary>
             <param name="issuer">If this value is not null, an { iss, 'issuer' } claim will be added, overwriting any 'iss' claim in 'claims' and 'claimCollection' if present.</param>
             <param name="audiences">If this value is not null, all non-null non-whitespace strings in it will be added to an { aud, 'audience' }, appending to any 'aud' claims in 'claims' or 'claimCollection' if present. </param>
@@ -413,7 +413,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor(System.String,System.String,System.Collections.Generic.IList{System.String},System.Collections.Generic.IEnumerable{System.Security.Claims.Claim},System.Collections.Generic.IDictionary{System.String,System.Object},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             </summary>
             <param name="issuer">If this value is not null, an { iss, 'issuer' } claim will be added, overwriting any 'iss' claim in 'claims' and 'claimCollection' if present.</param>
             <param name="audience">If this value is not null, an { aud, 'audience' } claim will be added, appending to any 'aud' claims in 'claims' or 'claimCollection' if present.</param>
@@ -430,7 +430,7 @@
         </member>
         <member name="M:System.IdentityModel.Tokens.Jwt.JwtPayload.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.Security.Claims.Claim},System.Collections.Generic.IDictionary{System.String,System.Object},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
             <summary>
-            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>. 
+            Initializes a new instance of the <see cref="T:System.IdentityModel.Tokens.Jwt.JwtPayload"/> class with claims added for each parameter specified. Default string comparer <see cref="P:System.StringComparer.Ordinal"/>.
             </summary>
             <param name="issuer">If this value is not null, an { iss, 'issuer' } claim will be added, overwriting any 'iss' claim in 'claims' and 'claimCollection' if present.</param>
             <param name="audience">If this value is not null, an { aud, 'audience' } claim will be added, appending to any 'aud' claims in 'claims' or 'claimCollection' if present.</param>
@@ -905,7 +905,7 @@
             <summary>
             Gets the 'value' of the 'actor' claim { actort, 'value' }.
             </summary>
-            <remarks>If the 'actor' claim is not found, null is returned.</remarks> 
+            <remarks>If the 'actor' claim is not found, null is returned.</remarks>
         </member>
         <member name="P:System.IdentityModel.Tokens.Jwt.JwtSecurityToken.Audiences">
             <summary>

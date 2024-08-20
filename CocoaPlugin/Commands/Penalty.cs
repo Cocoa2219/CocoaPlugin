@@ -62,6 +62,12 @@ public class PenaltyRemoteAdmin : ICommand
             return false;
         }
 
+        Player target = null;
+        if (arguments.Count >= 2)
+        {
+            target = Player.Get(arguments.At(1));
+        }
+
         bool result;
         switch (arguments.At(0).ToLower())
         {
@@ -84,7 +90,7 @@ public class PenaltyRemoteAdmin : ICommand
                     return false;
                 }
 
-                result = PenaltyManager.AddPenalty(arguments.At(1), new Penalty
+                result = PenaltyManager.AddPenalty(target?.UserId ?? arguments.At(1), new Penalty
                 {
                     Until = Utility.UnixTimeNow + time,
                     Issued = Utility.UnixTimeNow,
@@ -93,12 +99,14 @@ public class PenaltyRemoteAdmin : ICommand
                     IssuerNickname = player.Nickname
                 });
 
+                PenaltyManager.SavePenalties();
+
                 response = result ? "벌점을 추가했습니다." : "벌점을 추가하지 못했습니다.";
                 return result;
             case "remove":
                 if (arguments.Count < 3)
                 {
-                    response = "사용법: badge remove <id> <index>";
+                    response = "사용법: penalty remove <id> <index>";
                     return false;
                 }
 
@@ -108,7 +116,9 @@ public class PenaltyRemoteAdmin : ICommand
                     return false;
                 }
 
-                result = PenaltyManager.RemovePenalty(arguments.At(1), index - 1);
+                result = PenaltyManager.RemovePenalty(target?.UserId ?? arguments.At(1), index - 1);
+
+                PenaltyManager.SavePenalties();
 
                 response = result ? "벌점을 제거했습니다." : "벌점을 제거하지 못했습니다.";
                 return result;
@@ -119,9 +129,9 @@ public class PenaltyRemoteAdmin : ICommand
                     return false;
                 }
 
-                var penalties = PenaltyManager.GetPenalties(arguments.At(1));
+                var penalties = PenaltyManager.GetPenalties(target?.UserId ?? arguments.At(1));
 
-                var sb = new StringBuilder($"\n<b>{arguments.At(1)}의 벌점 목록 ({PenaltyManager.GetPenaltyCount(arguments.At(1))}개의 벌점)</b>\n\n");
+                var sb = new StringBuilder($"\n<b>{target?.UserId ?? arguments.At(1)}의 벌점 목록 ({PenaltyManager.GetPenaltyCount(target?.UserId ?? arguments.At(1))}개의 벌점)</b>\n\n");
 
                 for (var i = 0; i < penalties.Count; i++)
                 {

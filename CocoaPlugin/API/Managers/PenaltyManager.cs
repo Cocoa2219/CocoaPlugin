@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
+using MultiBroadcast.API;
 
 namespace CocoaPlugin.API.Managers;
 
@@ -9,6 +11,9 @@ public static class PenaltyManager
     private const string PenaltyFileName = "Penalties.txt";
 
     private static Dictionary<string, List<Penalty>> PenaltyCache { get; } = new();
+
+    public static event Action<string, Penalty> OnPenaltyAdded;
+    public static event Action<string, Penalty> OnPenaltyRemoved;
 
     public static bool AddPenalty(string id, Penalty penalty)
     {
@@ -22,6 +27,14 @@ public static class PenaltyManager
         }
 
         penalties.Add(penalty);
+
+        OnPenaltyAdded?.Invoke(id, penalty);
+
+        if (Player.TryGet(id, out var player))
+        {
+            player.AddBroadcast(CocoaPlugin.Instance.Config.Broadcasts.PenaltyAddedMessage.Duration, CocoaPlugin.Instance.Config.Broadcasts.PenaltyAddedMessage.Message, CocoaPlugin.Instance.Config.Broadcasts.PenaltyAddedMessage.Priority);
+            player.SendConsoleMessage($"\n<b><color=#d44b42>벌점이 추가되었습니다.</color></b>\n\n사유 | <b>{penalty.Reason}</b>\n유효일 | <color=#d44b42><b>{Utility.UnixTimeToDateTime(penalty.Issued)}</b></color>부터 <color=#d44b42><b>{Utility.UnixTimeToDateTime(penalty.Until)}</b></color>까지 유효합니다.\n처리 관리자 | <color=#d44b42>{penalty.IssuerNickname} ({penalty.Issuer})</color>", "white");
+        }
 
         return true;
     }
@@ -40,6 +53,10 @@ public static class PenaltyManager
     {
         if (!PenaltyCache.TryGetValue(id, out var penalties) || index < 0 || index >= penalties.Count)
             return false;
+
+        var penalty = penalties[index];
+
+        OnPenaltyRemoved?.Invoke(id, penalty);
 
         penalties.RemoveAt(index);
 

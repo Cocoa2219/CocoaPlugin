@@ -17,6 +17,7 @@ public class SightManager : MonoBehaviour
     {
         _player = Player.Get(gameObject);
         _seenPlayers = [];
+        _coroutines = new();
     }
 
     public void Update()

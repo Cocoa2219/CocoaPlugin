@@ -36,7 +36,7 @@ namespace CocoaPlugin
 
             Instance = this;
 
-            AchievementManager.Initialize();
+            // AchievementManager.Initialize();
             API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
             PenaltyManager.LoadPenalties();

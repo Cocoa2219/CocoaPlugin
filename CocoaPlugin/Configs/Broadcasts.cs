@@ -35,9 +35,14 @@ public class Broadcasts
 
     public API.Broadcast WarheadCancelMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🚀 핵탄두가 폭파 절차가 <b>중지</b></color>되었습니다.</size></cspace>", 10);
 
+    public API.Broadcast PenaltyAddedMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>⛔ <b>벌점</b>이 추가되었습니다.</color></size>\n<size=20>자세한 내용은 `키를 눌러 콘솔을 확인하세요.</size></cspace>", 10, 10);
+
     public API.Broadcast AdministrativeBroadcastMessage { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>🔑 관리자 공지 | <b>%nickname%</b> : </color>\n<size=40>%text%</size></size></cspace>", 10, 10);
 
-    public API.Broadcast LeftWhileReviving { get; set; } = new();
+    public API.Broadcast LeftWhileReviving { get; set; } = new("<cspace=0.05em><size=30><color=#d44b42>💨 <b>%nickname%</b><size=15> | %userId% </size></color>의 <color=#d44b42><b>소생 중 탈주</b></color>가 감지되었습니다.</size>\n<size=20></size></cspace>", 10, 10);
+
+    public API.Broadcast ElevatorMessage { get; set; } =
+        new("<cspace=0.05em><size=30><color=#d44b42>⬇ 엘레베이터 하중</color> %value1%명 / %value2%명</size></cspace>", 1, 0);
 
     public Dictionary<DecontaminationState, API.Broadcast> DecontaminationMessages { get; set; } = new()
     {

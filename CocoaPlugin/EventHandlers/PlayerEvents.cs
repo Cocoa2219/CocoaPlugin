@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Achievements;
 using AdminToys;
 using CocoaPlugin.API;
@@ -23,6 +24,7 @@ using MEC;
 using Mirror;
 using MultiBroadcast.API;
 using PlayerRoles;
+using PlayerStatsSystem;
 using UnityEngine;
 using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
@@ -53,6 +55,8 @@ public class PlayerEvents(CocoaPlugin plugin)
     internal Dictionary<string, Dictionary<string, Time>> UserTimes = [];
     internal Dictionary<string, Dictionary<string, int>> UserRoundCounts = [];
 
+    private Timer _nextDayTimer;
+
     internal void SubscribeEvents()
     {
         Exiled.Events.Handlers.Player.Verified += OnVerified;
@@ -73,6 +77,11 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         UserTimes.TryAdd(today, new Dictionary<string, Time>());
         UserRoundCounts.TryAdd(today, new Dictionary<string, int>());
+
+        var now = DateTime.Now;
+        var nextDay = new DateTime(now.Year, now.Month, now.Day + 1, 0, 0, 0);
+
+        _nextDayTimer = new Timer(OnNextDay, null, nextDay - now, TimeSpan.FromDays(1));
     }
 
     internal void UnsubscribeEvents()
@@ -90,6 +99,58 @@ public class PlayerEvents(CocoaPlugin plugin)
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
         Server.RoundEnded -= OnRoundEnded;
+
+        _nextDayTimer.Dispose();
+    }
+
+    internal void OnNextDay(object state)
+    {
+        var today = TodayToString();
+
+        var flag = UserTimes.TryAdd(today, []) || UserRoundCounts.TryAdd(today, []);
+
+        if (flag)
+            foreach (var stopwatch in _userStopwatches)
+            {
+                stopwatch.Value.Restart();
+
+                var time = new Time
+                {
+                    Hours = stopwatch.Value.Elapsed.Hours,
+                    Minutes = stopwatch.Value.Elapsed.Minutes,
+                    Seconds = stopwatch.Value.Elapsed.Seconds
+                };
+
+                if (!UserTimes[today].TryAdd(stopwatch.Key, time))
+                {
+                    UserTimes[today][stopwatch.Key] += time;
+                }
+            }
+        else
+        {
+            Timing.CallDelayed(0.1f, () =>
+            {
+                UserTimes.TryAdd(today, []);
+                UserRoundCounts.TryAdd(today, []);
+
+                foreach (var stopwatch in _userStopwatches)
+                {
+                    stopwatch.Value.Restart();
+
+                    var time = new Time
+                    {
+                        Hours = stopwatch.Value.Elapsed.Hours,
+                        Minutes = stopwatch.Value.Elapsed.Minutes,
+                        Seconds = stopwatch.Value.Elapsed.Seconds
+                    };
+
+                    if (!UserTimes[today].TryAdd(stopwatch.Key, time))
+                    {
+                        UserTimes[today][stopwatch.Key] += time;
+                    }
+                }
+            });
+        }
     }
 
     internal void OnRestartingRound()
@@ -160,7 +221,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnVerified(VerifiedEventArgs ev)
     {
-        ev.Player.GameObject.AddComponent<SightManager>();
+        // ev.Player.GameObject.AddComponent<SightManager>();
 
         BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
         PenaltyManager.RefreshPenalty(ev.Player.UserId);
@@ -488,7 +549,7 @@ public class PlayerEvents(CocoaPlugin plugin)
             }, LogType.LeftWhileReviving);
         }
 
-        Object.Destroy(ev.Player.GameObject.GetComponent<SightManager>());
+        // Object.Destroy(ev.Player.GameObject.GetComponent<SightManager>());
     }
 
     internal void OnReservedSlot(ReservedSlotsCheckEventArgs ev)
@@ -501,7 +562,13 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnInteractingDoor(InteractingDoorEventArgs ev)
     {
+        if (Player.List.Where(x => Vector3.Distance(ev.Player.Position, x.Position) < 30f).Any(x => x.Role.Team != ev.Player.Role.Team))
+        {
+            return;
+        }
+
         Timing.RunCoroutine(DoorTrolling(ev));
+
         // if (ev.IsAllowed && ev.Door.Base.NetworkTargetState)
         // {
         //     if (TDoor == null) TDoor = new Dictionary<Door, Player>();
@@ -534,11 +601,11 @@ public class PlayerEvents(CocoaPlugin plugin)
     {
         if (!ev.Door.Base.NetworkTargetState) yield break;
 
-        var colliders = new Collider[32];
+        var colliders = new Collider[128];
         var players = new HashSet<Player>();
 
         var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
-            Config.Others.DoorTrollingSphereRadius, colliders);
+            Config.Others.DoorTrollingSphereRadius, colliders, LayerMask.NameToLayer("Player"));
 
         for (var i = 0; i < num; i++)
         {
@@ -567,7 +634,22 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         var troller = ev.Player;
 
-        troller.AddBroadcast(Config.Others.DoorTrollingMessage.Duration, Config.Others.DoorTrollingMessage.Message, Config.Others.DoorTrollingMessage.Priority);
+        if (troller.HasBroadcast("DoorTrolling"))
+        {
+            troller.RemoveBroadcast("DoorTrolling");
+        }
+
+        troller.AddBroadcast(Config.Others.DoorTrollingMessage.Duration, Config.Others.DoorTrollingMessage.Message, Config.Others.DoorTrollingMessage.Priority, "DoorTrolling");
+
+        NetworkManager.SendLog(new
+        {
+            Nickname = troller.Nickname,
+            UserId = troller.UserId,
+            Targets = friendly.Select(x => new
+            {
+                Nickname = x.Nickname
+            }),
+        }, LogType.DoorTrolling);
     }
 
     // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();

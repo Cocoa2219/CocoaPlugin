@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <doc>
     <assembly>
         <name>Microsoft.IdentityModel.Tokens</name>
@@ -816,7 +816,7 @@
         <member name="T:Microsoft.IdentityModel.Tokens.CryptoProviderCacheOptions">
             <summary>
             Specifies the CryptoProviderCacheOptions which can be used to configure the internal cryptoprovider cache.
-            We are using our own simple LRU caching implementation across all targets. 
+            We are using our own simple LRU caching implementation across all targets.
             See <see cref="T:Microsoft.IdentityModel.Tokens.EventBasedLRUCache`2"/> for more details.
             </summary>
         </member>
@@ -827,7 +827,7 @@
         </member>
         <member name="P:Microsoft.IdentityModel.Tokens.CryptoProviderCacheOptions.SizeLimit">
             <summary>
-            Gets or sets the size limit of the cache (in number of items). 
+            Gets or sets the size limit of the cache (in number of items).
             When the cache reaches 95% of this size, 20% of the least recently used items will be evicted.
             </summary>
         </member>
@@ -2203,7 +2203,7 @@
         <member name="M:Microsoft.IdentityModel.Tokens.EventBasedLRUCache`2.Compact">
             <summary>
             Remove items from the Dictionary by the desired compaction percentage.
-            Since _map does not have LRU order, items are simply removed from using FirstOrDefault(). 
+            Since _map does not have LRU order, items are simply removed from using FirstOrDefault().
             </summary>
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.EventBasedLRUCache`2.CalculateNewCacheSize">
@@ -2425,7 +2425,7 @@
         </member>
         <member name="T:Microsoft.IdentityModel.Tokens.SecurityTokenEncryptionKeyNotFoundException">
             <summary>
-            This exception is thrown when a security token contained a key identifier but the key was not found by the runtime 
+            This exception is thrown when a security token contained a key identifier but the key was not found by the runtime
             when decrypting a token.
             </summary>
         </member>
@@ -2890,7 +2890,7 @@
         </member>
         <member name="T:Microsoft.IdentityModel.Tokens.SecurityTokenNotYetValidException">
             <summary>
-            Throw this exception when a received Security token has an effective time 
+            Throw this exception when a received Security token has an effective time
             in the future.
             </summary>
         </member>
@@ -3146,7 +3146,7 @@
         <member name="T:Microsoft.IdentityModel.Tokens.ICryptoProvider">
             <summary>
             Provides extensibility for cryptographic operators.
-            If custom operators are needed, <see cref="P:Microsoft.IdentityModel.Tokens.CryptoProviderFactory.CustomCryptoProvider"/> can be set to return these operators. 
+            If custom operators are needed, <see cref="P:Microsoft.IdentityModel.Tokens.CryptoProviderFactory.CustomCryptoProvider"/> can be set to return these operators.
             This property will be checked before each creation.
             </summary>
         </member>
@@ -3595,7 +3595,7 @@
             </summary>
             <param name="key">a <see cref="T:Microsoft.IdentityModel.Tokens.X509SecurityKey"/> to convert.</param>
             <param name="representAsRsaKey">
-            <c>true</c> to represent the <paramref name="key"/> as an <see cref="T:Microsoft.IdentityModel.Tokens.RsaSecurityKey"/>, 
+            <c>true</c> to represent the <paramref name="key"/> as an <see cref="T:Microsoft.IdentityModel.Tokens.RsaSecurityKey"/>,
             <c>false</c> to represent the <paramref name="key"/> as an <see cref="T:Microsoft.IdentityModel.Tokens.X509SecurityKey"/>, using the "x5c" parameter.
             </param>
             <returns>a <see cref="T:Microsoft.IdentityModel.Tokens.JsonWebKey"/>.</returns>
@@ -3794,15 +3794,15 @@
              Generic implementation of object pooling pattern with predefined pool size limit. The main
              purpose is that limited number of frequently used objects can be kept in the pool for
              further recycling.
-            
-             Notes: 
+
+             Notes:
              1) it is not the goal to keep all returned objects. Pool is not meant for storage. If there
                 is no space in the pool, extra returned objects will be dropped.
-            
+
              2) it is implied that if object was obtained from a pool, the caller will return it back in
                 a relatively short time. Keeping checked out objects for long durations is ok, but
                 reduces usefulness of pooling. Just new up your own.
-            
+
              Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice.
              Rationale:
                 If there is no intent for reusing the object, do not use pool - just use "new".
@@ -3882,7 +3882,7 @@
              Encrypts data with the System.Security.Cryptography.RSA algorithm.
             </summary>
             <param name="input">The data to be encrypted.</param>
-            <param name="fOAEP">true to perform direct System.Security.Cryptography.RSA encryption using OAEP padding (only available on a computer running Microsoft Windows XP or later); 
+            <param name="fOAEP">true to perform direct System.Security.Cryptography.RSA encryption using OAEP padding (only available on a computer running Microsoft Windows XP or later);
             otherwise, false to use PKCS#1 v1.5 padding.</param>
             <returns>encrypted bytes.</returns>
             <exception cref="T:System.ArgumentNullException">if <paramref name="input"/> is null or has Length == 0.</exception>
@@ -4178,7 +4178,7 @@
             Gets or sets the <see cref="T:System.Collections.Generic.Dictionary`2"/> which contains any custom header claims that need to be added to the JWT token header.
             The 'alg', 'kid', 'x5t', 'enc', and 'zip' claims are added by default based on the <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.SigningCredentials"/>,
             <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.EncryptingCredentials"/>, and/or <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.CompressionAlgorithm"/> provided and SHOULD NOT be included in this dictionary as this
-            will result in an exception being thrown. 
+            will result in an exception being thrown.
             <remarks> These claims are only added to the outer header (in case of a JWE).</remarks>
             </summary>
         </member>
@@ -4187,7 +4187,7 @@
             Gets or sets the <see cref="T:System.Collections.Generic.Dictionary`2"/> which contains any custom header claims that need to be added to the inner JWT token header.
             The 'alg', 'kid', 'x5t', 'enc', and 'zip' claims are added by default based on the <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.SigningCredentials"/>,
             <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.EncryptingCredentials"/>, and/or <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.CompressionAlgorithm"/> provided and SHOULD NOT be included in this dictionary as this
-            will result in an exception being thrown. 
+            will result in an exception being thrown.
             <remarks>
             For JsonWebTokenHandler, these claims are merged with <see cref="P:Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor.AdditionalHeaderClaims"/> while adding to the inner JWT header.
             </remarks>
@@ -4231,7 +4231,7 @@
         </member>
         <member name="P:Microsoft.IdentityModel.Tokens.SecurityTokenHandler.CanValidateToken">
             <summary>
-            Gets a value indicating whether this handler supports validation of tokens 
+            Gets a value indicating whether this handler supports validation of tokens
             handled by this instance.
             </summary>v
             <returns>'True' if the instance is capable of SecurityToken
@@ -4239,7 +4239,7 @@
         </member>
         <member name="P:Microsoft.IdentityModel.Tokens.SecurityTokenHandler.CanWriteToken">
             <summary>
-            Gets a value indicating whether the class provides serialization functionality to serialize token handled 
+            Gets a value indicating whether the class provides serialization functionality to serialize token handled
             by this instance.
             </summary>
             <returns>true if the WriteToken method can serialize this token.</returns>
@@ -4258,7 +4258,7 @@
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.SecurityTokenHandler.CanReadToken(System.String)">
             <summary>
-            Indicates whether the current token string can be read as a token 
+            Indicates whether the current token string can be read as a token
             of the type handled by this instance.
             </summary>
             <param name="tokenString">The token string thats needs to be read.</param>
@@ -4739,7 +4739,7 @@
         </member>
         <member name="F:Microsoft.IdentityModel.Tokens.TokenHandler.DefaultTokenLifetimeInMinutes">
             <summary>
-            Default lifetime of tokens created. When creating tokens, if 'expires', 'notbefore' or 'issuedat' are null, 
+            Default lifetime of tokens created. When creating tokens, if 'expires', 'notbefore' or 'issuedat' are null,
             then a default will be set to: issuedat = DateTime.UtcNow, notbefore = DateTime.UtcNow, expires = DateTime.UtcNow + TimeSpan.FromMinutes(TokenLifetimeInMinutes).
             </summary>
             <remarks>See: <see cref="P:Microsoft.IdentityModel.Tokens.TokenHandler.SetDefaultTimesOnTokenCreation"/> for configuration.</remarks>
@@ -5062,7 +5062,7 @@
             This means that no default 'issuer' validation will occur.
             Even if <see cref="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.ValidateIssuer"/> is false, this delegate will still be called.
             If both <see cref="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.IssuerValidatorUsingConfiguration"/> and <see cref="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.IssuerValidator"/> are set, IssuerValidatorUsingConfiguration takes
-            priority. 
+            priority.
             </remarks>
         </member>
         <member name="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.IssuerValidatorAsync">
@@ -5319,7 +5319,7 @@
             Gets or sets a boolean that controls if validation of the <see cref="T:Microsoft.IdentityModel.Tokens.SecurityKey"/> that signed the securityToken is called.
             </summary>
             <remarks>It is possible for tokens to contain the public key needed to check the signature. For example, X509Data can be hydrated into an X509Certificate,
-            which can be used to validate the signature. In these cases it is important to validate the SigningKey that was used to validate the signature. 
+            which can be used to validate the signature. In these cases it is important to validate the SigningKey that was used to validate the signature.
             This boolean only applies to default signing key validation. If <see cref= "P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.IssuerSigningKeyValidator" /> is set, it will be called regardless of whether this
             property is true or false.
             The default is <c>false</c>.
@@ -5346,7 +5346,7 @@
         <member name="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.ValidateTokenReplay">
             <summary>
             Gets or sets a boolean to control if the token replay will be validated during token validation.
-            </summary> 
+            </summary>
             <remarks>
             This boolean only applies to default token replay validation. If <see cref= "P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.TokenReplayValidator" /> is set, it will be called regardless of whether this
             property is true or false.
@@ -5406,14 +5406,14 @@
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.UniqueId.CreateUniqueId">
             <summary>
-            Creates a unique ID suitable for use in an xml:id field. The value is 
+            Creates a unique ID suitable for use in an xml:id field. The value is
             not hard to guess but is unique.
             </summary>
             <returns>The unique ID.</returns>
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.UniqueId.CreateUniqueId(System.String)">
             <summary>
-            Creates a unique ID similar to that created by CreateNonRandomId, 
+            Creates a unique ID similar to that created by CreateNonRandomId,
             but instead of an underscore, the supplied prefix is used.
             </summary>
             <param name="prefix">The prefix to use.</param>
@@ -5421,7 +5421,7 @@
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.UniqueId.CreateRandomId">
             <summary>
-            Creates a unique, random ID suitable for use in an xml:id field. The 
+            Creates a unique, random ID suitable for use in an xml:id field. The
             value is hard to guess and unique.
             </summary>
             <returns>The unique ID.</returns>
@@ -5436,7 +5436,7 @@
         </member>
         <member name="M:Microsoft.IdentityModel.Tokens.UniqueId.CreateRandomUri">
             <summary>
-            Creates a unique, random ID suitable for use as a URI. The value is 
+            Creates a unique, random ID suitable for use as a URI. The value is
             hard to guess and unique. The URI is in the urn:uuid: namespace.
             </summary>
             <returns>The random URI.</returns>
@@ -5950,7 +5950,7 @@
             When a <see cref="P:Microsoft.IdentityModel.Tokens.TokenValidationParameters.TypeValidator"/> is registered,
             the type returned by the delegate is used to populate this property.
             Otherwise, the type is resolved from the token itself, if available
-            (e.g for a JSON Web Token, from the "typ" header). 
+            (e.g for a JSON Web Token, from the "typ" header).
             </summary>
         </member>
         <member name="P:Microsoft.IdentityModel.Tokens.TokenValidationResult.ValidationResults">

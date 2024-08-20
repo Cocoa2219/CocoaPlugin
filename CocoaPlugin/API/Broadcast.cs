@@ -140,6 +140,30 @@ public class Broadcast
         return sb.ToString().ParseGradient();
     }
 
+    public string Format(params int[] value)
+    {
+        var sb = new StringBuilder(Message);
+
+        for (var i = 0; i < value.Length; i++)
+        {
+            sb.Replace($"%value{i + 1}%", value[i].ToString());
+        }
+
+        return sb.ToString().ParseGradient();
+    }
+
+    public string Format(params string[] value)
+    {
+        var sb = new StringBuilder(Message);
+
+        for (var i = 0; i < value.Length; i++)
+        {
+            sb.Replace($"%value{i}%", value[i]);
+        }
+
+        return sb.ToString().ParseGradient();
+    }
+
     public string Format(int amount)
     {
         var sb = new StringBuilder(Message);
