@@ -23,7 +23,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +34,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
     </PropertyGroup>
     <ItemGroup>
@@ -199,7 +199,6 @@
         <Compile Include="API\Achievements\Survival\No914.cs" />
         <Compile Include="API\Achievements\Survival\ToTheIsekai.cs" />
         <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
-        <Compile Include="API\Beta\Minimap.cs" />
         <Compile Include="API\Beta\Store.cs" />
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\DiscordCommand.cs" />
@@ -213,6 +212,7 @@
         <Compile Include="API\Managers\CheckManager.cs" />
         <Compile Include="API\Managers\ConnectionManager.cs" />
         <Compile Include="API\Managers\FileManager.cs" />
+        <Compile Include="API\Managers\LogManager.cs" />
         <Compile Include="API\Managers\NetworkManager.cs" />
         <Compile Include="API\Managers\PenaltyManager.cs" />
         <Compile Include="API\Managers\ReservedSlotManager.cs" />
@@ -231,13 +231,13 @@
         <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\Chat.cs" />
         <Compile Include="Commands\Link.cs" />
-        <Compile Include="Commands\NetworkManagerCommand.cs" />
         <Compile Include="Commands\NoScp.cs" />
         <Compile Include="Commands\OffsetPosition.cs" />
         <Compile Include="Commands\Penalty.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Commands\SendPost.cs" />
+        <Compile Include="Configs\Achievements.cs" />
         <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\AutoNuke.cs" />
         <Compile Include="Configs\Broadcasts.cs" />
@@ -246,6 +246,7 @@
         <Compile Include="Configs\Camping.cs" />
         <Compile Include="Configs\Commands.cs" />
         <Compile Include="Configs\Config.cs" />
+        <Compile Include="Configs\Logs.cs" />
         <Compile Include="Configs\Others.cs" />
         <Compile Include="Configs\Reconnects.cs" />
         <Compile Include="Configs\Scps.cs" />

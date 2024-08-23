@@ -28,26 +28,25 @@ namespace CocoaPlugin
 
         internal Store Store { get; private set; }
 
-        internal Minimap Minimap { get; private set; }
-
         public override void OnEnabled()
         {
             // PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new[] {GraphicsDeviceType.Direct3D11});
 
             Instance = this;
 
-            // AchievementManager.Initialize();
+            AchievementManager.Initialize();
             API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
             PenaltyManager.LoadPenalties();
             CheckManager.LoadChecks();
             UserManager.LoadUsers();
             ConnectionManager.LoadConnections();
+            LogManager.Initialize();
 
             PlayerEvents = new PlayerEvents(this);
             ServerEvents = new ServerEvents(this);
             MapEvents = new MapEvents(this);
-            NetworkHandler = new NetworkHandler(this);
+            NetworkHandler = new NetworkHandler();
             SubscribeEvents();
 
             Harmony = new Harmony($"cocoa.cocoaplugin-{DateTime.Now.Ticks}");
@@ -59,9 +58,6 @@ namespace CocoaPlugin
 
             Store = new Store();
             Store.RegisterEvents();
-
-            Minimap = new Minimap();
-            Map.Generated += Minimap.OnMapGenerated;
 
             base.OnEnabled();
         }
@@ -76,11 +72,10 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
-            Map.Generated -= Minimap.OnMapGenerated;
-            Minimap = null;
-
             Store.UnregisterEvents();
             Store = null;
+
+            LogManager.Destroy();
 
             NetworkManager.SendLog(new {}, LogType.Stopped);
 

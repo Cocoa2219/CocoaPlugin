@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using CocoaPlugin.API.Managers;
 using CommandSystem;
 using Exiled.API.Features;
 using MultiBroadcast.API;
@@ -11,16 +12,6 @@ namespace CocoaPlugin.Commands;
 [CommandHandler(typeof(ClientCommandHandler))]
 public class Chat : ICommand
 {
-    private string LogPath => Path.Combine(Paths.Exiled, "Logs", "ScpChat.log");
-
-    private void Log(string sender, string msg)
-    {
-        if (!File.Exists(LogPath))
-            File.WriteAllText(LogPath, "");
-
-        File.AppendAllText(LogPath, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {sender} : {msg}\n");
-    }
-
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {
         var player = Player.Get(sender as CommandSender);
@@ -52,7 +43,7 @@ public class Chat : ICommand
             receiver.AddBroadcast(CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Duration, CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Format(player, message), CocoaPlugin.Instance.Config.Broadcasts.Chats.ScpChatMessage.Priority);
         }
 
-        Log(player.Nickname, message);
+        LogManager.WriteLog($"{player.Nickname} ({player.UserId}) - SCP 채팅을 전송: {message}");
 
         response = "채팅을 전송했습니다.";
         return true;

@@ -13,226 +13,232 @@ namespace CocoaPlugin.API.Managers;
 
 public static class AchievementManager
 {
-    // public static List<Achievement> Achievements { get; private set; }
-    //
-    // public const string AchievementFolder = "Achievements";
-    // public const string AchievementStatsFolder = "Achievements\\Stats";
-    //
-    // public static void Initialize()
-    // {
-    //     Log.Info("Loading achievements...");
-    //
-    //     var sw = new System.Diagnostics.Stopwatch();
-    //
-    //     var achievements = Assembly.GetExecutingAssembly().GetTypes()
-    //         .Where(t => typeof(Achievement).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract).ToList();
-    //
-    //     Achievements = [];
-    //
-    //     foreach (var instance in achievements.Select(achievement => (Achievement)Activator.CreateInstance(achievement)))
-    //     {
-    //         Server.RestartingRound += instance.OnRoundRestarting;
-    //
-    //         instance.RegisterEvents();
-    //         Log.Info($"Loaded achievement: {instance.Type} / {instance.Name}");
-    //         Achievements.Add(instance);
-    //     }
-    //
-    //     sw.Stop();
-    //
-    //     Log.Info($"Loaded {Achievements.Count} achievements in {sw.ElapsedMilliseconds}ms.");
-    //
-    //     Log.Info("Saving achievements...");
-    //     SaveAchievements();
-    //     Log.Info("Saved achievements.");
-    //
-    //     Log.Info("Loading achievement stats...");
-    //     foreach (var achievement in Achievements)
-    //     {
-    //         var (achievedUsers, progresses) = LoadAchievementStats(achievement);
-    //
-    //         achievement.AchievedUsers = achievedUsers;
-    //         if (achievement is ProgressiveAchievement progressiveAchievement)
-    //         {
-    //             progressiveAchievement.Progresses = progresses;
-    //         }
-    //     }
-    //     Log.Info("Loaded achievement stats.");
-    //
-    //     SaveAchievementStats();
-    // }
-    //
-    // public static void Destroy()
-    // {
-    //     Log.Info("Saving achievements...");
-    //     SaveAchievements();
-    //     SaveAchievementStats();
-    //     Log.Info("Saved achievements.");
-    //
-    //     foreach (var achievement in Achievements)
-    //     {
-    //         Server.RestartingRound -= achievement.OnRoundRestarting;
-    //         achievement.UnregisterEvents();
-    //     }
-    // }
-    //
-    // public static void SaveAchievements()
-    // {
-    //     var path = FileManager.GetPath(AchievementFolder);
-    //
-    //     if (Directory.Exists(path))
-    //     {
-    //         foreach (var file in Directory.GetFiles(path))
-    //         {
-    //             File.Delete(file);
-    //         }
-    //     }
-    //
-    //     Directory.CreateDirectory(path);
-    //
-    //     foreach (var achievement in Achievements)
-    //     {
-    //         var isProgressive = achievement is ProgressiveAchievement;
-    //         var neededProgress = achievement is ProgressiveAchievement progressiveAchievement ? progressiveAchievement.NeededProgress : 0;
-    //         var sb = new StringBuilder();
-    //
-    //         sb.AppendLine(achievement.Type.ToString());
-    //         sb.AppendLine(achievement.Category.ToString());
-    //         sb.AppendLine(achievement.Name);
-    //         sb.AppendLine(achievement.Description);
-    //         sb.AppendLine(isProgressive.ToString());
-    //         sb.AppendLine(neededProgress.ToString());
-    //         sb.AppendLine(achievement.IsHidden.ToString());
-    //
-    //         FileManager.WriteFile(Path.Combine(path, $"{achievement.Type}.txt"), sb.ToString());
-    //     }
-    // }
-    //
-    // public static void SaveAchievementStats()
-    // {
-    //     var path = FileManager.GetPath(AchievementStatsFolder);
-    //
-    //     if (!Directory.Exists(path))
-    //     {
-    //         Directory.CreateDirectory(path);
-    //     }
-    //
-    //     foreach (var achievement in Achievements)
-    //     {
-    //         var sb = new StringBuilder();
-    //
-    //         sb.AppendLine("__PROGRESS__");
-    //
-    //         if (achievement is ProgressiveAchievement progressiveAchievement)
-    //         {
-    //             foreach (var (userId, progress) in progressiveAchievement.Progresses)
-    //             {
-    //                 sb.AppendLine($"{userId};{progress}");
-    //             }
-    //         }
-    //
-    //         sb.AppendLine("__ACHIEVED__");
-    //
-    //         foreach (var (userId, achieved) in achievement.AchievedUsers)
-    //         {
-    //             sb.AppendLine($"{userId};{achieved}");
-    //         }
-    //
-    //         FileManager.WriteFile(Path.Combine(path, $"{achievement.Type}.txt"), sb.ToString());
-    //     }
-    // }
-    //
-    // public static void SaveAchievementStat(Achievement achievement)
-    // {
-    //     var path = FileManager.GetPath(Path.Combine(AchievementStatsFolder, $"{achievement.Type}.txt"));
-    //
-    //     var sb = new StringBuilder();
-    //
-    //     sb.AppendLine("__PROGRESS__");
-    //
-    //     if (achievement is ProgressiveAchievement progressiveAchievement)
-    //     {
-    //         foreach (var (userId, progress) in progressiveAchievement.Progresses)
-    //         {
-    //             sb.AppendLine($"{userId};{progress}");
-    //         }
-    //     }
-    //
-    //     sb.AppendLine("__ACHIEVED__");
-    //
-    //     foreach (var (userId, achieved) in achievement.AchievedUsers)
-    //     {
-    //         sb.AppendLine($"{userId};{achieved}");
-    //     }
-    //
-    //     FileManager.WriteFile(path, sb.ToString());
-    // }
-    //
-    // public static void ResetAchievements()
-    // {
-    //     foreach (var achievement in Achievements)
-    //     {
-    //         achievement.AchievedUsers.Clear();
-    //
-    //         if (achievement is ProgressiveAchievement progressiveAchievement)
-    //         {
-    //             progressiveAchievement.Progresses.Clear();
-    //         }
-    //     }
-    //
-    //     SaveAchievementStats();
-    // }
-    //
-    // public static (Dictionary<string, bool> AchievedUsers, Dictionary<string, int> Progresses) LoadAchievementStats(Achievement achievement)
-    // {
-    //     var path = FileManager.GetPath(Path.Combine(AchievementStatsFolder, $"{achievement.Type}.txt"));
-    //
-    //     if (!File.Exists(path))
-    //     {
-    //         return (new(), new());
-    //     }
-    //
-    //     var lines = File.ReadAllLines(path);
-    //
-    //     var achievedUsers = new Dictionary<string, bool>();
-    //     var progresses = new Dictionary<string, int>();
-    //
-    //     var isProgress = false;
-    //     var isAchieved = false;
-    //
-    //     foreach (var line in lines)
-    //     {
-    //         switch (line)
-    //         {
-    //             case "__PROGRESS__":
-    //                 isProgress = true;
-    //                 isAchieved = false;
-    //                 continue;
-    //             case "__ACHIEVED__":
-    //                 isProgress = false;
-    //                 isAchieved = true;
-    //                 continue;
-    //         }
-    //
-    //         var data = line.Split(';');
-    //
-    //         if (isProgress)
-    //         {
-    //             progresses[data[0]] = int.Parse(data[1]);
-    //         }
-    //         else if (isAchieved)
-    //         {
-    //             achievedUsers[data[0]] = bool.Parse(data[1]);
-    //         }
-    //     }
-    //
-    //     return (achievedUsers, progresses);
-    // }
-    //
-    // public static Achievement GetAchievement(AchievementType type)
-    // {
-    //     return Achievements.FirstOrDefault(x => x.Type == type);
-    // }
+    public static List<Achievement> Achievements { get; private set; }
+
+    public const string AchievementFolder = "Achievements";
+    public const string AchievementStatsFolder = "Achievements\\Stats";
+
+    public static void Initialize()
+    {
+        if (CocoaPlugin.Instance.Config.Achievements.Enabled == false)
+        {
+            Log.Info("Achievements are disabled.");
+            return;
+        }
+
+        Log.Info("Loading achievements...");
+
+        var sw = new System.Diagnostics.Stopwatch();
+
+        var achievements = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => typeof(Achievement).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract).ToList();
+
+        Achievements = [];
+
+        foreach (var instance in achievements.Select(achievement => (Achievement)Activator.CreateInstance(achievement)))
+        {
+            Server.RestartingRound += instance.OnRoundRestarting;
+
+            instance.RegisterEvents();
+            Log.Info($"Loaded achievement: {instance.Type} / {instance.Name}");
+            Achievements.Add(instance);
+        }
+
+        sw.Stop();
+
+        Log.Info($"Loaded {Achievements.Count} achievements in {sw.ElapsedMilliseconds}ms.");
+
+        Log.Info("Saving achievements...");
+        SaveAchievements();
+        Log.Info("Saved achievements.");
+
+        Log.Info("Loading achievement stats...");
+        foreach (var achievement in Achievements)
+        {
+            var (achievedUsers, progresses) = LoadAchievementStats(achievement);
+
+            achievement.AchievedUsers = achievedUsers;
+            if (achievement is ProgressiveAchievement progressiveAchievement)
+            {
+                progressiveAchievement.Progresses = progresses;
+            }
+        }
+        Log.Info("Loaded achievement stats.");
+
+        SaveAchievementStats();
+    }
+
+    public static void Destroy()
+    {
+        Log.Info("Saving achievements...");
+        SaveAchievements();
+        SaveAchievementStats();
+        Log.Info("Saved achievements.");
+
+        foreach (var achievement in Achievements)
+        {
+            Server.RestartingRound -= achievement.OnRoundRestarting;
+            achievement.UnregisterEvents();
+        }
+    }
+
+    public static void SaveAchievements()
+    {
+        var path = FileManager.GetPath(AchievementFolder);
+
+        if (Directory.Exists(path))
+        {
+            foreach (var file in Directory.GetFiles(path))
+            {
+                File.Delete(file);
+            }
+        }
+
+        Directory.CreateDirectory(path);
+
+        foreach (var achievement in Achievements)
+        {
+            var isProgressive = achievement is ProgressiveAchievement;
+            var neededProgress = achievement is ProgressiveAchievement progressiveAchievement ? progressiveAchievement.NeededProgress : 0;
+            var sb = new StringBuilder();
+
+            sb.AppendLine(achievement.Type.ToString());
+            sb.AppendLine(achievement.Category.ToString());
+            sb.AppendLine(achievement.Name);
+            sb.AppendLine(achievement.Description);
+            sb.AppendLine(isProgressive.ToString());
+            sb.AppendLine(neededProgress.ToString());
+            sb.AppendLine(achievement.IsHidden.ToString());
+
+            FileManager.WriteFile(Path.Combine(path, $"{achievement.Type}.txt"), sb.ToString());
+        }
+    }
+
+    public static void SaveAchievementStats()
+    {
+        var path = FileManager.GetPath(AchievementStatsFolder);
+
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        foreach (var achievement in Achievements)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("__PROGRESS__");
+
+            if (achievement is ProgressiveAchievement progressiveAchievement)
+            {
+                foreach (var (userId, progress) in progressiveAchievement.Progresses)
+                {
+                    sb.AppendLine($"{userId};{progress}");
+                }
+            }
+
+            sb.AppendLine("__ACHIEVED__");
+
+            foreach (var (userId, achieved) in achievement.AchievedUsers)
+            {
+                sb.AppendLine($"{userId};{achieved}");
+            }
+
+            FileManager.WriteFile(Path.Combine(path, $"{achievement.Type}.txt"), sb.ToString());
+        }
+    }
+
+    public static void SaveAchievementStat(Achievement achievement)
+    {
+        var path = FileManager.GetPath(Path.Combine(AchievementStatsFolder, $"{achievement.Type}.txt"));
+
+        var sb = new StringBuilder();
+
+        sb.AppendLine("__PROGRESS__");
+
+        if (achievement is ProgressiveAchievement progressiveAchievement)
+        {
+            foreach (var (userId, progress) in progressiveAchievement.Progresses)
+            {
+                sb.AppendLine($"{userId};{progress}");
+            }
+        }
+
+        sb.AppendLine("__ACHIEVED__");
+
+        foreach (var (userId, achieved) in achievement.AchievedUsers)
+        {
+            sb.AppendLine($"{userId};{achieved}");
+        }
+
+        FileManager.WriteFile(path, sb.ToString());
+    }
+
+    public static void ResetAchievements()
+    {
+        foreach (var achievement in Achievements)
+        {
+            achievement.AchievedUsers.Clear();
+
+            if (achievement is ProgressiveAchievement progressiveAchievement)
+            {
+                progressiveAchievement.Progresses.Clear();
+            }
+        }
+
+        SaveAchievementStats();
+    }
+
+    public static (Dictionary<string, bool> AchievedUsers, Dictionary<string, int> Progresses) LoadAchievementStats(Achievement achievement)
+    {
+        var path = FileManager.GetPath(Path.Combine(AchievementStatsFolder, $"{achievement.Type}.txt"));
+
+        if (!File.Exists(path))
+        {
+            return (new(), new());
+        }
+
+        var lines = File.ReadAllLines(path);
+
+        var achievedUsers = new Dictionary<string, bool>();
+        var progresses = new Dictionary<string, int>();
+
+        var isProgress = false;
+        var isAchieved = false;
+
+        foreach (var line in lines)
+        {
+            switch (line)
+            {
+                case "__PROGRESS__":
+                    isProgress = true;
+                    isAchieved = false;
+                    continue;
+                case "__ACHIEVED__":
+                    isProgress = false;
+                    isAchieved = true;
+                    continue;
+            }
+
+            var data = line.Split(';');
+
+            if (isProgress)
+            {
+                progresses[data[0]] = int.Parse(data[1]);
+            }
+            else if (isAchieved)
+            {
+                achievedUsers[data[0]] = bool.Parse(data[1]);
+            }
+        }
+
+        return (achievedUsers, progresses);
+    }
+
+    public static Achievement GetAchievement(AchievementType type)
+    {
+        return Achievements.FirstOrDefault(x => x.Type == type);
+    }
 }
 
 public abstract class Achievement

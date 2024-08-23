@@ -19,5 +19,7 @@ namespace CocoaPlugin.Configs
         public Supporters Supporters { get; set; } = new();
         public Network Network { get; set; } = new();
         public Others Others { get; set; } = new();
+        public Achievements Achievements { get; set; } = new();
+        public Logs Logs { get; set; } = new();
     }
 }

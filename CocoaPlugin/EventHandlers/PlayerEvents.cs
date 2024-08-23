@@ -274,6 +274,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 IpAddress = ev.Player.IPAddress,
             }, LogType.ReconnectSuccess);
 
+            LogManager.WriteLog($"{leftUser.Nickname} ({leftUser.UserId} | {ev.Player.IPAddress}) 재접속 성공");
+
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReconnectMessage.Duration,
                 Config.Reconnects.ReconnectMessage.Format(leftUser), Config.Reconnects.ReconnectMessage.Priority);
         }
@@ -327,6 +329,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 AttackerRole = ev.Attacker.Role.Type,
                 AttackerIpAddress = ev.Attacker.IPAddress,
             }, LogType.HandcuffedKill);
+
+            LogManager.WriteLog($"{ev.Attacker.Nickname} ({ev.Attacker.UserId} | {ev.Attacker.IPAddress}) - {ev.Attacker.Role.Type}이 {ev.Player.Nickname} ({ev.Player.UserId}) - {ev.Player.Role.Type}을(를) 체포킬");
         }
     }
 
@@ -421,6 +425,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 IpAddress = player.IPAddress,
             }, LogType.ReconnectLimit);
 
+            LogManager.WriteLog($"{player.Nickname} ({player.UserId} | {player.IPAddress}) 재접속 제한 초과");
+
             yield break;
         }
 
@@ -442,6 +448,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 IpAddress = player.IPAddress,
             }, LogType.WaitingReconnect);
 
+        LogManager.WriteLog($"{player.Nickname} ({player.UserId} | {ip}) 재접속 대기 중");
+
         yield return Timing.WaitForSeconds(Config.Reconnects.ReconnectTime);
 
         if (leftUser.IsReconnected)
@@ -458,6 +466,8 @@ public class PlayerEvents(CocoaPlugin plugin)
             UserId = leftUser.UserId,
             IpAddress = ip,
         }, LogType.ReconnectFailed);
+
+        LogManager.WriteLog($"{leftUser.Nickname} ({leftUser.UserId} | {ip}) 재접속 실패");
 
         if (!Player.Get(RoleTypeId.Spectator).Any())
         {
@@ -547,6 +557,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 UserId = ev.Player.UserId,
                 IpAddress = ev.Player.IPAddress,
             }, LogType.LeftWhileReviving);
+
+            LogManager.WriteLog($"{ev.Player.Nickname} ({ev.Player.UserId} | {ev.Player.IPAddress}) 소생 중 탈주");
         }
 
         // Object.Destroy(ev.Player.GameObject.GetComponent<SightManager>());
@@ -650,6 +662,8 @@ public class PlayerEvents(CocoaPlugin plugin)
                 Nickname = x.Nickname
             }),
         }, LogType.DoorTrolling);
+
+        LogManager.WriteLog($"{troller.Nickname} ({troller.UserId}) 문트롤 - 대상: {string.Join(", ", friendly.Select(x => x.Nickname))}");
     }
 
     // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();

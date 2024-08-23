@@ -183,16 +183,15 @@ public class CommandProcessorPatch
                 if (!string.IsNullOrEmpty(text))
                     sender.RaReply(array2[0].ToUpperInvariant() + "#" + text, flag, true, "");
 
-                var player = Player.Get(sender);
+                NetworkManager.SendLog(new
+                {
+                    Nickname = sender.Nickname,
+                    UserId = sender.SenderId,
+                    Sent = q,
+                    Result = text
+                }, LogType.Command);
 
-                if (player != null)
-                    NetworkManager.SendLog(new
-                    {
-                        Nickname = player.Nickname,
-                        UserId = player.UserId,
-                        Sent = q,
-                        Result = text
-                    }, LogType.Command);
+                LogManager.WriteLog($"{sender.Nickname} ({sender.SenderId}) RA 명령어 실행: {q}\n결과: {text}");
 
                 __result = text;
                 return false;
