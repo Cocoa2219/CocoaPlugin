@@ -23,7 +23,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +34,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
     </PropertyGroup>
     <ItemGroup>
@@ -237,6 +237,7 @@
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Commands\SendPost.cs" />
+        <Compile Include="Commands\ShowHint.cs" />
         <Compile Include="Configs\Achievements.cs" />
         <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\AutoNuke.cs" />

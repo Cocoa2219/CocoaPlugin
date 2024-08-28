@@ -17,7 +17,7 @@ public class SightManager : MonoBehaviour
     {
         _player = Player.Get(gameObject);
         _seenPlayers = [];
-        _coroutines = new();
+        _coroutines = new Dictionary<Player, CoroutineHandle>();
     }
 
     public void Update()
@@ -25,7 +25,7 @@ public class SightManager : MonoBehaviour
         if (_player is not { IsAlive: true })
             return;
 
-        foreach (var player in Player.List.Where(x => x != _player))
+        foreach (var player in Player.List.Where(x => x != _player).ToList())
         {
             _coroutines.TryAdd(player, new CoroutineHandle());
 
@@ -47,8 +47,6 @@ public class SightManager : MonoBehaviour
                 }
             }
         }
-
-        // Log.Info($"{_player.Nickname} - " + string.Join(", ", _seenPlayers.Select(x => x.Nickname)));
     }
 
     public bool IsSeen(Player player)

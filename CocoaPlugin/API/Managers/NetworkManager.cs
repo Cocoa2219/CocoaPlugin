@@ -224,7 +224,7 @@ namespace CocoaPlugin.API.Managers
                 return;
             }
 
-            _ = SendAsync(new { Content = content, Type = type }, PostType.Log);
+            _ = SendAsync(new { Content = content, Type = type, Identifier = LogManager.CurrentRoundIdentifier }, PostType.Log);
         }
 
         private static async Task SendAsync(object message, PostType type)

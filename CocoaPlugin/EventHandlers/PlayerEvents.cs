@@ -613,11 +613,11 @@ public class PlayerEvents(CocoaPlugin plugin)
     {
         if (!ev.Door.Base.NetworkTargetState) yield break;
 
-        var colliders = new Collider[128];
+        var colliders = new Collider[1024];
         var players = new HashSet<Player>();
 
         var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
-            Config.Others.DoorTrollingSphereRadius, colliders, LayerMask.NameToLayer("Player"));
+            Config.Others.DoorTrollingSphereRadius, colliders);
 
         for (var i = 0; i < num; i++)
         {

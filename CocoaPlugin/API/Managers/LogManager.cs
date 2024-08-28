@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Exiled.API.Features;
+using HarmonyLib;
 using MEC;
+using RoundRestarting;
 using Random = UnityEngine.Random;
 
 namespace CocoaPlugin.API.Managers;
@@ -18,11 +20,13 @@ public static class LogManager
 
     private static readonly Regex LogIdRegex = new(@"라운드\s(\d+)\s", RegexOptions.Compiled);
 
-    private static string CurrentRoundIdentifier { get; set; }
+    public static string CurrentRoundIdentifier { get; set; }
 
-    private static FileStream _currentLogStream;
+    private static string _currentLogPath;
 
     private static HashSet<string> _usedIdentifiers;
+
+    private static bool _isQuitting;
 
     public static void Initialize()
     {
@@ -35,7 +39,15 @@ public static class LogManager
 
         Exiled.Events.Handlers.Server.RestartingRound += OnRestartingRound;
 
-        _currentLogStream = File.Create(Path.Combine(FileManager.GetPath(LogFolder), LogFileFormat.Replace("%id%", CurrentRoundIdentifier).Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")).Replace("%end%", "Round In Progress")));
+        _currentLogPath = Path.Combine(FileManager.GetPath(LogFolder),
+            LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
+                .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
+                .Replace("%end%", "Round In Progress"));
+
+        File.Create(Path.Combine(FileManager.GetPath(LogFolder),
+            LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
+                .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
+                .Replace("%end%", "Round In Progress"))).Close();
 
         WriteLog($"-------START OF ROUND {CurrentRoundIdentifier}-------");
 
@@ -60,9 +72,7 @@ public static class LogManager
 
             foreach (var player in Player.List)
             {
-                if (player.HasHint) continue;
-
-                player.ShowHint($"현재 라운드 식별자: {CurrentRoundIdentifier}", 1.2f);
+                player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>", 5f);
             }
         }
     }
@@ -75,54 +85,61 @@ public static class LogManager
         if (CurrentRoundIdentifier == null)
             return;
 
-        if (_currentLogStream == null)
+        if (string.IsNullOrWhiteSpace(_currentLogPath))
             return;
 
-        var log = string.Empty;
+        if (_isQuitting)
+            return;
 
-        if (text.Contains(Environment.NewLine))
-        {
-            foreach (var line in text.Split(Environment.NewLine))
-            {
-                log += $"[{DateTime.Now:HH.mm.ss}] {line}";
-                log += Environment.NewLine;
-            }
+        var log = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {text}";
 
-            log = log.TrimEnd(Environment.NewLine.ToCharArray());
-        }
-        else
-        {
-            log = $"[{DateTime.Now:HH.mm.ss}] {text}";
-        }
-
-        var bytes = Encoding.UTF8.GetBytes(log + Environment.NewLine);
-        _currentLogStream.Write(bytes, 0, bytes.Length);
+        File.AppendAllText(_currentLogPath, log + Environment.NewLine);
     }
 
-    private static void OnRestartingRound()
+    public static void OnRestartingRound()
     {
-        WriteLog($"-------END OF ROUND {CurrentRoundIdentifier}-------");
+        WriteEnd(RoundEndType.RoundRestarting);
+    }
 
-        var path = _currentLogStream.Name;
+    public static void WriteEnd(RoundEndType type)
+    {
+        _isQuitting = true;
 
-        try
+        switch (type)
         {
-            _currentLogStream.Close();
+            case RoundEndType.RoundRestarting:
+                WriteLog($"-------END OF ROUND {CurrentRoundIdentifier} : ROUND RESTARTING-------");
+                break;
+            case RoundEndType.SoftRestarting:
+                WriteLog($"-------END OF ROUND {CurrentRoundIdentifier} : SOFT RESTARTING-------");
+                break;
+            case RoundEndType.Shutdown:
+                WriteLog($"-------END OF ROUND {CurrentRoundIdentifier} : SHUTDOWN-------");
+                break;
         }
-        catch (Exception e)
-        {
-            Log.Error($"Failed to close the current log stream: {e}");
-        }
-        finally
-        {
-            _currentLogStream.Dispose();
-        }
+
+        var path = _currentLogPath;
 
         File.Move(path, path.Replace("Round In Progress", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")));
 
+        _currentLogPath = path.Replace("Round In Progress", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"));
+
+        if (type is RoundEndType.Shutdown or RoundEndType.SoftRestarting)
+        {
+            _isQuitting = false;
+            return;
+        }
+
         CurrentRoundIdentifier = GenerateNewIdentifier(CocoaPlugin.Instance.Config.Logs.IdentifierLength);
 
-        _currentLogStream = File.Create(Path.Combine(FileManager.GetPath(LogFolder), LogFileFormat.Replace("%id%", CurrentRoundIdentifier).Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")).Replace("%end%", "Round In Progress")));
+        _currentLogPath = Path.Combine(FileManager.GetPath(LogFolder),
+            LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
+                .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
+                .Replace("%end%", "Round In Progress"));
+
+        File.Create(Path.Combine(FileManager.GetPath(LogFolder), LogFileFormat.Replace("%id%", CurrentRoundIdentifier).Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")).Replace("%end%", "Round In Progress"))).Close();
+
+        _isQuitting = false;
 
         WriteLog($"-------START OF ROUND {CurrentRoundIdentifier}-------");
     }
@@ -160,5 +177,35 @@ public static class LogManager
             result.Append(IdentifierCharacters[Random.Range(0, IdentifierCharacters.Length)]);
 
         return result.ToString();
+    }
+}
+
+public enum RoundEndType
+{
+    RoundRestarting,
+    SoftRestarting,
+    Shutdown
+}
+
+[HarmonyPatch(typeof(RoundRestart), nameof(RoundRestart.ChangeLevel))]
+public class ServerRestartPatch
+{
+    public static bool Prefix(bool noShutdownMessage)
+    {
+        var nextRoundAction = ServerStatic.StopNextRound;
+
+        switch (nextRoundAction)
+        {
+            case ServerStatic.NextRoundAction.DoNothing:
+                break;
+            case ServerStatic.NextRoundAction.Restart:
+                LogManager.WriteEnd(RoundEndType.SoftRestarting);
+                break;
+            // case ServerStatic.NextRoundAction.Shutdown:
+            //     LogManager.WriteEnd(RoundEndType.Shutdown);
+            //     break;
+        }
+
+        return true;
     }
 }

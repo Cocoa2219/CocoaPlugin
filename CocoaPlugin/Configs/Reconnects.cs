@@ -19,10 +19,10 @@ public class Reconnects
         15, 10);
 
     public API.Broadcast ReplaceMessage { get; set; } = new(
-        "<cspace=0.05em><size=32><color=%roleColor%>%roleName% <b>%nickname%<size=15> | %userId% </size></b></color>%nicknameParticle% 제한 시간 전에 <color=#d44b42>접속하지 않아 대체</color>되었습니다.</size></cspace>",
+        "<cspace=0.05em><size=32><color=%roleColor%>%roleName% <b>%nickname%<size=15> | %userId% </size></b></color>%nicknameParticle%\n제한 시간 전에 <color=#d44b42>접속하지 않아 대체</color>되었습니다.</size></cspace>",
         15, 10);
 
     public API.Broadcast ReplaceFailedMessage { get; set; } = new(
-        "<cspace=0.05em><size=32><color=%roleColor%>%roleName%<b>%nickname%<size=15> | %userId% </size></b></color>%nicknameParticle% 제한 시간 전에 <color=#d44b42>접속하지 않았지만 관전자가 없어 대체 불가능</color>합니다.</size></cspace>",
+        "<cspace=0.05em><size=32><color=%roleColor%>%roleName% <b>%nickname%<size=15> | %userId% </size></b></color>%nicknameParticle%\n제한 시간 전에 <color=#d44b42>접속하지 않았지만 관전자가 없어 대체 불가능</color>합니다.</size></cspace>",
         15, 10);
 }

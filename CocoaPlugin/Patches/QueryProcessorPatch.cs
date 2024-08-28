@@ -191,7 +191,7 @@ public class CommandProcessorPatch
                     Result = text
                 }, LogType.Command);
 
-                LogManager.WriteLog($"{sender.Nickname} ({sender.SenderId}) RA 명령어 실행: {q}\n결과: {text}");
+                LogManager.WriteLog($"{sender.Nickname} ({sender.SenderId}) RA 명령어 실행: {q} | 결과: {text}");
 
                 __result = text;
                 return false;
