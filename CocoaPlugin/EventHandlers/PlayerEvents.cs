@@ -14,13 +14,16 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Roles;
+using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions.Extensions;
 using MEC;
+using Mirror;
 using MultiBroadcast.API;
 using PlayerRoles;
 using UnityEngine;
+using VoiceChat.Codec;
 using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
 using LogType = CocoaPlugin.API.LogType;
@@ -662,6 +665,19 @@ public class PlayerEvents(CocoaPlugin plugin)
         }, LogType.DoorTrolling);
 
         LogManager.WriteLog($"{troller.Nickname} ({troller.UserId}) 문트롤 - 대상: {string.Join(", ", friendly.Select(x => x.Nickname))}");
+    }
+
+    internal void OnVoiceChatting(VoiceChattingEventArgs ev)
+    {
+        var receiveBuffer = new float[24000];
+
+        if (ev.Player == null) return;
+        if (!ev.IsAllowed) return;
+
+        using var decoder = new OpusDecoder();
+        var length = decoder.Decode(ev.VoiceMessage.Data, ev.VoiceMessage.DataLength, receiveBuffer);
+
+
     }
 
     // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();
