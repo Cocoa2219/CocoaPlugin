@@ -75,5 +75,4 @@ public class Link : ICommand
     public string Command { get; } = "link";
     public string[] Aliases { get; } = ["l"];
     public string Description { get; } = "디스코드와 SL 계정을 연결하는 데 사용되는 명령어입니다.";
-    public bool SanitizeResponse { get; } = false;
 }

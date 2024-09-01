@@ -200,6 +200,12 @@ public class ServerRestartPatch
                 break;
             case ServerStatic.NextRoundAction.Restart:
                 LogManager.WriteEnd(RoundEndType.SoftRestarting);
+                BadgeManager.SaveBadges();
+                BadgeCooldownManager.SaveBadgeCooldowns();
+                PenaltyManager.SavePenalties();
+                CheckManager.SaveChecks();
+                UserManager.SaveUsers();
+                ConnectionManager.SaveConnections();
                 break;
             // case ServerStatic.NextRoundAction.Shutdown:
             //     LogManager.WriteEnd(RoundEndType.Shutdown);

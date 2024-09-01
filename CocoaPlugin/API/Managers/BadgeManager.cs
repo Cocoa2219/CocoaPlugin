@@ -10,6 +10,30 @@ public static class BadgeManager
 
     public static Dictionary<string, Badge> BadgeCache { get; } = new();
 
+    public static bool SetText(string id, string text)
+    {
+        if (!Utility.IsUserIdValid(id) || string.IsNullOrWhiteSpace(text))
+            return false;
+
+        if (!BadgeCache.ContainsKey(id))
+            BadgeCache[id] = new Badge();
+
+        BadgeCache[id].Name = text;
+        return true;
+    }
+
+    public static bool SetColor(string id, string color)
+    {
+        if (!Utility.IsUserIdValid(id) || string.IsNullOrWhiteSpace(color) || !BadgeColor.IsValidColor(color))
+            return false;
+
+        if (!BadgeCache.ContainsKey(id))
+            BadgeCache[id] = new Badge();
+
+        BadgeCache[id].Color = color;
+        return true;
+    }
+
     public static bool AddBadge(string id, Badge badge)
     {
         if (!Utility.IsUserIdValid(id) || !Badge.IsValid(badge))

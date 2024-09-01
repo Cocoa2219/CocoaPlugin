@@ -41,5 +41,4 @@ public class ScpList : ICommand
     public string Command { get; } = "scplist";
     public string[] Aliases { get; } = { "ㄴ체ㅣㅑㄴㅅ" };
     public string Description { get; } = "현재 SCP 목록을 가져옵니다.";
-    public bool SanitizeResponse { get; } = false;
 }

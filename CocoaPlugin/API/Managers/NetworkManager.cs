@@ -163,6 +163,60 @@ namespace CocoaPlugin.API.Managers
                     }
 
                     break;
+                case "/badge":
+                    try
+                    {
+                        if (context.Request.HttpMethod != "POST")
+                        {
+                            context.Response.StatusCode = 405;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
+
+                        if (context.Request.InputStream == null)
+                        {
+                            context.Response.StatusCode = 400;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
+
+                        using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
+                        var requestBody = await reader.ReadToEndAsync();
+
+                        var badge = JsonConvert.DeserializeObject<BadgeRequest>(requestBody);
+
+                        if (badge == null)
+                        {
+                            context.Response.StatusCode = 400;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
+
+                        BadgeManager.AddBadge(badge.UserId, new Badge()
+                        {
+                            Color = badge.Color,
+                            Name = badge.Name
+                        });
+
+                        BadgeCooldownManager.SetCooldown(badge.UserId, badge.TextCooldown, badge.ColorCooldown);
+
+                        context.Response.StatusCode = 200;
+
+                        var responseBytes = "Badge added."u8.ToArray();
+                        context.Response.ContentType = "text/plain";
+                        context.Response.ContentLength64 = responseBytes.Length;
+                        await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error while processing PlayerList Request:\n{ex}");
+                    }
+                    finally
+                    {
+                        context.Response.OutputStream.Close();
+                    }
+
+                    break;
                 case "/":
                     context.Response.StatusCode = 200;
                     context.Response.OutputStream.Close();

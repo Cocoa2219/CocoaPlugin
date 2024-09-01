@@ -271,6 +271,7 @@ public class ServerEvents(CocoaPlugin plugin)
         Timing.KillCoroutines(_elevatorCoroutine);
 
         BadgeManager.SaveBadges();
+        BadgeCooldownManager.SaveBadgeCooldowns();
         PenaltyManager.SavePenalties();
         CheckManager.SaveChecks();
         UserManager.SaveUsers();

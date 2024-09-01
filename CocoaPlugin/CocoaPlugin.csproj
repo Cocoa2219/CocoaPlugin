@@ -199,6 +199,7 @@
         <Compile Include="API\Achievements\Survival\No914.cs" />
         <Compile Include="API\Achievements\Survival\ToTheIsekai.cs" />
         <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
+        <Compile Include="API\BadgeRequest.cs" />
         <Compile Include="API\Beta\Store.cs" />
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\DiscordCommand.cs" />
@@ -208,6 +209,7 @@
         <Compile Include="API\LeftUser.cs" />
         <Compile Include="API\LogMessage.cs" />
         <Compile Include="API\Managers\AchievementManager.cs" />
+        <Compile Include="API\Managers\BadgeCooldownManager.cs" />
         <Compile Include="API\Managers\BadgeManager.cs" />
         <Compile Include="API\Managers\CheckManager.cs" />
         <Compile Include="API\Managers\ConnectionManager.cs" />
@@ -225,6 +227,7 @@
         <Compile Include="API\Time.cs" />
         <Compile Include="API\Utility.cs" />
         <Compile Include="API\TyperHelper.cs" />
+        <Compile Include="API\VideoEncoder.cs" />
         <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
         <Compile Include="Commands\Badge.cs" />

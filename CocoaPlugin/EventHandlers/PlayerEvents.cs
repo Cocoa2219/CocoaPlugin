@@ -5,8 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Achievements;
-using AdminToys;
+using System.Threading.Tasks;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Configs.Broadcast;
@@ -14,23 +13,18 @@ using CommandSystem;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.API.Features.Doors;
 using Exiled.API.Features.Roles;
-using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions.Extensions;
 using MEC;
-using Mirror;
 using MultiBroadcast.API;
 using PlayerRoles;
-using PlayerStatsSystem;
 using UnityEngine;
 using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
 using LogType = CocoaPlugin.API.LogType;
 using NetworkManager = CocoaPlugin.API.Managers.NetworkManager;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
 using Time = CocoaPlugin.API.Time;
@@ -79,7 +73,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         UserRoundCounts.TryAdd(today, new Dictionary<string, int>());
 
         var now = DateTime.Now;
-        var nextDay = new DateTime(now.Year, now.Month, now.Day + 1, 0, 0, 0);
+        var nextDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).AddDays(1);
 
         _nextDayTimer = new Timer(OnNextDay, null, nextDay - now, TimeSpan.FromDays(1));
     }
@@ -360,7 +354,11 @@ public class PlayerEvents(CocoaPlugin plugin)
         if (ev.Player.CameraTransform.gameObject.GetComponent<Camera>() != null) return;
 
         ev.Player.CameraTransform.gameObject.AddComponent<Camera>();
+
+        if (ev.Player.CameraTransform.gameObject.GetComponent<ScreenCapture>() != null) return;
+
         ev.Player.CameraTransform.gameObject.AddComponent<ScreenCapture>();
+        ev.Player.CameraTransform.gameObject.GetComponent<ScreenCapture>().Initialize(ev.Player);
     }
 
     internal void OnChangingRole(ChangingRoleEventArgs ev)
@@ -731,41 +729,120 @@ public class PlayerEvents(CocoaPlugin plugin)
 public class ScreenCapture : MonoBehaviour
 {
     private Camera _camera;
+    private VideoEncoder _videoEncoder;
+
+    private RenderTexture _renderTexture;
+    private Texture2D _screenShot;
+
+    public bool _isRecording;
 
     private void Start()
     {
         _camera = GetComponent<Camera>();
     }
 
-    public void CaptureScreen()
+    public void Initialize(Player player, int width = 1920, int height = 1080)
     {
-        var renderTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
-            {
-                useMipMap = false,
-                antiAliasing = 1
-            };
-        renderTexture.Create();
+        _videoEncoder = new VideoEncoder(player);
 
-        _camera.targetTexture = renderTexture;
+        _renderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
+        {
+            useMipMap = true,
+        };
+        _renderTexture.Create();
 
-        var screenShot = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+        _screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+    }
+
+
+    public void CaptureScreen(string output)
+    {
+        var sw = Stopwatch.StartNew();
+        Log.Info("Capturing screen started | " + output);
+
+        if (_renderTexture == null || _screenShot == null)
+        {
+            throw new InvalidOperationException("CaptureScreen called before InitializeCapture");
+        }
+
+        _camera.targetTexture = _renderTexture;
 
         _camera.Render();
 
         var originalRT = RenderTexture.active;
-        RenderTexture.active = renderTexture;
+        RenderTexture.active = _renderTexture;
 
-        screenShot.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-        screenShot.Apply();
+        _screenShot.ReadPixels(new Rect(0, 0, _renderTexture.width, _renderTexture.height), 0, 0);
+        _screenShot.Apply();
 
-        var bytes = screenShot.EncodeToPNG();
-        File.WriteAllBytes(Path.Combine(Paths.Plugins, "screenshot.png"), bytes);
+        var bytes = _screenShot.EncodeToPNG();
+
+        File.WriteAllBytes(output, bytes);
 
         _camera.targetTexture = null;
         RenderTexture.active = originalRT;
 
-        Destroy(renderTexture);
-        Destroy(screenShot);
+        sw.Stop();
+        Log.Info("Capturing screen finished in " + sw.ElapsedMilliseconds + "ms" + " | " + output);
+    }
+
+    public void StartRecording()
+    {
+        if (_isRecording) return;
+
+        _isRecording = true;
+
+        Timing.RunCoroutine(Record());
+    }
+
+    private float _actualFramerate;
+    private IEnumerator<float> Record()
+    {
+        var index = 0;
+        var startTime = UnityEngine.Time.realtimeSinceStartup;
+
+        while (_isRecording)
+        {
+            CaptureScreen(Path.Combine(_videoEncoder.ImageDirectory, $"image_{index}.png"));
+            index++;
+
+            yield return Timing.WaitForSeconds(1f / 60f);
+        }
+
+        var endTime = UnityEngine.Time.realtimeSinceStartup;
+        var totalTime = endTime - startTime;
+
+        _actualFramerate = index / totalTime;
+
+        Log.Info("Captured " + index + " frames in " + totalTime + " seconds. Actual framerate: " + _actualFramerate);
+
+        Task.Run(() => _videoEncoder.Encode(() =>
+        {
+            Log.Info("Encoding complete. Saved to " + _videoEncoder.VideoOutputPath);
+        }, index / totalTime));
+    }
+
+    public void StopRecording()
+    {
+        if (!_isRecording) return;
+
+        _isRecording = false;
+    }
+
+    private void OnDestroy()
+    {
+        if (_renderTexture != null)
+        {
+            _renderTexture.Release();
+            Destroy(_renderTexture);
+            _renderTexture = null;
+        }
+
+        if (_screenShot != null)
+        {
+            Destroy(_screenShot);
+            _screenShot = null;
+        }
     }
 }
 
@@ -790,9 +867,16 @@ public class CaptureScreenCommand : ICommand
             return false;
         }
 
-        screenCapture.CaptureScreen();
+        if (screenCapture._isRecording)
+        {
+            screenCapture.StopRecording();
+            response = "녹화를 중지했습니다.";
+            return true;
+        }
 
-        response = "화면을 캡쳐했습니다.";
+        screenCapture.StartRecording();
+
+        response = "녹화를 시작했습니다.";
         return true;
     }
 

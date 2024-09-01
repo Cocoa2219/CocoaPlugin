@@ -32,7 +32,7 @@ public class AdminBroadcastClient : ICommand, IHiddenCommand
     }
 
     public string Command { get; } = "broadcast";
-    public string[] Aliases { get; } = ["bc"];
+    public string[] Aliases { get; } = ["abc"];
     public string Description { get; } = "관리자 브로드캐스트를 사용합니다.";
 }
 

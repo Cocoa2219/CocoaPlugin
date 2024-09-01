@@ -37,6 +37,7 @@ namespace CocoaPlugin
             AchievementManager.Initialize();
             API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
+            BadgeCooldownManager.LoadBadgeCooldowns();
             PenaltyManager.LoadPenalties();
             CheckManager.LoadChecks();
             UserManager.LoadUsers();

@@ -111,5 +111,4 @@ public class OffsetPosition : ICommand
     public string Command { get; } = "offsetposition";
     public string[] Aliases { get; } = { "opr" };
     public string Description { get; } = "Offset the position in a room of a player.";
-    public bool SanitizeResponse { get; } = false;
 }

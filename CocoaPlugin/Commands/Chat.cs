@@ -49,9 +49,9 @@ public class Chat : ICommand
         return true;
     }
 
-    public static string SanitizeChat(string message)
+    private string SanitizeChat(string message)
     {
-        return Misc.CloseAllRichTextTags(message);
+        return "<noparse>" + message.Replace("</noparse>", "") + "</noparse>";
     }
 
     public string Command { get; } = "chat";
