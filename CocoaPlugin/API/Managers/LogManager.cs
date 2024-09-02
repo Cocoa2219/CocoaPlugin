@@ -30,8 +30,10 @@ public static class LogManager
 
     public static void Initialize()
     {
-        if (!Directory.Exists(FileManager.GetPath(LogFolder)))
-            Directory.CreateDirectory(FileManager.GetPath(LogFolder));
+        var path = FileManager.GetPath(LogFolder);
+
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
 
         _usedIdentifiers = GetIdentifiers();
 
@@ -39,12 +41,20 @@ public static class LogManager
 
         Exiled.Events.Handlers.Server.RestartingRound += OnRestartingRound;
 
-        _currentLogPath = Path.Combine(FileManager.GetPath(LogFolder),
+        var logs = Directory.GetFiles(path, "*.txt").Where(x => Path.GetFileNameWithoutExtension(x).Contains("Round In Progress"));
+
+        foreach (var log in logs)
+        {
+            Log.Info($"Renaming log file: {log}");
+            File.Move(log, log.Replace("Round In Progress", "Round Aborted"));
+        }
+
+        _currentLogPath = Path.Combine(path,
             LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
                 .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
                 .Replace("%end%", "Round In Progress"));
 
-        File.Create(Path.Combine(FileManager.GetPath(LogFolder),
+        File.Create(Path.Combine(path,
             LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
                 .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
                 .Replace("%end%", "Round In Progress"))).Close();
@@ -132,7 +142,7 @@ public static class LogManager
 
         CurrentRoundIdentifier = GenerateNewIdentifier(CocoaPlugin.Instance.Config.Logs.IdentifierLength);
 
-        _currentLogPath = Path.Combine(FileManager.GetPath(LogFolder),
+        _currentLogPath = Path.Combine(path,
             LogFileFormat.Replace("%id%", CurrentRoundIdentifier)
                 .Replace("%start%", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"))
                 .Replace("%end%", "Round In Progress"));
@@ -207,9 +217,15 @@ public class ServerRestartPatch
                 UserManager.SaveUsers();
                 ConnectionManager.SaveConnections();
                 break;
-            // case ServerStatic.NextRoundAction.Shutdown:
-            //     LogManager.WriteEnd(RoundEndType.Shutdown);
-            //     break;
+            case ServerStatic.NextRoundAction.Shutdown:
+                LogManager.WriteEnd(RoundEndType.Shutdown);
+                BadgeManager.SaveBadges();
+                BadgeCooldownManager.SaveBadgeCooldowns();
+                PenaltyManager.SavePenalties();
+                CheckManager.SaveChecks();
+                UserManager.SaveUsers();
+                ConnectionManager.SaveConnections();
+                break;
         }
 
         return true;

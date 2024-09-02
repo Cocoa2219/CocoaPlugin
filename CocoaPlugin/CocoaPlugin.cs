@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Beta;
 using CocoaPlugin.API.Managers;

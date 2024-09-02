@@ -267,6 +267,7 @@
         <Compile Include="Patches\AfkPatch.cs" />
         <Compile Include="Patches\IsSafeCharacterPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
+        <Compile Include="Patches\RefreshPermissionPatch.cs" />
         <Compile Include="Patches\ScpPatch\Scp049Patch.cs" />
         <Compile Include="Patches\ScpSpawnPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,5 +2,5 @@
 
 public class Achievements
 {
-    public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; } = false;
 }
