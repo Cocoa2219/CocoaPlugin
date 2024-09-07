@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CustomPlayerEffects;
+using Mirror;
+using UnityEngine;
 
 namespace CocoaPlugin.API;
 
@@ -24,5 +27,13 @@ public static class Utility
     public static bool IsUserIdValid(string id)
     {
         return ValidUserIds.Any(id.EndsWith);
+    }
+
+    public static void PlayAnti207BreakSound(Vector3 pos)
+    {
+        NetworkServer.SendToReady(new AntiScp207.BreakMessage
+        {
+            SoundPos = pos
+        });
     }
 }

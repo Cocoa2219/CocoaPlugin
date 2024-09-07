@@ -28,11 +28,10 @@ namespace CocoaPlugin
         private Harmony Harmony { get; set; }
 
         internal Store Store { get; private set; }
+        internal ShootingRange ShootingRange { get; private set; }
 
         public override void OnEnabled()
         {
-            // PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneWindows64, new[] {GraphicsDeviceType.Direct3D11});
-
             Instance = this;
 
             AchievementManager.Initialize();
@@ -61,6 +60,8 @@ namespace CocoaPlugin
             Store = new Store();
             Store.RegisterEvents();
 
+            ShootingRange = new ShootingRange();
+
             base.OnEnabled();
         }
 
@@ -74,6 +75,8 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
+            ShootingRange = null;
+
             Store.UnregisterEvents();
             Store = null;
 

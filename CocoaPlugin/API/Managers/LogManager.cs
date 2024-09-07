@@ -45,7 +45,6 @@ public static class LogManager
 
         foreach (var log in logs)
         {
-            Log.Info($"Renaming log file: {log}");
             File.Move(log, log.Replace("Round In Progress", "Round Aborted"));
         }
 
@@ -73,6 +72,8 @@ public static class LogManager
 
     public static IEnumerator<float> RoundIdentifierHint()
     {
+        var shootingRange = CocoaPlugin.Instance.ShootingRange;
+
         while (true)
         {
             yield return Timing.WaitForSeconds(1f);
@@ -80,7 +81,7 @@ public static class LogManager
             if (CurrentRoundIdentifier == null)
                 continue;
 
-            foreach (var player in Player.List)
+            foreach (var player in Player.List.Except(shootingRange.Players))
             {
                 player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>", 5f);
             }

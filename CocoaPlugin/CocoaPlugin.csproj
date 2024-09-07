@@ -200,6 +200,7 @@
         <Compile Include="API\Achievements\Survival\ToTheIsekai.cs" />
         <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
         <Compile Include="API\BadgeRequest.cs" />
+        <Compile Include="API\Beta\ShootingRange.cs" />
         <Compile Include="API\Beta\Store.cs" />
         <Compile Include="API\Broadcast.cs" />
         <Compile Include="API\DiscordCommand.cs" />
@@ -233,14 +234,18 @@
         <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\Id.cs" />
         <Compile Include="Commands\Link.cs" />
         <Compile Include="Commands\NoScp.cs" />
         <Compile Include="Commands\OffsetPosition.cs" />
         <Compile Include="Commands\Penalty.cs" />
+        <Compile Include="Commands\PlayBreak.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Commands\SendPost.cs" />
+        <Compile Include="Commands\ShootingRange.cs" />
         <Compile Include="Commands\ShowHint.cs" />
+        <Compile Include="Commands\Teleport.cs" />
         <Compile Include="Configs\Achievements.cs" />
         <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\AutoNuke.cs" />
