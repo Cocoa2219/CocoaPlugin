@@ -14,13 +14,12 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Roles;
-using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions.Extensions;
 using MEC;
-using Mirror;
 using MultiBroadcast.API;
+// using MultiBroadcast.API;
 using PlayerRoles;
 using UnityEngine;
 using VoiceChat.Codec;
@@ -65,6 +64,9 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Destroying += OnDestroying;
         Exiled.Events.Handlers.Player.InteractingDoor += OnInteractingDoor;
         Exiled.Events.Handlers.Player.ReservedSlot += OnReservedSlot;
+        Exiled.Events.Handlers.Player.VoiceChatting += OnVoiceChatting;
+        Exiled.Events.Handlers.Player.Hurt += AssistManager.OnHurt;
+        Exiled.Events.Handlers.Player.Dying += AssistManager.OnDying;
 
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
@@ -92,6 +94,9 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
         Exiled.Events.Handlers.Player.InteractingDoor -= OnInteractingDoor;
         Exiled.Events.Handlers.Player.ReservedSlot -= OnReservedSlot;
+        Exiled.Events.Handlers.Player.VoiceChatting -= OnVoiceChatting;
+        Exiled.Events.Handlers.Player.Hurt -= AssistManager.OnHurt;
+        Exiled.Events.Handlers.Player.Dying -= AssistManager.OnDying;
 
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
@@ -152,6 +157,9 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnRestartingRound()
     {
+        VoiceGroup.OnRestartingRound();
+        AssistManager.OnRestartingRound();
+
         var today = TodayToString();
 
         UserTimes.TryAdd(today, []);
@@ -470,6 +478,8 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         LogManager.WriteLog($"{leftUser.Nickname} ({leftUser.UserId} | {ip}) 재접속 실패");
 
+        if (leftUser.Role == RoleTypeId.Scp0492) yield break;
+
         if (!Player.Get(RoleTypeId.Spectator).Any())
         {
             MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Reconnects.ReplaceFailedMessage.Duration,
@@ -669,15 +679,7 @@ public class PlayerEvents(CocoaPlugin plugin)
 
     internal void OnVoiceChatting(VoiceChattingEventArgs ev)
     {
-        var receiveBuffer = new float[24000];
-
-        if (ev.Player == null) return;
-        if (!ev.IsAllowed) return;
-
-        using var decoder = new OpusDecoder();
-        var length = decoder.Decode(ev.VoiceMessage.Data, ev.VoiceMessage.DataLength, receiveBuffer);
-
-
+        VoiceGroup.OnVoiceChatting(ev);
     }
 
     // public Dictionary<Door, Player> TDoor = new Dictionary<Door, Player>();

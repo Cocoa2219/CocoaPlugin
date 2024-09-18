@@ -81,7 +81,7 @@ public class Badge : ICommand
 }
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class BadgeText : ICommand
+public class BadgeText : ICommand, IHelpableCommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {
@@ -155,7 +155,7 @@ public class BadgeText : ICommand
 }
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class BadgeColor : ICommand
+public class BadgeColor : ICommand, IHelpableCommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {

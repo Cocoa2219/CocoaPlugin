@@ -4592,7 +4592,7 @@ The JSON string contains invalid UTF-8 bytes or invalid UTF-16 surrogates.</exce
       <summary>Parses the current JSON token value from the source as a <see cref="T:System.Byte" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token is not a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The numeric format of the JSON token value is incorrect (for example, it contains a fractional value or is written in scientific notation).
-
+          
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.Byte.MinValue">Byte.MinValue</see> or greater than <see cref="F:System.Byte.MaxValue">Byte.MaxValue</see>.</exception>
@@ -4621,9 +4621,9 @@ The value is incomplete. That is, the JSON string length is not a multiple of 4.
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.DateTime" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token isn't a <see cref="F:System.Text.Json.JsonTokenType.String" />.</exception>
       <exception cref="T:System.FormatException">The JSON token value cannot be read as a <see cref="T:System.DateTime" />.
-
+        
 -or-
-
+        
 The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.DateTime" /> value.
 
 -or-
@@ -4637,7 +4637,7 @@ The JSON token value is of an unsupported format.</exception>
       <exception cref="T:System.FormatException">The JSON token value cannot be read as a <see cref="T:System.DateTimeOffset" />.
 
 -or-
-
+        
 The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.DateTimeOffset" /> value.
 
 -or-
@@ -4661,7 +4661,7 @@ The JSON token value is of an unsupported format.</exception>
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.Guid" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token isn't a <see cref="F:System.Text.Json.JsonTokenType.String" />.</exception>
       <exception cref="T:System.FormatException">The JSON token value is in an unsupported format for a Guid.
-
+        
 -or-
 
 The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.Guid" /> value.</exception>
@@ -4671,7 +4671,7 @@ The entire UTF-8 encoded token value cannot be parsed to a <see cref="T:System.G
       <summary>Parses the current JSON token value from the source as a <see cref="T:System.Int16" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token is not a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The numeric format of the JSON token value is incorrect (for example, it contains a fractional value or is written in scientific notation).
-
+          
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.Int16.MinValue">Int16.MinValue</see> or greater than <see cref="F:System.Int16.MaxValue">Int16.MaxValue</see>.</exception>
@@ -4681,7 +4681,7 @@ The JSON token value represents a number less than <see cref="F:System.Int16.Min
       <summary>Reads the next JSON token value from the source and parses it to an <see cref="T:System.Int32" />.</summary>
       <exception cref="T:System.InvalidOperationException">The JSON token value isn't a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The JSON token value is of the incorrect numeric format. For example, it contains a decimal or is written in scientific notation.
-
+            
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.Int32.MinValue">Int32.MinValue</see> or greater than <see cref="F:System.Int32.MaxValue">Int32.MaxValue</see>.</exception>
@@ -4691,7 +4691,7 @@ The JSON token value represents a number less than <see cref="F:System.Int32.Min
       <summary>Reads the next JSON token value from the source and parses it to an <see cref="T:System.Int64" />.</summary>
       <exception cref="T:System.InvalidOperationException">The JSON token value isn't a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The JSON token value is of the incorrect numeric format. For example, it contains a decimal or is written in scientific notation.
-
+            
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.Int64.MinValue">Int64.MinValue</see> or greater than <see cref="F:System.Int64.MaxValue">Int64.MaxValue</see>.</exception>
@@ -4701,7 +4701,7 @@ The JSON token value represents a number less than <see cref="F:System.Int64.Min
       <summary>Parses the current JSON token value from the source as an <see cref="T:System.SByte" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token is not a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The numeric format of the JSON token value is incorrect (for example, it contains a fractional value or is written in scientific notation).
-
+          
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.SByte.MinValue">SByte.MinValue</see> or greater than <see cref="F:System.SByte.MaxValue">SByte.MaxValue</see>.</exception>
@@ -4726,7 +4726,7 @@ The JSON string contains invalid UTF-8 bytes or invalid UTF-16 surrogates.</exce
       <summary>Parses the current JSON token value from the source as a <see cref="T:System.UInt16" />.</summary>
       <exception cref="T:System.InvalidOperationException">The value of the JSON token is not a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The numeric format of the JSON token value is incorrect (for example, it contains a fractional value or is written in scientific notation).
-
+          
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.UInt16.MinValue">UInt16.MinValue</see> or greater than <see cref="F:System.UInt16.MaxValue">UInt16.MaxValue</see>.</exception>
@@ -4746,7 +4746,7 @@ The JSON token value represents a number less than <see cref="F:System.UInt32.Mi
       <summary>Reads the next JSON token value from the source and parses it to a <see cref="T:System.UInt64" />.</summary>
       <exception cref="T:System.InvalidOperationException">The JSON token value isn't a <see cref="F:System.Text.Json.JsonTokenType.Number" />.</exception>
       <exception cref="T:System.FormatException">The JSON token value is of the incorrect numeric format. For example, it contains a decimal or is written in scientific notation.
-
+            
 -or-
 
 The JSON token value represents a number less than <see cref="F:System.UInt64.MinValue">UInt64.MinValue</see> or greater than <see cref="F:System.UInt64.MaxValue">UInt64.MaxValue</see>.</exception>
@@ -4755,7 +4755,7 @@ The JSON token value represents a number less than <see cref="F:System.UInt64.Mi
     <member name="M:System.Text.Json.Utf8JsonReader.Read">
       <summary>Reads the next JSON token from the input source.</summary>
       <exception cref="T:System.Text.Json.JsonException">An invalid JSON token according to the JSON RFC is encountered.
-
+        
 -or-
 
 The current depth exceeds the recursive limit set by the maximum depth.</exception>
@@ -4879,7 +4879,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
     <member name="M:System.Text.Json.Utf8JsonReader.TrySkip">
       <summary>Tries to skip the children of the current JSON token.</summary>
       <exception cref="T:System.Text.Json.JsonException">An invalid JSON token was encountered while skipping, according to the JSON RFC.
-
+          
 -or -
 
 The current depth exceeds the recursive limit set by the maximum depth.</exception>
@@ -5076,7 +5076,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <summary>Writes a UTF-8 text value as a JSON comment.</summary>
       <param name="utf8Value">The UTF-8 encoded value to be written as a JSON comment within <c>/*..*/</c>.</param>
       <exception cref="T:System.ArgumentException">The specified value is too large.
-
+        
 -or-
 
 <paramref name="utf8Value" /> contains a comment delimiter (that is, <c>*/</c>).</exception>
@@ -5085,7 +5085,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <summary>Writes a UTF-16 text value as a JSON comment.</summary>
       <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within <c>/*..*/</c>.</param>
       <exception cref="T:System.ArgumentException">The specified value is too large.
-
+        
 -or-
 
 <paramref name="value" /> contains a comment delimiter (that is, <c>*/</c>).</exception>
@@ -5094,7 +5094,7 @@ The current depth exceeds the recursive limit set by the maximum depth.</excepti
       <summary>Writes a string text value as a JSON comment.</summary>
       <param name="value">The UTF-16 encoded value to be written as a UTF-8 transcoded JSON comment within <c>/*..*/</c>.</param>
       <exception cref="T:System.ArgumentException">The specified value is too large.
-
+        
 -or-
 
 <paramref name="value" /> contains a comment delimiter (that is, <c>*/</c>).</exception>
@@ -5447,7 +5447,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.ReadOnlySpan{System.Char})">
@@ -5457,7 +5457,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartArray(System.String)">
@@ -5467,7 +5467,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="propertyName" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -5475,7 +5475,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON array with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON array to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1,000.
-
+    
 -or-
 
 Validation is enabled, and this method would result in writing invalid JSON.</exception>
@@ -5492,30 +5492,30 @@ Validation is enabled, and the operation would result in writing invalid JSON.</
       <summary>Writes the beginning of a JSON object with a property name specified as a read-only span of bytes as the key.</summary>
       <param name="utf8PropertyName">The UTF-8 encoded property name of the JSON object to be written.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000. 
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.ReadOnlySpan{System.Char})">
       <summary>Writes the beginning of a JSON object with a property name specified as a read-only character span as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000. 
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
     </member>
     <member name="M:System.Text.Json.Utf8JsonWriter.WriteStartObject(System.String)">
       <summary>Writes the beginning of a JSON object with a property name specified as a string as the key.</summary>
       <param name="propertyName">The UTF-16 encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.ArgumentException">The specified property name is too large.</exception>
-      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000.
+      <exception cref="T:System.InvalidOperationException">The depth of the JSON exceeds the maximum depth of 1,000. 
 
 -or-
-
+       
 Validation is enabled, and this write operation would produce invalid JSON.</exception>
       <exception cref="T:System.ArgumentNullException">The <paramref name="propertyName" /> parameter is <see langword="null" />.</exception>
     </member>
@@ -5523,7 +5523,7 @@ Validation is enabled, and this write operation would produce invalid JSON.</exc
       <summary>Writes the beginning of a JSON object with a pre-encoded property name as the key.</summary>
       <param name="propertyName">The JSON encoded property name of the JSON object to be transcoded and written as UTF-8.</param>
       <exception cref="T:System.InvalidOperationException">The depth of the JSON has exceeded the maximum depth of 1,000.
-
+          
 -or-
 
 Validation is enabled, and this method would result in writing invalid JSON.</exception>

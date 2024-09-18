@@ -216,7 +216,6 @@ C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Exiled.Loader.xml
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Exiled.Permissions.xml
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.csproj.AssemblyReference.cache
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.csproj.CoreCompileInputs.cache
-C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.csproj.CopyComplete
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlugin.pdb
 C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Newtonsoft.Json.dll
@@ -274,3 +273,6 @@ C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Text.Encoding
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Text.Json.xml
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.Threading.Tasks.Extensions.xml
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.ValueTuple.xml
+C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MapEditorReborn.dll
+C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlu.1B4583AC.Up2Date
+C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\SLPlayerRotation.dll

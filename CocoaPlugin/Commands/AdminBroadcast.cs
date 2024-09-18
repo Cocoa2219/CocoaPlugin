@@ -8,7 +8,7 @@ using MultiBroadcast.API;
 namespace CocoaPlugin.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class AdminBroadcastClient : ICommand, IHiddenCommand
+public class AdminBroadcastClient : ICommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {

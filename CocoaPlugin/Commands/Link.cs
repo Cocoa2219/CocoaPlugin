@@ -8,7 +8,7 @@ using Exiled.API.Features;
 namespace CocoaPlugin.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class Link : ICommand
+public class Link : ICommand, IHelpableCommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {

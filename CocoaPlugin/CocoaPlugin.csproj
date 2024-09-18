@@ -23,7 +23,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Debug\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +34,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\PC\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\PC\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
+        <PostBuildEvent>xcopy /y /s /i /d "C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.dll" "C:\Users\user\AppData\Roaming\EXILED\Plugins"</PostBuildEvent>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
     </PropertyGroup>
     <ItemGroup>
@@ -123,6 +123,9 @@
         <Reference Include="Pooling">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Pooling.dll</HintPath>
         </Reference>
+        <Reference Include="SLPlayerRotation">
+          <HintPath>..\..\..\AppData\Roaming\EXILED\Plugins\dependencies\SLPlayerRotation.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.ComponentModel.DataAnnotations" />
         <Reference Include="System.Core" />
@@ -199,6 +202,7 @@
         <Compile Include="API\Achievements\Survival\No914.cs" />
         <Compile Include="API\Achievements\Survival\ToTheIsekai.cs" />
         <Compile Include="API\Achievements\Survival\UncomfortableCohabitation.cs" />
+        <Compile Include="API\AssistManager.cs" />
         <Compile Include="API\BadgeRequest.cs" />
         <Compile Include="API\Beta\ShootingRange.cs" />
         <Compile Include="API\Beta\Store.cs" />
@@ -214,38 +218,51 @@
         <Compile Include="API\Managers\BadgeManager.cs" />
         <Compile Include="API\Managers\CheckManager.cs" />
         <Compile Include="API\Managers\ConnectionManager.cs" />
+        <Compile Include="API\Managers\ExperienceLogManager.cs" />
         <Compile Include="API\Managers\FileManager.cs" />
         <Compile Include="API\Managers\LogManager.cs" />
         <Compile Include="API\Managers\NetworkManager.cs" />
         <Compile Include="API\Managers\PenaltyManager.cs" />
+        <Compile Include="API\Managers\RankManager.cs" />
         <Compile Include="API\Managers\ReservedSlotManager.cs" />
         <Compile Include="API\Managers\UserManager.cs" />
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\PostType.cs" />
         <Compile Include="API\ProbabilityCalculator.cs" />
+        <Compile Include="API\Ranks\ExampleExperience.cs" />
+        <Compile Include="API\Ranks\ExperienceBase.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\SightManager.cs" />
         <Compile Include="API\Time.cs" />
         <Compile Include="API\Utility.cs" />
         <Compile Include="API\TyperHelper.cs" />
         <Compile Include="API\VideoEncoder.cs" />
+        <Compile Include="API\VoiceGroup.cs" />
         <Compile Include="CocoaPlugin.cs" />
         <Compile Include="Commands\AdminBroadcast.cs" />
         <Compile Include="Commands\Badge.cs" />
         <Compile Include="Commands\Ban.cs" />
+        <Compile Include="Commands\ChangeAppearance.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\EasterEgg.cs" />
+        <Compile Include="Commands\ForceRotation.cs" />
         <Compile Include="Commands\Id.cs" />
+        <Compile Include="Commands\IHelpableCommand.cs" />
         <Compile Include="Commands\Link.cs" />
         <Compile Include="Commands\NoScp.cs" />
         <Compile Include="Commands\OffsetPosition.cs" />
         <Compile Include="Commands\Penalty.cs" />
         <Compile Include="Commands\PlayBreak.cs" />
+        <Compile Include="Commands\Plugins.cs" />
+        <Compile Include="Commands\Rank.cs" />
         <Compile Include="Commands\ReloadPastebin.cs" />
+        <Compile Include="Commands\Scale.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Commands\SendPost.cs" />
         <Compile Include="Commands\ShootingRange.cs" />
         <Compile Include="Commands\ShowHint.cs" />
         <Compile Include="Commands\Teleport.cs" />
+        <Compile Include="Commands\Voice.cs" />
         <Compile Include="Configs\Achievements.cs" />
         <Compile Include="Configs\Afk.cs" />
         <Compile Include="Configs\AutoNuke.cs" />
@@ -257,6 +274,7 @@
         <Compile Include="Configs\Config.cs" />
         <Compile Include="Configs\Logs.cs" />
         <Compile Include="Configs\Others.cs" />
+        <Compile Include="Configs\Ranks.cs" />
         <Compile Include="Configs\Reconnects.cs" />
         <Compile Include="Configs\Scps.cs" />
         <Compile Include="Configs\Scp\Scp049.cs" />
@@ -270,6 +288,7 @@
         <Compile Include="EventHandlers\ServerEvents.cs" />
         <Compile Include="Patches\AdminChatPatch.cs" />
         <Compile Include="Patches\AfkPatch.cs" />
+        <Compile Include="Patches\HelpCommandPatch.cs" />
         <Compile Include="Patches\IsSafeCharacterPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
         <Compile Include="Patches\RefreshPermissionPatch.cs" />

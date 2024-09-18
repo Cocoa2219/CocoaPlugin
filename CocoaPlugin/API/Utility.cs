@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CustomPlayerEffects;
+using Exiled.API.Features;
 using Mirror;
 using UnityEngine;
 
@@ -35,5 +36,22 @@ public static class Utility
         {
             SoundPos = pos
         });
+    }
+
+    private static readonly char[] _splitter = [' ', '.', ','];
+
+    public static Player[] ParsePlayers(string text)
+    {
+        var players = new List<Player>();
+
+        foreach (var part in text.Split(_splitter, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (Player.TryGet(part, out var player))
+            {
+                players.Add(player);
+            }
+        }
+
+        return players.ToArray();
     }
 }

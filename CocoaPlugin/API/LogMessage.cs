@@ -26,5 +26,6 @@ public enum LogType
     ReconnectSuccess,
     // ServerInfo,
     Command,
-    DoorTrolling
+    DoorTrolling,
+    Custom,
 }

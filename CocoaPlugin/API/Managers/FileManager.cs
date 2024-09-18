@@ -13,6 +13,11 @@ public static class FileManager
             Directory.CreateDirectory(FolderPath);
     }
 
+    public static void AppendFile(string fileName, string content)
+    {
+        File.AppendAllText(Path.Combine(FolderPath, fileName), content);
+    }
+
     public static void WriteFile(string fileName, string content)
     {
         File.WriteAllText(Path.Combine(FolderPath, fileName), content);

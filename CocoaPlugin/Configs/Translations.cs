@@ -71,7 +71,7 @@ public class Translations
         { Team.Scientists, "과학자" },
         { Team.ClassD, "D계급" },
         { Team.Dead, "관전자" },
-        { Team.OtherAlive , "특수 팀"}
+        { Team.OtherAlive , "특수"}
     };
 
     public Dictionary<Team, string> TeamColors { get; set; } = new()

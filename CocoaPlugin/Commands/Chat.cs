@@ -10,7 +10,7 @@ using PlayerRoles;
 namespace CocoaPlugin.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class Chat : ICommand
+public class Chat : ICommand, IHelpableCommand
 {
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
     {

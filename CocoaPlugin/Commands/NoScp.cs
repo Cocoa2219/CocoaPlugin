@@ -13,7 +13,7 @@ using Server = Exiled.Events.Handlers.Server;
 namespace CocoaPlugin.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-public class NoScp : ICommand
+public class NoScp : ICommand, IHelpableCommand
 {
     public static HashSet<Player> NoScpPlayers { get; } = [];
 
@@ -76,7 +76,7 @@ public class NoScp : ICommand
 
         if (leftScps <= GetScpCount(Player.List.Count))
         {
-            response = "스폰할 SCP가 부족합니다.";
+            response = "스폰할 SCP가 부족합니다. 더 이상 사용할 수 없습니다.";
             return false;
         }
 

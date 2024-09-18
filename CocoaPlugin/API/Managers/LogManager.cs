@@ -72,18 +72,19 @@ public static class LogManager
 
     public static IEnumerator<float> RoundIdentifierHint()
     {
-        var shootingRange = CocoaPlugin.Instance.ShootingRange;
-
         while (true)
         {
-            yield return Timing.WaitForSeconds(1f);
+            yield return Timing.WaitForSeconds(2f);
 
             if (CurrentRoundIdentifier == null)
                 continue;
 
-            foreach (var player in Player.List.Except(shootingRange.Players))
+            foreach (var player in Player.List)
             {
-                player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>", 5f);
+                if (CocoaPlugin.Instance.ShootingRange.Instances.Any(x => x.Player == player))
+                    continue;
+
+                player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>");
             }
         }
     }
@@ -211,6 +212,7 @@ public class ServerRestartPatch
                 break;
             case ServerStatic.NextRoundAction.Restart:
                 LogManager.WriteEnd(RoundEndType.SoftRestarting);
+                RankManager.Destroy();
                 BadgeManager.SaveBadges();
                 BadgeCooldownManager.SaveBadgeCooldowns();
                 PenaltyManager.SavePenalties();
@@ -220,6 +222,7 @@ public class ServerRestartPatch
                 break;
             case ServerStatic.NextRoundAction.Shutdown:
                 LogManager.WriteEnd(RoundEndType.Shutdown);
+                RankManager.Destroy();
                 BadgeManager.SaveBadges();
                 BadgeCooldownManager.SaveBadgeCooldowns();
                 PenaltyManager.SavePenalties();

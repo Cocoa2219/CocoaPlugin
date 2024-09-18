@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Interfaces;
+using YamlDotNet.Serialization;
 
 namespace CocoaPlugin.Configs
 {
@@ -21,5 +22,6 @@ namespace CocoaPlugin.Configs
         public Others Others { get; set; } = new();
         public Achievements Achievements { get; set; } = new();
         public Logs Logs { get; set; } = new();
+        public Ranks Ranks { get; set; } = new();
     }
 }

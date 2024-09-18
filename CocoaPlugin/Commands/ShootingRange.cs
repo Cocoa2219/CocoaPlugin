@@ -76,7 +76,7 @@ public class ShootingRange : ICommand
                 return false;
         }
     }
-
+    
     public string Command { get; } = "shootingrange";
     public string[] Aliases { get; } = [];
     public string Description { get; } = "훈련장 부모 명령어입니다.";

@@ -127,15 +127,15 @@ public class ServerEvents(CocoaPlugin plugin)
         {
             var random = Random.value;
 
-            var sum = 0f;
+            var spawnChances = Config.Spawns.StartSpawnChances.ToList();
 
-            foreach (var (team, startSpawn) in Config.Spawns.StartSpawnChances)
+            spawnChances.ShuffleListSecure();
+
+            foreach (var (team, startSpawn) in spawnChances)
             {
-                sum += startSpawn.Chance;
-
-                if (random <= sum)
+                if (random <= startSpawn.Chance)
                 {
-                    if (team == Respawning.SpawnableTeamType.None) break;
+                    if (team == SpawnableTeamType.None) break;
 
                     foreach (var player in Player.Get(RoleTypeId.FacilityGuard))
                     {
@@ -270,6 +270,7 @@ public class ServerEvents(CocoaPlugin plugin)
         Timing.KillCoroutines(_autoBroadcastCoroutine);
         Timing.KillCoroutines(_elevatorCoroutine);
 
+        RankManager.SaveRanks();
         BadgeManager.SaveBadges();
         BadgeCooldownManager.SaveBadgeCooldowns();
         PenaltyManager.SavePenalties();

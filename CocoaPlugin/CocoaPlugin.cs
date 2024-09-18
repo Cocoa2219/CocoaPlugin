@@ -3,11 +3,15 @@ using System.Diagnostics;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Beta;
 using CocoaPlugin.API.Managers;
+using CocoaPlugin.Commands;
 using CocoaPlugin.Configs;
 using CocoaPlugin.EventHandlers;
 using Exiled.API.Features;
 using HarmonyLib;
 using Map = Exiled.Events.Handlers.Map;
+using Player = Exiled.Events.Handlers.Player;
+using Server = Exiled.Events.Handlers.Server;
+using ShootingRange = CocoaPlugin.API.Beta.ShootingRange;
 
 namespace CocoaPlugin
 {
@@ -34,6 +38,7 @@ namespace CocoaPlugin
         {
             Instance = this;
 
+            RankManager.Initialize();
             AchievementManager.Initialize();
             API.Managers.FileManager.CreateFolder();
             BadgeManager.LoadBadges();
@@ -62,6 +67,8 @@ namespace CocoaPlugin
 
             ShootingRange = new ShootingRange();
 
+            Server.RestartingRound += ForceRotation.OnRoundRestarting;
+
             base.OnEnabled();
         }
 
@@ -75,6 +82,9 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
+            Server.RestartingRound -= ForceRotation.OnRoundRestarting;
+
+            ShootingRange.Destroy();
             ShootingRange = null;
 
             Store.UnregisterEvents();
