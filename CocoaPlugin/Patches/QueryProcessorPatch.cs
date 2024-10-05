@@ -41,7 +41,7 @@ public class QueryProcessorPatch
             catch (Exception ex)
             {
                 var errorFormat = CocoaPlugin.Instance.Config.Commands.ExecuteErrorText;
-                var err = errorFormat + ex;
+                var err = errorFormat.TrimEnd('\n').Replace("%error%", ex.Message).Replace("\\n", "\n");
                 if (!EventManager.ExecuteEvent(new PlayerGameConsoleCommandExecutedEvent(__instance._hub, arguments[0],
                         arguments.Skip(1).ToArray(), false, err)))
                     return false;

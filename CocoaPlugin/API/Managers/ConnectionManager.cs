@@ -5,9 +5,9 @@ namespace CocoaPlugin.API.Managers;
 
 public static class ConnectionManager
 {
-    public const string ConnectionFileName = "Connections.txt";
+    private const string ConnectionFileName = "Connections.txt";
 
-    public static List<Connection> ConnectionCache { get; } = new();
+    private static List<Connection> ConnectionCache { get; } = new();
 
     public static void RemoveConnection(string discordId)
     {

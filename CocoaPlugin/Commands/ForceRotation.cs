@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CommandSystem;
+using CustomPlayerEffects;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
+using HarmonyLib;
+using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.Firearms.Modules;
 using MEC;
+using PluginAPI.Events;
 using RelativePositioning;
-using RemoteAdmin;
 using SLPlayerRotation;
 using UnityEngine;
 
@@ -93,6 +96,13 @@ public class ForceRotation : ICommand
         {
             Timing.KillCoroutines(coroutine);
         }
+
+
+        _coroutines.Clear();
+
+        ForceRotationToPlayer._coroutines.Clear();
+
+        ZeroAim._zeroAimPlayers.Clear();
     }
 
     private IEnumerator<float> ForceRotationCoroutine(Player player, Vector3 target)
@@ -105,28 +115,6 @@ public class ForceRotation : ICommand
 
             player.SetHubRotation(rotation);
         }
-    }
-
-    public static (ushort horizontal, ushort vertical) ToClientUShorts(Quaternion rotation)
-    {
-        const float ToHorizontal = ushort.MaxValue / 360f;
-        const float ToVertical = ushort.MaxValue / 176f;
-
-        float fixVertical = -rotation.eulerAngles.x;
-
-        if (fixVertical < -90f)
-        {
-            fixVertical += 360f;
-        }
-        else if (fixVertical > 270f)
-        {
-            fixVertical -= 360f;
-        }
-
-        float horizontal = Mathf.Clamp(rotation.eulerAngles.y, 0f, 360f);
-        float vertical = Mathf.Clamp(fixVertical, -88f, 88f) + 88f;
-
-        return ((ushort)Math.Round(horizontal * ToHorizontal), (ushort)Math.Round(vertical * ToVertical));
     }
 
     public string Command { get; } = "forcerotation";
@@ -212,6 +200,7 @@ public class ForceRotationToPlayer : ICommand
             var closest = Player.List.Where(x => x != player).OrderBy(x => Vector3.Distance(player.Position, x.Position)).FirstOrDefault();
 
             if (closest == null) continue;
+            if (closest.IsDead) continue;
 
             var rotation = Quaternion.LookRotation(closest.CameraTransform.position - player.CameraTransform.position, Vector3.up);
 
@@ -224,4 +213,70 @@ public class ForceRotationToPlayer : ICommand
     public string Command { get; } = "forcerotationto";
     public string[] Aliases { get; } = { "frt" };
     public string Description { get; } = "플레이어의 시선을 고정합니다.";
+}
+
+[CommandHandler(typeof(RemoteAdminCommandHandler))]
+public class ZeroAim : ICommand
+{
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
+    {
+        var player = Player.Get(arguments.At(0));
+
+        if (player == null)
+        {
+            response = "플레이어를 찾을 수 없습니다.";
+            return false;
+        }
+
+        if (!_zeroAimPlayers.Add(player.ReferenceHub))
+        {
+            _zeroAimPlayers.Remove(player.ReferenceHub);
+            response = "플레이어의 오차율을 0으로 설정을 해제했습니다.";
+            return true;
+        }
+
+        response = "플레이어의 오차율을 0으로 설정했습니다.";
+        return true;
+    }
+
+    public static HashSet<ReferenceHub> _zeroAimPlayers = [];
+
+    public string Command { get; } = "zeroaim";
+    public string[] Aliases { get; } = { "za" };
+    public string Description { get; } = "플레이어의 사격 오차율을 0으로 설정합니다.";
+}
+
+[HarmonyPatch(typeof(SingleBulletHitreg), nameof(SingleBulletHitreg.ServerPerformShot))]
+public class ServerProcessShotPatch
+{
+    public static bool Prefix(SingleBulletHitreg __instance, Ray ray)
+    {
+        if (!EventManager.ExecuteEvent(new PlayerShotWeaponEvent(__instance.Hub, __instance.Firearm)))
+        {
+            return false;
+        }
+
+        if (!ZeroAim._zeroAimPlayers.Contains(__instance.Hub))
+        {
+            ray = __instance.ServerRandomizeRay(ray);
+        }
+
+        if (StandardHitregBase.DebugMode)
+        {
+            __instance.SendDebug("Sending raycast origin=" + ray.origin.ToPreciseString() + ", direction=" + ray.direction.ToPreciseString());
+        }
+        var baseStats = __instance.Firearm.BaseStats;
+        if (Physics.Raycast(ray, out var hit, baseStats.MaxDistance(), StandardHitregBase.HitregMask))
+        {
+            __instance.ServerProcessRaycastHit(ray, hit);
+            return false;
+        }
+        if (StandardHitregBase.DebugMode)
+        {
+            __instance.SendDebug(
+                $"Raycast couldn't hit anything from origin={ray.origin} dir={ray.direction} maxdis= {baseStats.MaxDistance()}");
+        }
+
+        return false;
+    }
 }

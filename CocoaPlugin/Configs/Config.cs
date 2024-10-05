@@ -1,4 +1,5 @@
-﻿using Exiled.API.Interfaces;
+﻿using System.ComponentModel;
+using Exiled.API.Interfaces;
 using YamlDotNet.Serialization;
 
 namespace CocoaPlugin.Configs
@@ -17,7 +18,6 @@ namespace CocoaPlugin.Configs
         public Afk Afk { get; set; } = new();
         public Spawns Spawns { get; set; } = new();
         public AutoNuke AutoNuke { get; set; } = new();
-        public Supporters Supporters { get; set; } = new();
         public Network Network { get; set; } = new();
         public Others Others { get; set; } = new();
         public Achievements Achievements { get; set; } = new();

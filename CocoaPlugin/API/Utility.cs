@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CustomPlayerEffects;
 using Exiled.API.Features;
+using GameCore;
 using Mirror;
+using PlayerRoles;
 using UnityEngine;
 
 namespace CocoaPlugin.API;
@@ -53,5 +55,51 @@ public static class Utility
         }
 
         return players.ToArray();
+    }
+
+    public static byte GetServerNumber(ushort port)
+    {
+        if (port < 7777)
+            return 0;
+
+        return (byte)(port - 7776);
+    }
+
+    public static string RichTextToUnicode(string text)
+    {
+        return text.Replace('<', '\u003C').Replace('>', '\u003E');
+    }
+
+    public static Dictionary<Team, int> GetTeamCount(int playerCount)
+    {
+        var text = ConfigFile.ServerConfig.GetString("team_respawn_queue", "4014314031441404134041434414");
+        var count = new Dictionary<Team, int>
+        {
+            {Team.SCPs, 0},
+            {Team.FoundationForces, 0},
+            {Team.ClassD, 0},
+            {Team.Scientists, 0}
+        };
+
+        for (var i = 0; i < playerCount; i++)
+        {
+            switch (text[i % text.Length])
+            {
+                case '0':
+                    count[Team.SCPs]++;
+                    break;
+                case '1':
+                    count[Team.FoundationForces]++;
+                    break;
+                case '4':
+                    count[Team.ClassD]++;
+                    break;
+                case '3':
+                    count[Team.Scientists]++;
+                    break;
+            }
+        }
+
+        return count;
     }
 }

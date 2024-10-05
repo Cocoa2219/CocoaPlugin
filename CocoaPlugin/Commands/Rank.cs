@@ -14,7 +14,7 @@ public class Rank : ICommand
     {
         if (arguments.Count < 2)
         {
-            response = "사용법: rank <exp/level/save/load>";
+            response = "사용법: rank <exp/level/save/load/showui>";
             return false;
         }
 
@@ -52,16 +52,16 @@ public class Rank : ICommand
                             return false;
                         }
 
-                        if (arguments.Count >= 4 && Enum.TryParse(arguments.At(4), true, out type))
+                        if (arguments.Count >= 4)
                         {
-                            RankManager.GetRank(arg3)?.Add(amount, type);
+                            Enum.TryParse(arguments.At(4), true, out type);
                         }
                         else
                         {
                             type = ExperienceType.AdminCommand;
-
-                            RankManager.GetRank(arg3)?.Add(amount, type);
                         }
+
+                        RankManager.GetExperienceHandler(type)?.Grant(arg3);
 
                         response = $"{arg3}에게 {amount} 경험치를 추가했습니다.";
                         return true;
@@ -137,8 +137,34 @@ public class Rank : ICommand
                 RankManager.LoadRanks();
                 response = "랭크 데이터를 불러왔습니다.";
                 return true;
+            case "showui":
+                var player = Player.Get(sender as CommandSender);
+
+                if (player == null)
+                {
+                    response = "플레이어를 찾을 수 없습니다.";
+                    return false;
+                }
+
+                if (!int.TryParse(arguments.At(1), out var prev))
+                {
+                    response = "값은 숫자여야 합니다.";
+                    return false;
+                }
+
+                if (!int.TryParse(arguments.At(2), out var next))
+                {
+                    response = "값은 숫자여야 합니다.";
+                    return false;
+                }
+
+                var time = float.TryParse(arguments.At(3), out var t) ? t : 0.1f;
+
+                RankManager.UpgradeBroadcast(prev, next, player, time);
+                response = "UI를 표시했습니다.";
+                return true;
             default:
-                response = "사용법: rank <exp/level/save/load>";
+                response = "사용법: rank <exp/level/save/load/showui>";
                 return false;
         }
     }

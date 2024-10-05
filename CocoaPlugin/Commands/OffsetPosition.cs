@@ -14,7 +14,6 @@ public class OffsetPosition : ICommand
     {
         Vector3 offset;
         StringBuilder sb;
-        Vector3 roomRot;
         Vector3 playerRot;
         if (arguments.Count == 0)
         {

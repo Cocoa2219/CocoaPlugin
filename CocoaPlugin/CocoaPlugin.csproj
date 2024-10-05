@@ -47,8 +47,8 @@
         <Reference Include="Assembly-CSharp-firstpass">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
         </Reference>
-        <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\packages\EXILEDOFFICIAL.8.11.0\lib\net48\CommandSystem.Core.dll</HintPath>
+        <Reference Include="CommandSystem.Core">
+          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\CommandSystem.Core-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="DnsClient">
           <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\DnsClient.dll</HintPath>
@@ -229,8 +229,29 @@
         <Compile Include="API\PlayerExtensions.cs" />
         <Compile Include="API\PostType.cs" />
         <Compile Include="API\ProbabilityCalculator.cs" />
-        <Compile Include="API\Ranks\ExampleExperience.cs" />
         <Compile Include="API\Ranks\ExperienceBase.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\DoorTrollingExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\EscapeExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\EscapeTeamExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\EscapeWhileCuffExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\GeneratorActivatedExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\KilledByHumanExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\KilledByScpExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\KillExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\RecontainedExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\RecontainScpWithMicroExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\RecontainScpWithoutMicroExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\ScpRecontainedExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\ScpHealthExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\ScpHumeShieldExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\SuicideExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Human\UnlockGeneratorExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\AssistKillExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\KillWithMicroExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\KillWithoutMicroExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\ObserveKillExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\TeslaKillExperience.cs" />
+        <Compile Include="API\Ranks\Handlers\Scp\TierUpgradeExperience.cs" />
         <Compile Include="API\RoleTypeIdExtensions.cs" />
         <Compile Include="API\SightManager.cs" />
         <Compile Include="API\Time.cs" />
@@ -279,21 +300,24 @@
         <Compile Include="Configs\Scps.cs" />
         <Compile Include="Configs\Scp\Scp049.cs" />
         <Compile Include="Configs\Spawns.cs" />
-        <Compile Include="Configs\Supporters.cs" />
         <Compile Include="Configs\Translations.cs" />
         <Compile Include="Configs\Network.cs" />
-        <Compile Include="EventHandlers\MapEvents.cs" />
-        <Compile Include="EventHandlers\NetworkHandler.cs" />
-        <Compile Include="EventHandlers\PlayerEvents.cs" />
-        <Compile Include="EventHandlers\ServerEvents.cs" />
+        <Compile Include="Handlers\MapEvents.cs" />
+        <Compile Include="Handlers\NetworkHandler.cs" />
+        <Compile Include="Handlers\PlayerEvents.cs" />
+        <Compile Include="Handlers\ServerEvents.cs" />
         <Compile Include="Patches\AdminChatPatch.cs" />
         <Compile Include="Patches\AfkPatch.cs" />
+        <Compile Include="Patches\CommandRegisterPatch.cs" />
+        <Compile Include="Patches\FinalizeAuthPatch.cs" />
         <Compile Include="Patches\HelpCommandPatch.cs" />
         <Compile Include="Patches\IsSafeCharacterPatch.cs" />
+        <Compile Include="Patches\JailbirdPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
         <Compile Include="Patches\RefreshPermissionPatch.cs" />
         <Compile Include="Patches\ScpPatch\Scp049Patch.cs" />
         <Compile Include="Patches\ScpSpawnPatch.cs" />
+        <Compile Include="Patches\ShootingTargetPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using CocoaPlugin.API;
 using CommandSystem;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
@@ -17,13 +18,7 @@ public class NoScp : ICommand, IHelpableCommand
 {
     public static HashSet<Player> NoScpPlayers { get; } = [];
 
-    public NoScp()
-    {
-        Exiled.Events.Handlers.Player.Left += OnLeft;
-        Server.RestartingRound += OnRestarting;
-    }
-
-    private void OnLeft(LeftEventArgs ev)
+    public static void OnLeft(LeftEventArgs ev)
     {
         if (NoScpPlayers.Contains(ev.Player))
         {
@@ -31,29 +26,9 @@ public class NoScp : ICommand, IHelpableCommand
         }
     }
 
-    private void OnRestarting()
+    public static void OnRestarting()
     {
         NoScpPlayers.Clear();
-
-        Exiled.Events.Handlers.Player.Left -= OnLeft;
-        Server.RestartingRound -= OnRestarting;
-    }
-
-    private static int GetScpCount(int playerCount)
-    {
-        var text = ConfigFile.ServerConfig.GetString("team_respawn_queue", "4014314031441404134041434414");
-
-        var scpCount = 0;
-
-        for (var i = 0; i < playerCount; i++)
-        {
-            if (text[i % text.Length] == '0')
-            {
-                scpCount++;
-            }
-        }
-
-        return scpCount;
     }
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
@@ -72,22 +47,24 @@ public class NoScp : ICommand, IHelpableCommand
             return false;
         }
 
+        if (NoScpPlayers.Contains(player))
+        {
+            NoScpPlayers.Remove(player);
+            response = "취소했습니다.";
+            return false;
+        }
+
         var leftScps = Player.List.Count - NoScpPlayers.Count;
 
-        if (leftScps <= GetScpCount(Player.List.Count))
+        if (leftScps <= Utility.GetTeamCount(Player.List.Count)[Team.SCPs])
         {
             response = "스폰할 SCP가 부족합니다. 더 이상 사용할 수 없습니다.";
             return false;
         }
 
-        if (NoScpPlayers.Add(player))
-        {
-            response = "이번 라운드에 확정적으로 SCP가 되지 않습니다.";
-            return true;
-        }
+        NoScpPlayers.Add(player);
 
-        NoScpPlayers.Remove(player);
-        response = "취소했습니다.";
+        response = "이번 라운드에 확정적으로 SCP가 되지 않습니다.";
         return true;
     }
 

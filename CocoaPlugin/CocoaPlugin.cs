@@ -5,9 +5,10 @@ using CocoaPlugin.API.Beta;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Commands;
 using CocoaPlugin.Configs;
-using CocoaPlugin.EventHandlers;
+using CocoaPlugin.Handlers;
 using Exiled.API.Features;
 using HarmonyLib;
+using InventorySystem.Items.Firearms.Modules;
 using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
@@ -36,6 +37,8 @@ namespace CocoaPlugin
 
         public override void OnEnabled()
         {
+            StandardHitregBase.DebugMode = Config.Debug;
+
             Instance = this;
 
             RankManager.Initialize();
@@ -69,6 +72,9 @@ namespace CocoaPlugin
 
             Server.RestartingRound += ForceRotation.OnRoundRestarting;
 
+            Player.Left += NoScp.OnLeft;
+            Server.RestartingRound += NoScp.OnRestarting;
+
             base.OnEnabled();
         }
 
@@ -82,6 +88,9 @@ namespace CocoaPlugin
 
         public override void OnDisabled()
         {
+            Player.Left -= NoScp.OnLeft;
+            Server.RestartingRound -= NoScp.OnRestarting;
+
             Server.RestartingRound -= ForceRotation.OnRoundRestarting;
 
             ShootingRange.Destroy();

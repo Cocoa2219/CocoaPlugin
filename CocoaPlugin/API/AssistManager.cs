@@ -18,23 +18,20 @@ public static class AssistManager
             Assists[ev.Player] = [];
         }
 
-        var assist = Assists[ev.Player].FirstOrDefault(x => x.Player == ev.Attacker);
-
-        if (assist == null)
+        var assist = new Assist
         {
-            assist = new Assist
-            {
-                Player = ev.Attacker,
-                Damages = [ev.Amount],
-                LastDamage = UnityEngine.Time.timeSinceLevelLoad
-            };
+            Target = ev.Player,
+            Damage = ev.Amount,
+            Time = UnityEngine.Time.timeSinceLevelLoad
+        };
 
-            Assists[ev.Player].Add(assist);
+        if (Assists.TryGetValue(ev.Attacker, out var assists))
+        {
+            assists.Add(assist);
         }
         else
         {
-            assist.Damages.Add(ev.Amount);
-            assist.LastDamage = UnityEngine.Time.timeSinceLevelLoad;
+            Assists[ev.Attacker] = [assist];
         }
     }
 
@@ -55,7 +52,17 @@ public static class AssistManager
 
     public static bool HasAssists(Player target, Player player)
     {
-        return Assists.TryGetValue(target, out var assists) && assists.Any(x => x.Player == player);
+        return Assists.TryGetValue(target, out var assists) && assists.Any(x => x.Target == player);
+    }
+
+    public static Assist LastAssist(Player player)
+    {
+        return GetAssists(player).OrderBy(x => x.Time).FirstOrDefault();
+    }
+
+    public static float GetTotalDamage(Player player)
+    {
+        return GetAssists(player).Sum(x => x.Damage);
     }
 }
 
@@ -73,14 +80,18 @@ public static class PlayerAssistExtensions
 
     public static List<Assist> GetAssistsInWindow(this Player player, float window)
     {
-        return player.GetAssists().Where(x => UnityEngine.Time.timeSinceLevelLoad - x.LastDamage <= window).ToList();
+        return player.GetAssists().Where(x => UnityEngine.Time.timeSinceLevelLoad - x.Time <= window).ToList();
+    }
+
+    public static float GetTotalDamage(this Player player)
+    {
+        return AssistManager.GetTotalDamage(player);
     }
 }
 
-public class Assist
+public struct Assist
 {
-    public Player Player { get; set; }
-    public List<float> Damages { get; set; } = new();
-    public float TotalDamage => Damages.Sum();
-    public float LastDamage { get; set; }
+    public Player Target { get; set; }
+    public float Damage { get; set; }
+    public float Time { get; set; }
 }

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Exiled.API.Features;
+
+namespace CocoaPlugin.API;
 
 public class VideoEncoder
 {
     public VideoEncoder(Player player)
     {
-        var imagePath = CocoaPlugin.API.Managers.FileManager.GetPath("Images");
+        var imagePath = global::CocoaPlugin.API.Managers.FileManager.GetPath("Images");
 
         if (!Directory.Exists(imagePath))
             Directory.CreateDirectory(imagePath);
@@ -28,10 +28,10 @@ public class VideoEncoder
         if (!Directory.Exists(ImageDirectory))
             Directory.CreateDirectory(ImageDirectory);
 
-        if (!Directory.Exists(CocoaPlugin.API.Managers.FileManager.GetPath("Videos")))
-            Directory.CreateDirectory(CocoaPlugin.API.Managers.FileManager.GetPath("Videos"));
+        if (!Directory.Exists(global::CocoaPlugin.API.Managers.FileManager.GetPath("Videos")))
+            Directory.CreateDirectory(global::CocoaPlugin.API.Managers.FileManager.GetPath("Videos"));
 
-        VideoOutputPath = Path.Combine(CocoaPlugin.API.Managers.FileManager.GetPath("Videos"), $"{player.UserId}.mp4");
+        VideoOutputPath = Path.Combine(global::CocoaPlugin.API.Managers.FileManager.GetPath("Videos"), $"{player.UserId}.mp4");
     }
 
     public string ImageDirectory { get; set; }

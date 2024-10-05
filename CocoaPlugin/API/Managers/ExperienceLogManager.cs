@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CocoaPlugin.API.Ranks;
 
 namespace CocoaPlugin.API.Managers;
@@ -21,6 +22,7 @@ public class ExperienceLog
     public ExperienceActionType ActionType { get; init; }
 }
 
+[Flags]
 public enum ExperienceActionType
 {
     Add,

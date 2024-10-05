@@ -14,7 +14,7 @@ namespace CocoaPlugin.API.Managers;
 
 public static class LogManager
 {
-    private const string LogFolder = "Logs";
+    public const string LogFolder = "Logs";
 
     private const string LogFileFormat = "라운드 %id% (%start% ~ %end%).txt";
 
@@ -84,7 +84,7 @@ public static class LogManager
                 if (CocoaPlugin.Instance.ShootingRange.Instances.Any(x => x.Player == player))
                     continue;
 
-                player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>");
+                player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>", 3f);
             }
         }
     }
@@ -134,8 +134,6 @@ public static class LogManager
 
         File.Move(path, path.Replace("Round In Progress", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")));
 
-        _currentLogPath = path.Replace("Round In Progress", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"));
-
         if (type is RoundEndType.Shutdown or RoundEndType.SoftRestarting)
         {
             _isQuitting = false;
@@ -143,6 +141,8 @@ public static class LogManager
         }
 
         CurrentRoundIdentifier = GenerateNewIdentifier(CocoaPlugin.Instance.Config.Logs.IdentifierLength);
+
+        path = FileManager.GetPath(LogFolder);
 
         _currentLogPath = Path.Combine(path,
             LogFileFormat.Replace("%id%", CurrentRoundIdentifier)

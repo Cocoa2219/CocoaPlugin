@@ -57,5 +57,4 @@ public class Chat : ICommand, IHelpableCommand
     public string Command { get; } = "chat";
     public string[] Aliases { get; } = { "c", "ㅊ" };
     public string Description { get; } = "채팅을 사용합니다.";
-
 }

@@ -16,7 +16,7 @@ public class Id : ICommand, IHelpableCommand
             return false;
         }
 
-        response = $"\n당신의 유저 ID는 {s.SenderId} 입니다.";
+        response = $"\n당신의 유저 ID는 <b>{s.SenderId}</b> 입니다.";
         return true;
     }
 

@@ -50,11 +50,12 @@ public static class BadgeManager
     {
         var player = Player.Get(id);
 
-        if (player == null || badge == null || !Badge.IsValid(badge))
+        if (player == null)
             return;
 
-        player.RankName = badge.Name;
-        player.RankColor = badge.Color;
+        if (badge != null && !Badge.IsValid(badge)) return;
+
+        player.ReferenceHub.serverRoles.RefreshPermissions();
     }
 
     public static bool RemoveBadge(string id)
@@ -66,6 +67,8 @@ public static class BadgeManager
             return false;
 
         BadgeCache.Remove(id);
+
+        RefreshBadge(id, null);
         return true;
     }
 

@@ -37,6 +37,7 @@ public class Plugins : ICommand, IHelpableCommand
         }
 
         response = sb.ToString().TrimEnd('\n');
+        StringBuilderPool.Shared.Return(sb);
         return true;
     }
 

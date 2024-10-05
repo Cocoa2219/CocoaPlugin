@@ -21,6 +21,8 @@ namespace CocoaPlugin.API.Managers
 
         public static async void StartListener()
         {
+            Log.Info("Trying to open listener at " + CocoaPlugin.Instance.Config.Network.ListenUrl);
+
             try
             {
                 _listener = new HttpListener();
@@ -65,7 +67,7 @@ namespace CocoaPlugin.API.Managers
 
         private static async Task ProcessRequest(HttpListenerContext context)
         {
-            switch (context.Request.RawUrl)
+            switch (context.Request.RawUrl.ToLower().Split('?')[0])
             {
                 case "/cmd":
                     try
@@ -192,13 +194,22 @@ namespace CocoaPlugin.API.Managers
                             return;
                         }
 
-                        BadgeManager.AddBadge(badge.UserId, new Badge()
+                        try
                         {
-                            Color = badge.Color,
-                            Name = badge.Name
-                        });
+                            BadgeManager.AddBadge(badge.UserId, new Badge()
+                            {
+                                Color = badge.Color,
+                                Name = badge.Name
+                            });
 
-                        BadgeCooldownManager.SetCooldown(badge.UserId, badge.TextCooldown, badge.ColorCooldown);
+                            BadgeCooldownManager.SetCooldown(badge.UserId, badge.TextCooldown, badge.ColorCooldown);
+                        }
+                        catch (Exception)
+                        {
+                            context.Response.StatusCode = 400;
+                            context.Response.OutputStream.Close();
+                            return;
+                        }
 
                         context.Response.StatusCode = 200;
 
@@ -217,6 +228,66 @@ namespace CocoaPlugin.API.Managers
                     }
 
                     break;
+                // case "/logs":
+                //     try
+                //     {
+                //         if (context.Request.HttpMethod != "GET")
+                //         {
+                //             context.Response.StatusCode = 405;
+                //             context.Response.OutputStream.Close();
+                //             return;
+                //         }
+                //
+                //         // url query: /logs?file=filename
+                //         var logFile = context.Request.QueryString["file"];
+                //
+                //         string logPath;
+                //         if (string.IsNullOrEmpty(logFile))
+                //         {
+                //             logPath = FileManager.GetPath(LogManager.LogFolder);
+                //
+                //             var logs = Directory.GetFiles(logPath, "*.txt");
+                //
+                //             logs = logs.Select(Path.GetFileNameWithoutExtension).ToArray();
+                //
+                //             context.Response.StatusCode = 200;
+                //
+                //             var responseBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(logs));
+                //             context.Response.ContentType = "text/plain";
+                //             context.Response.ContentLength64 = responseBytes.Length;
+                //             await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                //
+                //             return;
+                //         }
+                //
+                //         var basePath = FileManager.GetPath(LogManager.LogFolder);
+                //
+                //         logPath = Path.Combine(basePath, logFile + ".txt");
+                //
+                //         if (!File.Exists(logPath))
+                //         {
+                //             context.Response.StatusCode = 404;
+                //             context.Response.OutputStream.Close();
+                //             return;
+                //         }
+                //
+                //         var logContent = await File.ReadAllTextAsync(logPath);
+                //
+                //         context.Response.StatusCode = 200;
+                //         context.Response.ContentType = "text/plain";
+                //         context.Response.ContentLength64 = logContent.Length;
+                //         await context.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes(logContent), 0, logContent.Length);
+                //     }
+                //     catch (Exception ex)
+                //     {
+                //         Log.Error($"Error while processing Log Request:\n{ex}");
+                //     }
+                //     finally
+                //     {
+                //         context.Response.OutputStream.Close();
+                //     }
+                //
+                //     break;
                 case "/":
                     context.Response.StatusCode = 200;
                     context.Response.OutputStream.Close();
@@ -306,7 +377,7 @@ namespace CocoaPlugin.API.Managers
             {
                 if (ex.Message.Contains("ConnectFailure"))
                 {
-                    Log.Warn("Cannot connect to the server.");
+                    Log.Debug("Cannot connect to the server.");
                 }
                 else
                 {

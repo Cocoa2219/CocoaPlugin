@@ -114,7 +114,6 @@ C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CocoaPlugin.pdb
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\0Harmony.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Assembly-CSharp-firstpass.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Assembly-CSharp-Publicized.dll
-C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CommandSystem.Core.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\DnsClient.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Exiled.API.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\Exiled.CreditTags.dll
@@ -276,3 +275,4 @@ C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\System.ValueTuple.xm
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\MapEditorReborn.dll
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\obj\Release\CocoaPlu.1B4583AC.Up2Date
 C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\SLPlayerRotation.dll
+C:\Users\user\Documents\CocoaPlugin\CocoaPlugin\bin\Release\CommandSystem.Core-Publicized.dll
