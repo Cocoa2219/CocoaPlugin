@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using CustomPlayerEffects;
 using Exiled.API.Features;
 using GameCore;
+using HarmonyLib;
 using Mirror;
+using static HarmonyLib.AccessTools;
 using PlayerRoles;
 using UnityEngine;
 
@@ -101,5 +104,21 @@ public static class Utility
         }
 
         return count;
+    }
+
+    // Get rooms (recursive)
+    public static List<Room> GetRoomsIn(Room room, int count)
+    {
+        var rooms = new List<Room> {room};
+
+        if (count <= 0)
+            return rooms;
+
+        foreach (var r in room.Doors.SelectMany(d => d.Rooms).Where(r => r != room))
+        {
+            rooms.AddRange(GetRoomsIn(r, count - 1));
+        }
+
+        return rooms;
     }
 }

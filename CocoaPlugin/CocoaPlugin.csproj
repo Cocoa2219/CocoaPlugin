@@ -265,6 +265,7 @@
         <Compile Include="Commands\Ban.cs" />
         <Compile Include="Commands\ChangeAppearance.cs" />
         <Compile Include="Commands\Chat.cs" />
+        <Compile Include="Commands\CheckPropertiesAndFields.cs" />
         <Compile Include="Commands\EasterEgg.cs" />
         <Compile Include="Commands\ForceRotation.cs" />
         <Compile Include="Commands\Id.cs" />
@@ -299,6 +300,7 @@
         <Compile Include="Configs\Reconnects.cs" />
         <Compile Include="Configs\Scps.cs" />
         <Compile Include="Configs\Scp\Scp049.cs" />
+        <Compile Include="Configs\Scp\Scp079.cs" />
         <Compile Include="Configs\Spawns.cs" />
         <Compile Include="Configs\Translations.cs" />
         <Compile Include="Configs\Network.cs" />
@@ -306,8 +308,6 @@
         <Compile Include="Handlers\NetworkHandler.cs" />
         <Compile Include="Handlers\PlayerEvents.cs" />
         <Compile Include="Handlers\ServerEvents.cs" />
-        <Compile Include="Patches\AdminChatPatch.cs" />
-        <Compile Include="Patches\AfkPatch.cs" />
         <Compile Include="Patches\CommandRegisterPatch.cs" />
         <Compile Include="Patches\FinalizeAuthPatch.cs" />
         <Compile Include="Patches\HelpCommandPatch.cs" />
@@ -315,9 +315,8 @@
         <Compile Include="Patches\JailbirdPatch.cs" />
         <Compile Include="Patches\QueryProcessorPatch.cs" />
         <Compile Include="Patches\RefreshPermissionPatch.cs" />
-        <Compile Include="Patches\ScpPatch\Scp049Patch.cs" />
-        <Compile Include="Patches\ScpSpawnPatch.cs" />
-        <Compile Include="Patches\ShootingTargetPatch.cs" />
+        <Compile Include="Patches\GenerateScpListPatch.cs" />
+        <Compile Include="Patches\ScpPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

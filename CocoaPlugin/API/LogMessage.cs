@@ -24,7 +24,7 @@ public enum LogType
     WaitingReconnect,
     ReconnectFailed,
     ReconnectSuccess,
-    // ServerInfo,
+    ServerInfo,
     Command,
     DoorTrolling,
     Custom,

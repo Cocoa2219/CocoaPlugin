@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
+using CocoaPlugin.Commands;
 using CocoaPlugin.Configs.Broadcast;
 using CommandSystem;
 using Exiled.API.Enums;
@@ -22,6 +23,7 @@ using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
 using PluginAPI.Events;
+using SLPlayerRotation;
 using UnityEngine;
 // using MultiBroadcast.API;
 using Camera = UnityEngine.Camera;
@@ -68,6 +70,8 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.VoiceChatting += OnVoiceChatting;
         Exiled.Events.Handlers.Player.Hurt += AssistManager.OnHurt;
         Exiled.Events.Handlers.Player.Dying += AssistManager.OnDying;
+        Exiled.Events.Handlers.Player.Shooting += OnShooting;
+        Exiled.Events.Handlers.Player.Shot += OnShot;
 
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
@@ -98,6 +102,8 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.VoiceChatting -= OnVoiceChatting;
         Exiled.Events.Handlers.Player.Hurt -= AssistManager.OnHurt;
         Exiled.Events.Handlers.Player.Dying -= AssistManager.OnDying;
+        Exiled.Events.Handlers.Player.Shooting -= OnShooting;
+        Exiled.Events.Handlers.Player.Shot -= OnShot;
 
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
@@ -105,6 +111,24 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         _nextDayTimer.Dispose();
     }
+
+    internal void OnShooting(ShootingEventArgs ev)
+    {
+        if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
+
+        // Log.Info($"{ev.Player.Nickname}'s original before shooting forward: {ev.Player.CameraTransform.forward}");
+        _lastRotations[ev.Player] = ev.Player.CameraTransform.forward;
+    }
+
+    internal void OnShot(ShotEventArgs ev)
+    {
+        if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
+
+        // Log.Info($"{ev.Player.Nickname}'s original after shot forward: {ev.Player.CameraTransform.forward}, restoring to {_lastRotations[ev.Player]}");
+        ev.Player.SetRotation(_lastRotations[ev.Player]);
+    }
+
+    private Dictionary<Player, Vector3> _lastRotations = new();
 
     internal void OnNextDay(object state)
     {
@@ -222,6 +246,8 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             UserRoundCounts[today].TryAdd(user.UserId, 0);
             UserRoundCounts[today][user.UserId]++;
+
+            CheckManager.AddCheck(user);
         }
     }
 
@@ -234,13 +260,9 @@ public class PlayerEvents(CocoaPlugin plugin)
 
         if (ev.Player.IsLinked())
         {
-            CheckManager.AddCheck(ev.Player, Check.Today);
-
             var user = ev.Player.GetUser();
 
             user.Update(ev.Player);
-
-            CheckManager.SaveChecks();
         }
 
         var today = TodayToString();

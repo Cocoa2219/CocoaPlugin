@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Features;
+using JetBrains.Annotations;
 
 namespace CocoaPlugin.API.Managers;
 
@@ -11,13 +12,16 @@ public static class CheckManager
 
     private static readonly Dictionary<string, List<Check>> CheckCache = new();
 
-    public static void AddCheck(Player player, Check check)
+    public static void AddCheck(Player player, [CanBeNull] Check check = null)
     {
         if (!Utility.IsUserIdValid(player.UserId))
             return;
 
         if (player.DoNotTrack)
             return;
+
+        if (check == null)
+            check = Check.Today;
 
         if (!CheckCache.TryGetValue(player.UserId, out var checks))
         {

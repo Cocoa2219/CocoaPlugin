@@ -64,10 +64,7 @@ public class Link : ICommand, IHelpableCommand
         });
         
         UserManager.SaveUsers();
-
-        CheckManager.AddCheck(player, Check.Today);
-        CheckManager.SaveChecks();
-
+        
         response = $"\n<b>{connection.DiscordNickname}</b> 계정이 연결되었습니다!\n자세한 내용은 디스코드 DM을 확인해주세요.";
         return true;
     }
