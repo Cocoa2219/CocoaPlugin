@@ -9,6 +9,7 @@ using CocoaPlugin.Handlers;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using HarmonyLib;
+using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Modules;
 using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;

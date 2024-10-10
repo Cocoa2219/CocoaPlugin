@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -9,7 +10,9 @@ using Exiled.API.Features;
 using Exiled.API.Features.Pools;
 using Exiled.Events.EventArgs.Scp049;
 using HarmonyLib;
+using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.PlayableScps.Scp049;
+using PlayerRoles.PlayableScps.Scp049.Zombies;
 using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.Subroutines;
 using static HarmonyLib.AccessTools;
@@ -93,7 +96,6 @@ public class Scp049AttackServerProcessCmdPatch
 
         newInstructions.InsertRange(index, new []
         {
-            // CocoaPlugin.Instance.Config.Scps.Scp049.SecondAttackCooldown
             new CodeInstruction(OpCodes.Ldarg_0),
             new CodeInstruction(OpCodes.Ldfld, Field(typeof(Scp049AttackAbility), nameof(Scp049AttackAbility._isInstaKillAttack))),
             new CodeInstruction(OpCodes.Brtrue_S, instaKillCooldownJmp),
@@ -458,6 +460,191 @@ public class CardiacArrestPatch
     }
 }
 #endregion Scp049
+
+#region Scp0492
+[HarmonyPatch(typeof(ZombieAttackAbility), nameof(ZombieAttackAbility.DamageAmount), MethodType.Getter)]
+public class ZombieAttackDamageAmountPatch
+{
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R4);
+
+        newInstructions.RemoveRange(index, 1);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieDamage));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+[HarmonyPatch(typeof(ZombieAttackAbility), nameof(ZombieAttackAbility.BaseCooldown), MethodType.Getter)]
+public class ZombieAttackCooldownAmountPatch
+{
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R4);
+
+        newInstructions.RemoveRange(index, 1);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieAttackCooldown));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+[HarmonyPatch(typeof(ZombieConsumeAbility), nameof(ZombieConsumeAbility.ServerComplete))]
+public class ZombieConsumeServerCompletePatch
+{
+    // public static bool Prefix(ZombieConsumeAbility __instance)
+    // {
+    //     __instance._target.playerStats.HealHP(CocoaPlugin.Instance.Config.Scps.Scp049.ZombieConsumeHealAmount);
+    //     return false;
+    // }
+
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R4);
+
+        newInstructions.RemoveRange(index, 1);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieConsumeHealAmount));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+[HarmonyPatch(typeof(ZombieShieldController), nameof(ZombieShieldController.CheckDistanceTo))]
+public class ZombieShieldCheckDistanceToPatch
+{
+    // public static bool Prefix(ZombieShieldController __instance, ReferenceHub hub)
+    // {
+    //     if (__instance._zombie.Owner == hub)
+    //     {
+    //         return false;
+    //     }
+    //     if (__instance._zombie.Owner.playerMovementSync.GetRealDistanceSqr(hub) > CocoaPlugin.Instance.Config.Scps.Scp049.ZombieHsRegenerationMaxDistanceSqr)
+    //     {
+    //         return false;
+    //     }
+    //     __instance._zombie.Owner.playerStats.HealHP(CocoaPlugin.Instance.Config.Scps.Scp049.ZombieConsumeHealAmount);
+    //
+    //     return false;
+    // }
+
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R4);
+
+        newInstructions.RemoveRange(index, 1);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieHsRegenerationMaxDistanceSqr));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+[HarmonyPatch(typeof(ZombieShieldController), nameof(ZombieShieldController.HsRegeneration), MethodType.Getter)]
+public class ZombieShieldHsRegenerationPatch
+{
+    // public static bool Prefix(ZombieShieldController __instance)
+    // {
+    //     if (__instance._zombie.Owner.playerStats.Health >= CocoaPlugin.Instance.Config.Scps.Scp049.ZombieHumeShieldMax)
+    //     {
+    //         return false;
+    //     }
+    //     __instance._zombie.Owner.playerStats.HealHP(CocoaPlugin.Instance.Config.Scps.Scp049.ZombieHumeShieldRegeneration);
+    //
+    //     return false;
+    // }
+
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(DynamicHumeShieldController), nameof(DynamicHumeShieldController.HsRegeneration))));
+        index -= 1;
+
+        newInstructions.RemoveRange(index, 2);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieHumeShieldRegeneration));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+[HarmonyPatch(typeof(ZombieShieldController), nameof(ZombieShieldController.HsMax), MethodType.Getter)]
+public class ZombieShieldHsMaxPatch
+{
+    // public static bool Prefix(ZombieShieldController __instance)
+    // {
+    //     return __instance._zombie.Owner.playerStats.Health < CocoaPlugin.Instance.Config.Scps.Scp049.ZombieHumeShieldMax;
+    // }
+
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    {
+        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+        int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R4);
+
+        newInstructions.RemoveRange(index, 1);
+
+        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieHumeShieldMax));
+
+        newInstructions.InsertRange(index, configValue);
+
+        for (var i = 0; i < newInstructions.Count; i++)
+        {
+            yield return newInstructions[i];
+        }
+
+        ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+}
+
+#endregion Scp0492
 
 #region Scp079
 
