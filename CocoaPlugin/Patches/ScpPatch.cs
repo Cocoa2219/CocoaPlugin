@@ -10,6 +10,7 @@ using Exiled.API.Features;
 using Exiled.API.Features.Pools;
 using Exiled.Events.EventArgs.Scp049;
 using HarmonyLib;
+using PlayerRoles;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.PlayableScps.Scp049;
 using PlayerRoles.PlayableScps.Scp049.Zombies;
@@ -600,11 +601,15 @@ public class ZombieShieldHsRegenerationPatch
         int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(DynamicHumeShieldController), nameof(DynamicHumeShieldController.HsRegeneration))));
         index -= 1;
 
+        Label canRegenerateLabel = newInstructions[index].ExtractLabels()[0];
+
         newInstructions.RemoveRange(index, 2);
 
         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp049), nameof(Scp049.ZombieHumeShieldRegeneration));
 
         newInstructions.InsertRange(index, configValue);
+
+        newInstructions[index].WithLabels(canRegenerateLabel);
 
         for (var i = 0; i < newInstructions.Count; i++)
         {
@@ -646,187 +651,187 @@ public class ZombieShieldHsMaxPatch
 
 #endregion Scp0492
 
-#region Scp079
-
-[HarmonyPatch(typeof(Scp079AuxManager), nameof(Scp079AuxManager.RegenSpeed))]
-public class Scp079RegenPatch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-        int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079AuxManager), nameof(Scp079AuxManager._regenerationPerTier))));
-
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.AuxRegeneration));
-
-        newInstructions.InsertRange(index, configValue);
-
-        for (var i = 0; i < newInstructions.Count; i++)
-        {
-            yield return newInstructions[i];
-        }
-
-        ListPool<CodeInstruction>.Pool.Return(newInstructions);
-    }
-}
-
-[HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.GetCapacityOfTier))]
-public class Scp079BlackoutRoomCapacityPatch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-        int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._capacityPerTier))));
-
-        index--;
-
-        newInstructions.RemoveRange(index, 2);
-
-        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCapacity));
-
-        newInstructions.InsertRange(index, configValue);
-
-        index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._capacityPerTier))));
-
-        index--;
-
-        newInstructions.RemoveRange(index, 2);
-
-        newInstructions.InsertRange(index, configValue);
-
-        for (var i = 0; i < newInstructions.Count; i++)
-        {
-            yield return newInstructions[i];
-        }
-
-        ListPool<CodeInstruction>.Pool.Return(newInstructions);
-    }
-}
-
-[HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.AbilityCost), MethodType.Getter)]
-public class Scp079BlackoutRoomCostPatch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-        int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))));
-
-        // move to ldarg.0
-        index--;
-
-        // ldarg ~ ldfld
-        newInstructions.RemoveRange(index, 2);
-
-        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCost));
-
-        newInstructions.InsertRange(index, configValue);
-
-        index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._surfaceCost))));
-
-        index--;
-
-        newInstructions.RemoveRange(index, 2);
-
-        configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.SurfaceBlackoutCost));
-
-        newInstructions.InsertRange(index, configValue);
-
-        for (var i = 0; i < newInstructions.Count; i++)
-        {
-            yield return newInstructions[i];
-        }
-
-        ListPool<CodeInstruction>.Pool.Return(newInstructions);
-    }
-}
-
-[HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.ServerProcessCmd))]
-public class Scp079BlackoutRoomServerProcessCmdPatch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-        int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown))));
-
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCooldown));
-
-        newInstructions.InsertRange(index, configValue);
-
-        index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration))));
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomDuration));
-
-        newInstructions.InsertRange(index, configValue);
-
-        for (var i = 0; i < newInstructions.Count; i++)
-        {
-            yield return newInstructions[i];
-        }
-
-        ListPool<CodeInstruction>.Pool.Return(newInstructions);
-    }
-}
-
-[HarmonyPatch(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility.ServerProcessCmd))]
-public class Scp079BlackoutZoneServerProcessCmdPatch
-{
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-        int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cooldown))));
-
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneCooldown));
-
-        newInstructions.InsertRange(index, configValue);
-
-        index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cost))));
-
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneCost));
-
-        newInstructions.InsertRange(index, configValue);
-
-        index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._duration))));
-
-        index -= 1;
-
-        newInstructions.RemoveRange(index, 2);
-
-        configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneDuration));
-
-        newInstructions.InsertRange(index, configValue);
-
-        for (var i = 0; i < newInstructions.Count; i++)
-        {
-            yield return newInstructions[i];
-        }
-
-        ListPool<CodeInstruction>.Pool.Return(newInstructions);
-    }
-}
-#endregion Scp079
+// #region Scp079
+//
+// [HarmonyPatch(typeof(Scp079AuxManager), nameof(Scp079AuxManager.RegenSpeed))]
+// public class Scp079RegenPatch
+// {
+//     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//     {
+//         List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+//
+//         int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079AuxManager), nameof(Scp079AuxManager._regenerationPerTier))));
+//
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.AuxRegeneration));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         for (var i = 0; i < newInstructions.Count; i++)
+//         {
+//             yield return newInstructions[i];
+//         }
+//
+//         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.GetCapacityOfTier))]
+// public class Scp079BlackoutRoomCapacityPatch
+// {
+//     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//     {
+//         List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+//
+//         int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._capacityPerTier))));
+//
+//         index--;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCapacity));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._capacityPerTier))));
+//
+//         index--;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         for (var i = 0; i < newInstructions.Count; i++)
+//         {
+//             yield return newInstructions[i];
+//         }
+//
+//         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.AbilityCost), MethodType.Getter)]
+// public class Scp079BlackoutRoomCostPatch
+// {
+//     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//     {
+//         List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+//
+//         int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cost))));
+//
+//         // move to ldarg.0
+//         index--;
+//
+//         // ldarg ~ ldfld
+//         newInstructions.RemoveRange(index, 2);
+//
+//         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCost));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._surfaceCost))));
+//
+//         index--;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.SurfaceBlackoutCost));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         for (var i = 0; i < newInstructions.Count; i++)
+//         {
+//             yield return newInstructions[i];
+//         }
+//
+//         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility.ServerProcessCmd))]
+// public class Scp079BlackoutRoomServerProcessCmdPatch
+// {
+//     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//     {
+//         List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+//
+//         int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._cooldown))));
+//
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomCooldown));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutRoomAbility), nameof(Scp079BlackoutRoomAbility._blackoutDuration))));
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutRoomDuration));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         for (var i = 0; i < newInstructions.Count; i++)
+//         {
+//             yield return newInstructions[i];
+//         }
+//
+//         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+//     }
+// }
+//
+// [HarmonyPatch(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility.ServerProcessCmd))]
+// public class Scp079BlackoutZoneServerProcessCmdPatch
+// {
+//     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+//     {
+//         List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+//
+//         int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cooldown))));
+//
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         List<CodeInstruction> configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneCooldown));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._cost))));
+//
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneCost));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(Scp079BlackoutZoneAbility), nameof(Scp079BlackoutZoneAbility._duration))));
+//
+//         index -= 1;
+//
+//         newInstructions.RemoveRange(index, 2);
+//
+//         configValue = ScpPatchUtility.GetConfigValue(typeof(Scp079), nameof(Scp079.BlackoutZoneDuration));
+//
+//         newInstructions.InsertRange(index, configValue);
+//
+//         for (var i = 0; i < newInstructions.Count; i++)
+//         {
+//             yield return newInstructions[i];
+//         }
+//
+//         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+//     }
+// }
+// #endregion Scp079
 
 public static class ScpPatchUtility
 {

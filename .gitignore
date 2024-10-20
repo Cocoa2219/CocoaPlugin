@@ -1,0 +1,7 @@
+﻿/.idea/
+
+/CocoaPlugin/bin
+/CocoaPlugin/obj
+/packages
+
+CocoaPlugin.sln.DotSettings.user

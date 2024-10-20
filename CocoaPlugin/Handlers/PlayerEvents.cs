@@ -22,10 +22,8 @@ using Exiled.Permissions.Extensions;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
-using PluginAPI.Events;
 using SLPlayerRotation;
 using UnityEngine;
-// using MultiBroadcast.API;
 using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
 using LogType = CocoaPlugin.API.LogType;
@@ -33,6 +31,7 @@ using NetworkManager = CocoaPlugin.API.Managers.NetworkManager;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
 using Time = CocoaPlugin.API.Time;
+// ReSharper disable RedundantAnonymousTypePropertyName
 
 namespace CocoaPlugin.Handlers;
 
@@ -644,18 +643,11 @@ public class PlayerEvents(CocoaPlugin plugin)
         // ev.Player.ChangeAppearance(RoleTypeId.Spectator);
     }
 
-    public class DoorTrollingEventArgs
+    public class DoorTrollingEventArgs(Door door, Player player, HashSet<Player> players)
     {
-        public Door Door { get; }
-        public Player Player { get; }
-        public HashSet<Player> Players { get; }
-
-        public DoorTrollingEventArgs(Door door, Player player, HashSet<Player> players)
-        {
-            Door = door;
-            Player = player;
-            Players = players;
-        }
+        public Door Door { get; } = door;
+        public Player Player { get; } = player;
+        public HashSet<Player> Players { get; } = players;
     }
 
     public static Action<DoorTrollingEventArgs> OnDoorTrolling;
@@ -756,47 +748,6 @@ public class PlayerEvents(CocoaPlugin plugin)
     //         }
     //     }
     // }
-
-    private IEnumerator<float> SendTypingText(Player player, string text, ushort time, float delay = 0.1f, byte priority = 0, string tag = "")
-    {
-        if (!KoreanTyperStringExtensions.ContainsTags(text))
-        {
-            for (var i = 1; i <= text.GetTypingLength(); i++)
-            {
-                player.AddBroadcast(time, text.Typing(i), priority, tag);
-                yield return Timing.WaitForSeconds(delay);
-            }
-            yield break;
-        }
-
-        var groups = KoreanTyperStringExtensions.GroupCharactersWithinSameTag(text);
-
-        var totalTypingLength = groups.Sum(x => x.GetTypingLength());
-
-        var broadcast = player.AddBroadcast((ushort)(time + totalTypingLength), text, priority, tag);
-
-        for (var i = 0; i < groups.Count; i++)
-        {
-            var group = groups[i];
-            var count = group.GetTypingLength();
-
-            for (var j = 1; j <= count; j++)
-            {
-                var newText = group.Typing(j);
-
-                var newTaggedText = KoreanTyperStringExtensions.ReplaceTaggedText(text, i, newText);
-
-                for (var k = groups.Count - 1; k > i; k--)
-                {
-                    newTaggedText = KoreanTyperStringExtensions.ReplaceTaggedText(newTaggedText, k, "");
-                }
-
-                broadcast.Edit(newTaggedText);
-
-                yield return Timing.WaitForSeconds(delay);
-            }
-        }
-    }
 }
 
 public class ScreenCapture : MonoBehaviour

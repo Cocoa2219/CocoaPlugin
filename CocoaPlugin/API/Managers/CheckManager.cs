@@ -114,6 +114,9 @@ public static class CheckManager
 
         return maxStreak;
     }
+
+    public const float StreakCheckScpSpawnMultiplier = 0.01f;
+    public const float MaxStreakCheckScpSpawnMultiplier = 1.3f;
 }
 
 public static class PlayerCheckExtension
@@ -126,6 +129,21 @@ public static class PlayerCheckExtension
     public static int GetStreakChecks(this Player player)
     {
         return CheckManager.GetStreakChecks(player);
+    }
+
+    public static float GetScpSpawnMultiplier(this ReferenceHub hub)
+    {
+        var player = Player.Get(hub);
+
+        if (player == null)
+            return 1f;
+
+        var streak = player.GetStreakChecks();
+        var multiplier = 1f + streak * CheckManager.StreakCheckScpSpawnMultiplier;
+
+        return multiplier > CheckManager.MaxStreakCheckScpSpawnMultiplier
+            ? CheckManager.MaxStreakCheckScpSpawnMultiplier
+            : multiplier;
     }
 }
 

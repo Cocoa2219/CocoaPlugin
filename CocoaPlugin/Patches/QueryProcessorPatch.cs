@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
+using CocoaPlugin.Commands;
 using CommandSystem;
 using Exiled.API.Features;
 using HarmonyLib;
@@ -53,7 +54,7 @@ public class QueryProcessorPatch
             return false;
         }
 
-        var closestCommands = FindClosestStrings(arguments[0], QueryProcessor.DotCommandHandler.AllCommands.Select(x => x.Command).ToList());
+        var closestCommands = FindClosestStrings(arguments[0], QueryProcessor.DotCommandHandler.AllCommands.Where(x => x is IHelpableCommand).Select(x => x.Command).ToList());
         for (var i = 0; i < closestCommands.Count; i++)
         {
             closestCommands[i] = closestCommands[i].Insert(0, ".");

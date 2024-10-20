@@ -11,7 +11,7 @@ public abstract class ExperienceBase
     public abstract ExperienceType Type { get; }
     protected internal ExperienceConfig Config { get; set; }
 
-    public virtual void Grant(string id, int exp = -1)
+    public void Grant(string id, int exp = -1)
     {
         var rank = RankManager.GetRank(id);
 

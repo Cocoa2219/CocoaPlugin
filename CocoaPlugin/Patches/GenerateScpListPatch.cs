@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using CocoaPlugin.API.Managers;
 using CocoaPlugin.Commands;
 using CommandSystem;
 using Exiled.API.Features;
@@ -56,12 +57,13 @@ public class GenerateScpListPatch
                     var num3 = 1L;
                     var tickets2 = loader.GetTickets(referenceHub2, 10);
                     for (var i = 0; i < scpsToAssign; i++) num3 *= tickets2;
+                    var rounded = Mathf.RoundToInt(num3 * referenceHub2.GetScpSpawnMultiplier());
                     list.Add(new ScpPlayerPicker.PotentialScp
                     {
                         Player = referenceHub2,
-                        Weight = num3
+                        Weight = rounded
                     });
-                    num2 += num3;
+                    num2 += rounded;
                 }
             }
 
@@ -122,7 +124,7 @@ public class AssignScpPatch
         }
 
         // If all players have -5 pref on this scp,
-        // Thinking (TODO: Get a new random SCP or just assign to a random player in the list)
+        // Thinking TODO: Get a new random SCP or just assign to a random player in the list
         // Currently just assign to the random player in the list
         if (ignored.Count == chosenPlayers.Count)
         {

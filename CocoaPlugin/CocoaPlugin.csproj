@@ -80,9 +80,6 @@
         <Reference Include="MapEditorReborn">
           <HintPath>..\..\..\AppData\Roaming\EXILED\Plugins\MapEditorReborn.dll</HintPath>
         </Reference>
-        <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-        </Reference>
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.0.1\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
@@ -134,18 +131,6 @@
         </Reference>
         <Reference Include="System.Net.Http" />
         <Reference Include="System.Numerics" />
-        <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Text.Json, Version=8.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Text.Json.8.0.4\lib\net462\System.Text.Json.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-        </Reference>
-        <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEditor">
           <HintPath>..\..\..\AppData\Roaming\EXILED\Plugins\dependencies\UnityEditor.dll</HintPath>
         </Reference>
@@ -277,7 +262,6 @@
         <Compile Include="Commands\PlayBreak.cs" />
         <Compile Include="Commands\Plugins.cs" />
         <Compile Include="Commands\Rank.cs" />
-        <Compile Include="Commands\ReloadPastebin.cs" />
         <Compile Include="Commands\Scale.cs" />
         <Compile Include="Commands\ScpList.cs" />
         <Compile Include="Commands\SendPost.cs" />
@@ -310,6 +294,7 @@
         <Compile Include="Handlers\ServerEvents.cs" />
         <Compile Include="Patches\CommandRegisterPatch.cs" />
         <Compile Include="Patches\FinalizeAuthPatch.cs" />
+        <Compile Include="Patches\GeneratorDistributePatch.cs" />
         <Compile Include="Patches\HelpCommandPatch.cs" />
         <Compile Include="Patches\IsSafeCharacterPatch.cs" />
         <Compile Include="Patches\JailbirdPatch.cs" />

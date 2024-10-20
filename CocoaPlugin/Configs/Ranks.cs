@@ -35,7 +35,7 @@ public class Ranks
     public Dictionary<LevelType, int> NeededExperience { get; set; } = new()
     {
         { LevelType.Cadet, 0 },
-        { LevelType.FieldAgent , 400},
+        { LevelType.FieldAgent , 400 },
         { LevelType.Operative, 800 },
         { LevelType.Sergeant, 1200 },
         { LevelType.Lieutenant, 1600 },

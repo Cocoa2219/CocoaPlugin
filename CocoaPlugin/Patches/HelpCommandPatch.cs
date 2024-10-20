@@ -63,7 +63,7 @@ public class HelpCommandPatch
 
         if (clientCommandHandler.TryGetCommand(arguments.At(0), out var command))
         {
-            if (command is not IHelpableCommand helpableCommand)
+            if (command is not IHelpableCommand)
             {
                 response = $"{arguments.At(0)} 명령어에 대한 도움말을 찾을 수 없습니다.";
                 __result = false;
