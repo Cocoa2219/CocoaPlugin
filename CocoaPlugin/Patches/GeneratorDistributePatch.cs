@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using CocoaPlugin.API;
 using Exiled.API.Features;
 using Exiled.API.Features.Pools;
 using HarmonyLib;
@@ -9,6 +10,7 @@ using MapGeneration.Distributors;
 using UnityEngine;
 using static HarmonyLib.AccessTools;
 using Log = PluginAPI.Core.Log;
+using Server = Exiled.Events.Handlers.Server;
 
 namespace CocoaPlugin.Patches;
 
@@ -45,6 +47,11 @@ public class GeneratorDistributePatch
         }
 
         ListPool<CodeInstruction>.Pool.Return(newInstructions);
+    }
+
+    public static void OnRestartingRound()
+    {
+        _spawnedGenerators.Clear();
     }
 
     private static List<StructureSpawnpoint> _spawnedGenerators = [];

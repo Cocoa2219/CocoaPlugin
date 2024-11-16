@@ -46,7 +46,7 @@ public class Broadcast
         sb.Replace("%nickname%", player.Nickname);
         sb.Replace("%nicknameParticle%", IsKorean(player.Nickname[^1]) ? Divide(player.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
         sb.Replace("%customName%", player.CustomName);
-        sb.Replace("%userId%", player.UserId);
+        sb.Replace("%userId%", player.GetUserId());
         sb.Replace("%roleColor%", player.GetRoleColor());
         sb.Replace("%roleName%", player.GetRoleName());
 
@@ -60,7 +60,7 @@ public class Broadcast
         sb.Replace("%nickname%", player.Nickname);
         sb.Replace("%nicknameParticle%", IsKorean(player.Nickname[^1]) ? Divide(player.Nickname[^1]).jongsung == ' ' ? "이" : "가" : "이(가)");
         sb.Replace("%customName%", player.CustomName);
-        sb.Replace("%userId%", player.UserId);
+        sb.Replace("%userId%", player.GetUserId());
         sb.Replace("%roleColor%", player.GetRoleColor());
         sb.Replace("%roleName%", player.GetRoleName());
         sb.Replace("%amount%", amount.ToString());
@@ -77,7 +77,7 @@ public class Broadcast
         {
             sb.Replace("%attackerNickname%", attacker.Nickname);
             sb.Replace("%attackerCustomName%", attacker.CustomName);
-            sb.Replace("%attackerUserId%", attacker.UserId);
+            sb.Replace("%attackerUserId%", attacker.GetUserId());
             sb.Replace("%attackerRoleColor%", attackerRole?.GetRoleColor());
             sb.Replace("%attackerRoleName%", attackerRole?.GetRoleName());
             sb.Replace("%attackerNicknameParticle%",
@@ -97,7 +97,7 @@ public class Broadcast
 
         sb.Replace("%targetNickname%", target.Nickname);
         sb.Replace("%targetCustomName%", target.CustomName);
-        sb.Replace("%targetUserId%", target.UserId);
+        sb.Replace("%targetUserId%", target.GetUserId());
         sb.Replace("%targetRoleColor%", targetRole.GetRoleColor());
         sb.Replace("%targetRoleName%", targetRole.GetRoleName());
         sb.Replace("%targetNicknameParticle%", IsKorean(target.Nickname[^1]) ? Divide(target.Nickname[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");
@@ -200,7 +200,7 @@ public class Broadcast
         var sb = new StringBuilder(Message);
 
         sb.Replace("%nickname%", leftUser.Nickname);
-        sb.Replace("%userId%", leftUser.UserId);
+        sb.Replace("%userId%", leftUser.GetUserId());
         sb.Replace("%roleColor%", leftUser.Role.GetRoleColor());
         sb.Replace("%roleName%", leftUser.Role.GetRoleName());
         sb.Replace("%nicknameParticle%", IsKorean(leftUser.Nickname[^1]) ? Divide(leftUser.Nickname[^1]).jongsung == ' ' ? "가" : "이" : "이(가)");

@@ -6,127 +6,145 @@ using CocoaPlugin.API.Managers;
 using CocoaPlugin.Commands;
 using CocoaPlugin.Configs;
 using CocoaPlugin.Handlers;
+using CocoaPlugin.Patches;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using HarmonyLib;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Modules;
+using MEC;
 using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
 using ShootingRange = CocoaPlugin.API.Beta.ShootingRange;
 
-namespace CocoaPlugin
+namespace CocoaPlugin;
+
+public class CocoaPlugin : Plugin<Config>
 {
-    public class CocoaPlugin : Plugin<Config>
+    public static CocoaPlugin Instance { get; private set; }
+
+    public override string Name { get; } = "CocoaPlugin";
+    public override string Author { get; } = "Cocoa";
+    public override string Prefix { get; } = "CocoaPlugin";
+    public override Version Version { get; } = new(1, 0, 0);
+
+    internal PlayerEvents PlayerEvents { get; private set; }
+    internal ServerEvents ServerEvents { get; private set; }
+    internal MapEvents MapEvents { get; private set; }
+    internal NetworkHandler NetworkHandler { get; private set; }
+
+    private Harmony Harmony { get; set; }
+
+    internal Store Store { get; private set; }
+    internal ShootingRange ShootingRange { get; private set; }
+    internal Pathfinding Pathfinding { get; private set; }
+
+    public override void OnEnabled()
     {
-        public static CocoaPlugin Instance { get; private set; }
+        Instance = this;
 
-        public override string Name { get; } = "CocoaPlugin";
-        public override string Author { get; } = "Cocoa";
-        public override string Prefix { get; } = "CocoaPlugin";
-        public override Version Version { get; } = new(1, 0, 0);
+        RankManager.Initialize();
+        AchievementManager.Initialize();
+        API.Managers.FileManager.CreateFolder();
+        BadgeManager.LoadBadges();
+        BadgeCooldownManager.LoadBadgeCooldowns();
+        PenaltyManager.LoadPenalties();
+        CheckManager.LoadChecks();
+        UserManager.LoadUsers();
+        ConnectionManager.LoadConnections();
+        LogManager.Initialize();
 
-        internal PlayerEvents PlayerEvents { get; private set; }
-        internal ServerEvents ServerEvents { get; private set; }
-        internal MapEvents MapEvents { get; private set; }
-        internal NetworkHandler NetworkHandler { get; private set; }
+        PlayerEvents = new PlayerEvents(this);
+        ServerEvents = new ServerEvents(this);
+        MapEvents = new MapEvents(this);
+        NetworkHandler = new NetworkHandler();
+        SubscribeEvents();
 
-        private Harmony Harmony { get; set; }
+        Harmony = new Harmony($"cocoa.cocoaplugin-{DateTime.Now.Ticks}");
+        Harmony.PatchAll();
 
-        internal Store Store { get; private set; }
-        internal ShootingRange ShootingRange { get; private set; }
+        NetworkManager.StartListener();
 
-        public override void OnEnabled()
-        {
-            StandardHitregBase.DebugMode = Config.Debug;
+        NetworkManager.SendLog(new {}, LogType.Started);
 
-            Instance = this;
+        Store = new Store();
+        Store.RegisterEvents();
 
-            RankManager.Initialize();
-            AchievementManager.Initialize();
-            API.Managers.FileManager.CreateFolder();
-            BadgeManager.LoadBadges();
-            BadgeCooldownManager.LoadBadgeCooldowns();
-            PenaltyManager.LoadPenalties();
-            CheckManager.LoadChecks();
-            UserManager.LoadUsers();
-            ConnectionManager.LoadConnections();
-            LogManager.Initialize();
+        ShootingRange = new ShootingRange();
 
-            PlayerEvents = new PlayerEvents(this);
-            ServerEvents = new ServerEvents(this);
-            MapEvents = new MapEvents(this);
-            NetworkHandler = new NetworkHandler();
-            SubscribeEvents();
+        Pathfinding = new Pathfinding();
+        Pathfinding.RegisterEvents();
 
-            Harmony = new Harmony($"cocoa.cocoaplugin-{DateTime.Now.Ticks}");
-            Harmony.PatchAll();
+        Server.RestartingRound += ForceRotation.OnRoundRestarting;
+        Server.RestartingRound += GeneratorDistributePatch.OnRestartingRound;
 
-            NetworkManager.StartListener();
+        Player.Left += NoScp.OnLeft;
+        Server.RestartingRound += NoScp.OnRestarting;
 
-            NetworkManager.SendLog(new {}, LogType.Started);
+        Player.Left += ProcessConnectionRequestPatch.OnLeft;
+        Server.RestartingRound += ProcessConnectionRequestPatch.OnRestartingRound;
+        Player.Joined += ProcessConnectionRequestPatch.OnJoined;
 
-            Store = new Store();
-            Store.RegisterEvents();
+        Timing.RunCoroutine(ProcessConnectionRequestPatch.QueueHint());
 
-            ShootingRange = new ShootingRange();
+        base.OnEnabled();
+    }
 
-            Server.RestartingRound += ForceRotation.OnRoundRestarting;
+    private void SubscribeEvents()
+    {
+        PlayerEvents.SubscribeEvents();
+        ServerEvents.SubscribeEvents();
+        MapEvents.SubscribeEvents();
+        NetworkHandler.SubscribeEvents();
+    }
 
-            Player.Left += NoScp.OnLeft;
-            Server.RestartingRound += NoScp.OnRestarting;
+    public override void OnDisabled()
+    {
+        Player.Left -= NoScp.OnLeft;
+        Server.RestartingRound -= NoScp.OnRestarting;
 
-            base.OnEnabled();
-        }
+        Server.RestartingRound -= GeneratorDistributePatch.OnRestartingRound;
+        Server.RestartingRound -= ForceRotation.OnRoundRestarting;
 
-        private void SubscribeEvents()
-        {
-            PlayerEvents.SubscribeEvents();
-            ServerEvents.SubscribeEvents();
-            MapEvents.SubscribeEvents();
-            NetworkHandler.SubscribeEvents();
-        }
+        Player.Left -= ProcessConnectionRequestPatch.OnLeft;
+        Server.RestartingRound -= ProcessConnectionRequestPatch.OnRestartingRound;
+        Player.Joined -= ProcessConnectionRequestPatch.OnJoined;
 
-        public override void OnDisabled()
-        {
-            Player.Left -= NoScp.OnLeft;
-            Server.RestartingRound -= NoScp.OnRestarting;
+        Pathfinding.Destroy();
+        Pathfinding = null;
 
-            Server.RestartingRound -= ForceRotation.OnRoundRestarting;
+        ShootingRange.Destroy();
+        ShootingRange = null;
 
-            ShootingRange.Destroy();
-            ShootingRange = null;
+        Store.UnregisterEvents();
+        Store = null;
 
-            Store.UnregisterEvents();
-            Store = null;
+        LogManager.Destroy();
 
-            LogManager.Destroy();
+        NetworkManager.SendLog(new {}, LogType.Stopped);
 
-            NetworkManager.SendLog(new {}, LogType.Stopped);
+        NetworkManager.StopListener();
 
-            NetworkManager.StopListener();
+        Harmony.UnpatchAll();
+        Harmony = null;
 
-            Harmony.UnpatchAll();
-            Harmony = null;
+        UnsubscribeEvents();
+        PlayerEvents = null;
+        ServerEvents = null;
+        MapEvents = null;
+        NetworkHandler = null;
 
-            UnsubscribeEvents();
-            PlayerEvents = null;
-            ServerEvents = null;
-            MapEvents = null;
-            NetworkHandler = null;
+        Instance = null;
 
-            Instance = null;
+        base.OnDisabled();
+    }
 
-            base.OnDisabled();
-        }
-
-        private void UnsubscribeEvents()
-        {
-            PlayerEvents.UnsubscribeEvents();
-            ServerEvents.UnsubscribeEvents();
-            MapEvents.UnsubscribeEvents();
-            NetworkHandler.UnsubscribeEvents();
-        }
+    private void UnsubscribeEvents()
+    {
+        PlayerEvents.UnsubscribeEvents();
+        ServerEvents.UnsubscribeEvents();
+        MapEvents.UnsubscribeEvents();
+        NetworkHandler.UnsubscribeEvents();
     }
 }

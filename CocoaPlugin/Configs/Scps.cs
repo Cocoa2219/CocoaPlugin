@@ -22,4 +22,6 @@ public class Scps
 
     public Scp049 Scp049 { get; set; } = new();
     public Scp079 Scp079 { get; set; } = new();
+
+    public Scp330 Scp330 { get; set; } = new();
 }

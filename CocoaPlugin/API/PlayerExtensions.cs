@@ -14,4 +14,9 @@ public static class PlayerExtensions
     {
         return CocoaPlugin.Instance.Config.Translations.RoleTranslations[player.Role.Type];
     }
+
+    public static string GetUserId(this Player player, bool ignoreVsr = false)
+    {
+        return CocoaPlugin.Instance.Config.VSRCompliant && !ignoreVsr ? "[EXPUNGED]" : player.UserId;
+    }
 }

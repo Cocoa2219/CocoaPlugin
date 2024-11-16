@@ -50,7 +50,7 @@ public class CheckPropertiesAndFields : ICommand
                 {
                     value = t.GetValue(subroutine);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     value = "Error while getting property.";
                 }
@@ -68,7 +68,7 @@ public class CheckPropertiesAndFields : ICommand
                 {
                     value = t.GetValue(subroutine);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     value = "Error while getting field.";
                 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection.Emit;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Commands;
-using CommandSystem;
-using Exiled.API.Features;
+using Exiled.API.Features.Pools;
 using HarmonyLib;
-using NorthwoodLib.Pools;
 using PlayerRoles;
 using PlayerRoles.RoleAssign;
 using UnityEngine;
+using static HarmonyLib.AccessTools;
 using Random = UnityEngine.Random;
 
 namespace CocoaPlugin.Patches;
@@ -24,7 +23,9 @@ public class GenerateScpListPatch
         if (scpsToAssign <= 0) return false;
         var num = 0;
         foreach (var referenceHub in ReferenceHub.AllHubs)
+            // ------------------------------ Changed Code ------------------------------
             if (RoleAssigner.CheckPlayer(referenceHub) && NoScp.NoScpPlayers.All(x => x.ReferenceHub != referenceHub))
+            // ------------------------------ Changed Code ------------------------------
             {
                 var tickets = loader.GetTickets(referenceHub, 10);
                 if (tickets >= num)
@@ -44,7 +45,7 @@ public class GenerateScpListPatch
 
         scpsToAssign -= ScpPlayerPicker.ScpsToSpawn.Count;
         if (scpsToAssign <= 0) return false;
-        var list = ListPool<ScpPlayerPicker.PotentialScp>.Shared.Rent();
+        var list = NorthwoodLib.Pools.ListPool<ScpPlayerPicker.PotentialScp>.Shared.Rent();
         var num2 = 0L;
         using (var enumerator = ReferenceHub.AllHubs.GetEnumerator())
         {
@@ -52,12 +53,17 @@ public class GenerateScpListPatch
             {
                 var referenceHub2 = enumerator.Current;
                 if (!ScpPlayerPicker.ScpsToSpawn.Contains(referenceHub2) && RoleAssigner.CheckPlayer(referenceHub2) &&
+                    // ------------------------------ Changed Code ------------------------------
                     NoScp.NoScpPlayers.All(x => x.ReferenceHub != referenceHub2))
+                    // ------------------------------ Changed Code ------------------------------
                 {
                     var num3 = 1L;
                     var tickets2 = loader.GetTickets(referenceHub2, 10);
                     for (var i = 0; i < scpsToAssign; i++) num3 *= tickets2;
+
+                    // ------------------------------ Changed Code ------------------------------
                     var rounded = Mathf.RoundToInt(num3 * referenceHub2.GetScpSpawnMultiplier());
+                    // ------------------------------ Changed Code ------------------------------
                     list.Add(new ScpPlayerPicker.PotentialScp
                     {
                         Player = referenceHub2,
@@ -89,7 +95,7 @@ public class GenerateScpListPatch
         IL_1C4:
         if (scpsToAssign <= 0)
         {
-            ListPool<ScpPlayerPicker.PotentialScp>.Shared.Return(list);
+            NorthwoodLib.Pools.ListPool<ScpPlayerPicker.PotentialScp>.Shared.Return(list);
             return false;
         }
 

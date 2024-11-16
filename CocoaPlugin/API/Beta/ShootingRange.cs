@@ -29,7 +29,7 @@ namespace CocoaPlugin.API.Beta;
 
 public class ShootingRange
 {
-    private Vector3 _spawnPosition = new Vector3(120, -960, 45);
+    private Vector3 _spawnPosition = new(120, -960, 45);
 
     public List<ShootingRangeInstance> Instances { get; } = new();
 

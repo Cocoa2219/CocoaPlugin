@@ -44,7 +44,7 @@ public class Voice : ICommand
                                     case >= 3:
                                         var name = string.Join(" ", arguments.Skip(2));
 
-                                        var group = VoiceGroup.CreateGroup(name);
+                                        var group = VoiceGroup.Create(name);
 
                                         response = $"음성 그룹을 생성했습니다: {group.Name} ({group.Id})";
                                         return true;
@@ -61,7 +61,7 @@ public class Voice : ICommand
                                         VoiceGroup group;
                                         if (int.TryParse(name, out var id))
                                         {
-                                            group = VoiceGroup.GetGroup(id);
+                                            group = VoiceGroup.Get(id);
 
                                             if (group == null)
                                             {
@@ -75,7 +75,7 @@ public class Voice : ICommand
                                             return true;
                                         }
 
-                                        group = VoiceGroup.GetGroup(name);
+                                        group = VoiceGroup.Get(name);
 
                                         if (group == null)
                                         {
@@ -105,7 +105,7 @@ public class Voice : ICommand
                                             return false;
                                         }
 
-                                        var group = int.TryParse(arguments.At(2), out var id) ? VoiceGroup.GetGroup(id) : VoiceGroup.GetGroup(arguments.At(2));
+                                        var group = int.TryParse(arguments.At(2), out var id) ? VoiceGroup.Get(id) : VoiceGroup.Get(arguments.At(2));
 
                                         if (group == null)
                                         {
@@ -136,7 +136,7 @@ public class Voice : ICommand
                                             return false;
                                         }
 
-                                        var group = VoiceGroup.GetGroup(player);
+                                        var group = VoiceGroup.Get(player);
                                         group?.RemoveMember(player);
 
                                         response = $"{player.Nickname} ({player.UserId} | {player.Id}) 을(를) {group.Name} ({group.Id}) 그룹에서 제거했습니다.";

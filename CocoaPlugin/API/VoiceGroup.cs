@@ -30,7 +30,7 @@ public class VoiceGroup
 
     public bool AddMember(Player player)
     {
-        GetGroup(player)?.RemoveMember(player);
+        Get(player)?.RemoveMember(player);
 
         PlayerGroups[player] = this;
 
@@ -56,22 +56,22 @@ public class VoiceGroup
         Groups.Remove(this);
     }
 
-    public static VoiceGroup GetGroup(string name)
+    public static VoiceGroup Get(string name)
     {
         return Groups.Find(group => group.Name == name);
     }
 
-    public static VoiceGroup GetGroup(int id)
+    public static VoiceGroup Get(int id)
     {
         return Groups.Find(group => group.Id == id);
     }
 
-    public static VoiceGroup GetGroup(Player player)
+    public static VoiceGroup Get(Player player)
     {
         return PlayerGroups.GetValueOrDefault(player);
     }
 
-    public static VoiceGroup CreateGroup(string name)
+    public static VoiceGroup Create(string name)
     {
         var group = new VoiceGroup(name);
 
@@ -80,14 +80,14 @@ public class VoiceGroup
 
     public static void DestroyGroup(string name)
     {
-        var group = GetGroup(name);
+        var group = Get(name);
 
         group?.Destroy();
     }
 
     public static void DestroyGroup(int id)
     {
-        var group = GetGroup(id);
+        var group = Get(id);
 
         group?.Destroy();
     }
@@ -121,9 +121,14 @@ public class VoiceGroup
         {
             ev.IsAllowed = false;
 
-            var voiceChatChannel = ev.Player.VoiceModule.ValidateSend(ev.VoiceMessage.Channel);
+            if (ev.Player.Role is not Exiled.API.Features.Roles.IVoiceRole voiceModule)
+            {
+                return;
+            }
+
+            var voiceChatChannel = voiceModule.VoiceModule.ValidateSend(ev.VoiceMessage.Channel);
             if (voiceChatChannel == VoiceChatChannel.None) return;
-            ev.Player.VoiceModule.CurrentChannel = voiceChatChannel;
+            voiceModule.VoiceModule.CurrentChannel = voiceChatChannel;
             foreach (var referenceHub in ReferenceHub.AllHubs)
                 if (referenceHub.roleManager.CurrentRole is IVoiceRole voiceRole2)
                 {
@@ -154,7 +159,7 @@ public class VoiceGroup
 
         ev.IsAllowed = false;
 
-        var group = GetGroup(ev.Player);
+        var group = Get(ev.Player);
 
         var newMessage = new VoiceMessage
         {

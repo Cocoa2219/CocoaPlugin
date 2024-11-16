@@ -9,6 +9,9 @@ namespace CocoaPlugin.Configs
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
 
+        [YamlMember(Alias = "vsr_compliant")]
+        public bool VSRCompliant { get; set; } = true;
+
         public Scps Scps { get; set; } = new();
         public Broadcasts Broadcasts { get; set; } = new();
         public Translations Translations { get; set; } = new();
@@ -23,5 +26,6 @@ namespace CocoaPlugin.Configs
         public Achievements Achievements { get; set; } = new();
         public Logs Logs { get; set; } = new();
         public Ranks Ranks { get; set; } = new();
+        public Queue Queue { get; set; } = new();
     }
 }

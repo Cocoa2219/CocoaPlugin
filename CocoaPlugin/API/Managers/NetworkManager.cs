@@ -213,7 +213,7 @@ namespace CocoaPlugin.API.Managers
 
                         context.Response.StatusCode = 200;
 
-                        var responseBytes = "Badge added."u8.ToArray();
+                        var responseBytes = Encoding.UTF8.GetBytes("Badge added successfully.");
                         context.Response.ContentType = "text/plain";
                         context.Response.ContentLength64 = responseBytes.Length;
                         await context.Response.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length);

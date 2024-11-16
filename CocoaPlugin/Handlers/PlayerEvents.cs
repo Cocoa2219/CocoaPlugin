@@ -15,10 +15,16 @@ using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
+using Exiled.API.Features.Items;
 using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Scp330;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions.Extensions;
+using InventorySystem;
+using InventorySystem.Items;
+using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Items.Usables.Scp330;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
@@ -71,6 +77,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Dying += AssistManager.OnDying;
         Exiled.Events.Handlers.Player.Shooting += OnShooting;
         Exiled.Events.Handlers.Player.Shot += OnShot;
+        Exiled.Events.Handlers.Scp330.InteractingScp330 += OnInteractingScp330;
 
         Server.RestartingRound += OnRestartingRound;
         Server.RoundStarted += OnRoundStarted;
@@ -103,12 +110,38 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.Dying -= AssistManager.OnDying;
         Exiled.Events.Handlers.Player.Shooting -= OnShooting;
         Exiled.Events.Handlers.Player.Shot -= OnShot;
+        Exiled.Events.Handlers.Scp330.InteractingScp330 -= OnInteractingScp330;
 
         Server.RestartingRound -= OnRestartingRound;
         Server.RoundStarted -= OnRoundStarted;
         Server.RoundEnded -= OnRoundEnded;
 
         _nextDayTimer.Dispose();
+    }
+
+    private CandyKindID GetCandy()
+    {
+        var spawnTable = Config.Scps.Scp330.CandyChances;
+
+        var total = spawnTable.Sum(x => x.Value);
+
+        var random = Random.Range(0, total);
+
+        foreach (var (key, value) in spawnTable)
+        {
+            random -= value;
+            if (random <= 0)
+            {
+                return key;
+            }
+        }
+
+        return CandyKindID.None;
+    }
+
+    internal void OnInteractingScp330(InteractingScp330EventArgs ev)
+    {
+        ev.Candy = GetCandy();
     }
 
     internal void OnShooting(ShootingEventArgs ev)
@@ -254,7 +287,7 @@ public class PlayerEvents(CocoaPlugin plugin)
     {
         // ev.Player.GameObject.AddComponent<SightManager>();
 
-        BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
+        // BadgeManager.RefreshBadge(ev.Player.UserId, BadgeManager.GetBadge(ev.Player.UserId));
         PenaltyManager.RefreshPenalty(ev.Player.UserId);
 
         if (ev.Player.IsLinked())
@@ -639,8 +672,6 @@ public class PlayerEvents(CocoaPlugin plugin)
         // {
         //     CheckDoorTrolling(ev.Door, ev.Player);
         // }
-
-        // ev.Player.ChangeAppearance(RoleTypeId.Spectator);
     }
 
     public class DoorTrollingEventArgs(Door door, Player player, HashSet<Player> players)
@@ -660,7 +691,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         var players = new HashSet<Player>();
 
         var num = Physics.OverlapSphereNonAlloc(ev.Door.Position + new Vector3(0f, 1.2f, 0f),
-            Config.Others.DoorTrollingSphereRadius, colliders);
+            Config.Others.DoorTrollingSphereRadius, colliders, LayerMask.GetMask("Hitbox"));
 
         for (var i = 0; i < num; i++)
         {
@@ -678,7 +709,7 @@ public class PlayerEvents(CocoaPlugin plugin)
             var curDis = Vector3.Distance(player.Position, ev.Door.Position);
 
             // Not using WaitForSeconds because the more players, it will not be accurate (too much delay)
-            // Instead, using CallDelayed with 0.5f delay to schedule the check and pass
+            // Instead, using CallDelayed with 0.05f delay to schedule the check and pass
             Timing.CallDelayed(.05f, () =>
             {
                 if (Vector3.Distance(player.Position, ev.Door.Position) >= curDis)
@@ -691,7 +722,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         // Wait for 0.05f to make sure the scheduled check is done
         yield return Timing.WaitForSeconds(0.05f);
 
-        // Wait for 0.01f to make sure the scheduled check is done
+        // Wait for more 0.01f to make sure the scheduled check is done
         yield return Timing.WaitForSeconds(0.01f);
 
         players = playersRemoval;
@@ -777,7 +808,6 @@ public class ScreenCapture : MonoBehaviour
 
         _screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
     }
-
 
     public void CaptureScreen(string output)
     {

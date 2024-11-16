@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -10,15 +9,13 @@ using Exiled.API.Features;
 using Exiled.API.Features.Pools;
 using Exiled.Events.EventArgs.Scp049;
 using HarmonyLib;
-using PlayerRoles;
 using PlayerRoles.PlayableScps.HumeShield;
 using PlayerRoles.PlayableScps.Scp049;
 using PlayerRoles.PlayableScps.Scp049.Zombies;
-using PlayerRoles.PlayableScps.Scp079;
 using PlayerRoles.Subroutines;
 using static HarmonyLib.AccessTools;
-// ReSharper disable SuggestVarOrType_SimpleTypes
 
+// ReSharper disable SuggestVarOrType_SimpleTypes
 // ReSharper disable ForCanBeConvertedToForeach
 // ReSharper disable SuggestVarOrType_Elsewhere
 // ReSharper disable SuggestVarOrType_BuiltInTypes
@@ -837,6 +834,24 @@ public static class ScpPatchUtility
 {
     public static List<CodeInstruction> GetConfigValue(Type configType, string configName)
     {
+        if (CocoaPlugin.Instance.Config.Scps == null)
+        {
+            Log.Error("Scps config is null, returning empty list");
+            return new List<CodeInstruction>();
+        }
+
+        if (CocoaPlugin.Instance.Config.Scps.GetType().GetProperties().All(x => x.PropertyType != configType))
+        {
+            Log.Error($"Config {configType.Name} does not exist, returning empty list");
+            return new List<CodeInstruction>();
+        }
+
+        if (configType.GetProperties().All(x => x.Name != configName))
+        {
+            Log.Error($"Config {configType.Name} does not have property {configName}, returning empty list");
+            return new List<CodeInstruction>();
+        }
+
         return
         [
             new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(CocoaPlugin), nameof(CocoaPlugin.Instance))),

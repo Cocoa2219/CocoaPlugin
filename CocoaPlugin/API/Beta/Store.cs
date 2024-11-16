@@ -95,7 +95,7 @@ public class Store
         Timing.KillCoroutines("UpdateNpcRotation");
         _npc?.Destroy();
 
-        var npc = Npc.Spawn("상점 주인", RoleTypeId.Tutorial, 0, "store@localhost", globalPosition);
+        var npc = Npc.Spawn("상점 주인", RoleTypeId.Tutorial, true, "ID_Dedicated", globalPosition);
 
         _npc = npc;
 

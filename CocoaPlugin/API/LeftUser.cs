@@ -15,4 +15,9 @@ public class LeftUser(Player player)
     public float ArtificalHealth { get; set; } = player.ArtificialHealth;
     public float HumeShield { get; set; } = player.HumeShield;
     public bool IsReconnected { get; set; } = false;
+
+    public string GetUserId(bool ignoreVsr = false)
+    {
+        return CocoaPlugin.Instance.Config.VSRCompliant && !ignoreVsr ? "[EXPUNGED]" : UserId;
+    }
 }
