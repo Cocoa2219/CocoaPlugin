@@ -270,6 +270,7 @@ public abstract class Achievement
         {
             Type = Type,
             Name = Name,
+            Description = Description,
             UserId = userId,
             DiscordId = UserManager.GetUser(userId).DiscordId
         };

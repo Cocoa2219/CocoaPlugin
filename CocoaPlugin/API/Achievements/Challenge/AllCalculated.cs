@@ -1,6 +1,7 @@
 ﻿using CocoaPlugin.API.Managers;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.Handlers;
+using MEC;
 
 namespace CocoaPlugin.API.Achievements.Challenge;
 
@@ -26,9 +27,11 @@ public class AllCalculated : Achievement
         if (ev.Player == null || ev.Attacker == null) return;
         if (!ev.Attacker.IsScp) return;
 
-        if (ev.Player.Health - ev.Amount <= 1)
+        Timing.CallDelayed(0.1f, () =>
         {
+            if (ev.Player.Health > 1f) return;
+
             Achieve(ev.Player.UserId);
-        }
+        });
     }
 }
