@@ -42,7 +42,7 @@ public class UncomfortableCohabitation : Achievement
         _coroutine = Timing.RunCoroutine(TimeInRoom());
     }
 
-    private List<RoomType> _ignoredRooms =
+    private readonly List<RoomType> _ignoredRooms =
     [
         RoomType.Lcz914,
         RoomType.Surface
