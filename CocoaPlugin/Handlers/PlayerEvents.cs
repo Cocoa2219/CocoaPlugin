@@ -8,27 +8,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocoaPlugin.API;
 using CocoaPlugin.API.Managers;
-using CocoaPlugin.Commands;
 using CocoaPlugin.Configs.Broadcast;
 using CommandSystem;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Doors;
-using Exiled.API.Features.Items;
 using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Scp330;
 using Exiled.Events.EventArgs.Server;
 using Exiled.Permissions.Extensions;
-using InventorySystem;
-using InventorySystem.Items;
-using InventorySystem.Items.ThrowableProjectiles;
 using InventorySystem.Items.Usables.Scp330;
 using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
-using SLPlayerRotation;
 using UnityEngine;
 using Camera = UnityEngine.Camera;
 using Config = CocoaPlugin.Configs.Config;
@@ -75,8 +69,8 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.VoiceChatting += OnVoiceChatting;
         Exiled.Events.Handlers.Player.Hurt += AssistManager.OnHurt;
         Exiled.Events.Handlers.Player.Dying += AssistManager.OnDying;
-        Exiled.Events.Handlers.Player.Shooting += OnShooting;
-        Exiled.Events.Handlers.Player.Shot += OnShot;
+        // Exiled.Events.Handlers.Player.Shooting += OnShooting;
+        // Exiled.Events.Handlers.Player.Shot += OnShot;
         Exiled.Events.Handlers.Scp330.InteractingScp330 += OnInteractingScp330;
 
         Server.RestartingRound += OnRestartingRound;
@@ -108,8 +102,8 @@ public class PlayerEvents(CocoaPlugin plugin)
         Exiled.Events.Handlers.Player.VoiceChatting -= OnVoiceChatting;
         Exiled.Events.Handlers.Player.Hurt -= AssistManager.OnHurt;
         Exiled.Events.Handlers.Player.Dying -= AssistManager.OnDying;
-        Exiled.Events.Handlers.Player.Shooting -= OnShooting;
-        Exiled.Events.Handlers.Player.Shot -= OnShot;
+        // Exiled.Events.Handlers.Player.Shooting -= OnShooting;
+        // Exiled.Events.Handlers.Player.Shot -= OnShot;
         Exiled.Events.Handlers.Scp330.InteractingScp330 -= OnInteractingScp330;
 
         Server.RestartingRound -= OnRestartingRound;
@@ -119,46 +113,46 @@ public class PlayerEvents(CocoaPlugin plugin)
         _nextDayTimer.Dispose();
     }
 
-    private CandyKindID GetCandy()
-    {
-        var spawnTable = Config.Scps.Scp330.CandyChances;
-
-        var total = spawnTable.Sum(x => x.Value);
-
-        var random = Random.Range(0, total);
-
-        foreach (var (key, value) in spawnTable)
-        {
-            random -= value;
-            if (random <= 0)
-            {
-                return key;
-            }
-        }
-
-        return CandyKindID.None;
-    }
+    // private CandyKindID GetCandy()
+    // {
+    //     var spawnTable = Config.Scps.Scp330.CandyChances;
+    //
+    //     var total = spawnTable.Sum(x => x.Value);
+    //
+    //     var random = Random.Range(0, total);
+    //
+    //     foreach (var (key, value) in spawnTable)
+    //     {
+    //         random -= value;
+    //         if (random <= 0)
+    //         {
+    //             return key;
+    //         }
+    //     }
+    //
+    //     return CandyKindID.None;
+    // }
 
     internal void OnInteractingScp330(InteractingScp330EventArgs ev)
     {
-        ev.Candy = GetCandy();
+        // ev.Candy = GetCandy();
     }
 
-    internal void OnShooting(ShootingEventArgs ev)
-    {
-        if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
+    // internal void OnShooting(ShootingEventArgs ev)
+    // {
+    //     if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
+    //
+    //     // Log.Info($"{ev.Player.Nickname}'s original before shooting forward: {ev.Player.CameraTransform.forward}");
+    //     _lastRotations[ev.Player] = ev.Player.CameraTransform.forward;
+    // }
 
-        // Log.Info($"{ev.Player.Nickname}'s original before shooting forward: {ev.Player.CameraTransform.forward}");
-        _lastRotations[ev.Player] = ev.Player.CameraTransform.forward;
-    }
-
-    internal void OnShot(ShotEventArgs ev)
-    {
-        if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
-
-        // Log.Info($"{ev.Player.Nickname}'s original after shot forward: {ev.Player.CameraTransform.forward}, restoring to {_lastRotations[ev.Player]}");
-        ev.Player.SetRotation(_lastRotations[ev.Player]);
-    }
+    // internal void OnShot(ShotEventArgs ev)
+    // {
+    //     if (!ZeroAim._zeroAimPlayers.Contains(ev.Player.ReferenceHub)) return;
+    //
+    //     // Log.Info($"{ev.Player.Nickname}'s original after shot forward: {ev.Player.CameraTransform.forward}, restoring to {_lastRotations[ev.Player]}");
+    //     ev.Player.SetRotation(_lastRotations[ev.Player]);
+    // }
 
     private Dictionary<Player, Vector3> _lastRotations = new();
 
@@ -570,7 +564,7 @@ public class PlayerEvents(CocoaPlugin plugin)
         if (player.IsDead) return true;
         if (player.IsGodModeEnabled && Config.Camping.IgnoreGodmode) return true;
         if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Camping.IgnoreNoclip) return true;
-        if (Plugin.ShootingRange.Instances.Any(x => x.Player == player)) return true;
+        // if (Plugin.ShootingRange.Instances.Any(x => x.Player == player)) return true;
         return Config.Camping.ExcludedRoles.Contains(player.Role.Type) || player.CheckPermission("cocoa.camping.ignore");
     }
 
@@ -627,8 +621,6 @@ public class PlayerEvents(CocoaPlugin plugin)
 
             LogManager.WriteLog($"{ev.Player.Nickname} ({ev.Player.UserId} | {ev.Player.IPAddress}) 소생 중 탈주");
         }
-
-        // Object.Destroy(ev.Player.GameObject.GetComponent<SightManager>());
     }
 
     internal void OnReservedSlot(ReservedSlotsCheckEventArgs ev)
@@ -781,160 +773,160 @@ public class PlayerEvents(CocoaPlugin plugin)
     // }
 }
 
-public class ScreenCapture : MonoBehaviour
-{
-    private Camera _camera;
-    private VideoEncoder _videoEncoder;
+// public class ScreenCapture : MonoBehaviour
+// {
+//     private Camera _camera;
+//     private VideoEncoder _videoEncoder;
+//
+//     private RenderTexture _renderTexture;
+//     private Texture2D _screenShot;
+//
+//     public bool _isRecording;
+//
+//     private void Start()
+//     {
+//         _camera = GetComponent<Camera>();
+//     }
+//
+//     public void Initialize(Player player, int width = 1920, int height = 1080)
+//     {
+//         _videoEncoder = new VideoEncoder(player);
+//
+//         _renderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
+//         {
+//             useMipMap = true,
+//         };
+//         _renderTexture.Create();
+//
+//         _screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+//     }
+//
+//     public void CaptureScreen(string output)
+//     {
+//         var sw = Stopwatch.StartNew();
+//         Log.Info("Capturing screen started | " + output);
+//
+//         if (_renderTexture == null || _screenShot == null)
+//         {
+//             throw new InvalidOperationException("CaptureScreen called before InitializeCapture");
+//         }
+//
+//         _camera.targetTexture = _renderTexture;
+//
+//         _camera.Render();
+//
+//         var originalRT = RenderTexture.active;
+//         RenderTexture.active = _renderTexture;
+//
+//         _screenShot.ReadPixels(new Rect(0, 0, _renderTexture.width, _renderTexture.height), 0, 0);
+//         _screenShot.Apply();
+//
+//         var bytes = _screenShot.EncodeToPNG();
+//
+//         File.WriteAllBytes(output, bytes);
+//
+//         _camera.targetTexture = null;
+//         RenderTexture.active = originalRT;
+//
+//         sw.Stop();
+//         Log.Info("Capturing screen finished in " + sw.ElapsedMilliseconds + "ms" + " | " + output);
+//     }
+//
+//     public void StartRecording()
+//     {
+//         if (_isRecording) return;
+//
+//         _isRecording = true;
+//
+//         Timing.RunCoroutine(Record());
+//     }
+//
+//     private float _actualFramerate;
+//     private IEnumerator<float> Record()
+//     {
+//         var index = 0;
+//         var startTime = UnityEngine.Time.realtimeSinceStartup;
+//
+//         while (_isRecording)
+//         {
+//             CaptureScreen(Path.Combine(_videoEncoder.ImageDirectory, $"image_{index}.png"));
+//             index++;
+//
+//             yield return Timing.WaitForSeconds(1f / 60f);
+//         }
+//
+//         var endTime = UnityEngine.Time.realtimeSinceStartup;
+//         var totalTime = endTime - startTime;
+//
+//         _actualFramerate = index / totalTime;
+//
+//         Log.Info("Captured " + index + " frames in " + totalTime + " seconds. Actual framerate: " + _actualFramerate);
+//
+//         Task.Run(() => _videoEncoder.Encode(() =>
+//         {
+//             Log.Info("Encoding complete. Saved to " + _videoEncoder.VideoOutputPath);
+//         }, index / totalTime));
+//     }
+//
+//     public void StopRecording()
+//     {
+//         if (!_isRecording) return;
+//
+//         _isRecording = false;
+//     }
+//
+//     private void OnDestroy()
+//     {
+//         if (_renderTexture != null)
+//         {
+//             _renderTexture.Release();
+//             Destroy(_renderTexture);
+//             _renderTexture = null;
+//         }
+//
+//         if (_screenShot != null)
+//         {
+//             Destroy(_screenShot);
+//             _screenShot = null;
+//         }
+//     }
+// }
 
-    private RenderTexture _renderTexture;
-    private Texture2D _screenShot;
-
-    public bool _isRecording;
-
-    private void Start()
-    {
-        _camera = GetComponent<Camera>();
-    }
-
-    public void Initialize(Player player, int width = 1920, int height = 1080)
-    {
-        _videoEncoder = new VideoEncoder(player);
-
-        _renderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB)
-        {
-            useMipMap = true,
-        };
-        _renderTexture.Create();
-
-        _screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
-    }
-
-    public void CaptureScreen(string output)
-    {
-        var sw = Stopwatch.StartNew();
-        Log.Info("Capturing screen started | " + output);
-
-        if (_renderTexture == null || _screenShot == null)
-        {
-            throw new InvalidOperationException("CaptureScreen called before InitializeCapture");
-        }
-
-        _camera.targetTexture = _renderTexture;
-
-        _camera.Render();
-
-        var originalRT = RenderTexture.active;
-        RenderTexture.active = _renderTexture;
-
-        _screenShot.ReadPixels(new Rect(0, 0, _renderTexture.width, _renderTexture.height), 0, 0);
-        _screenShot.Apply();
-
-        var bytes = _screenShot.EncodeToPNG();
-
-        File.WriteAllBytes(output, bytes);
-
-        _camera.targetTexture = null;
-        RenderTexture.active = originalRT;
-
-        sw.Stop();
-        Log.Info("Capturing screen finished in " + sw.ElapsedMilliseconds + "ms" + " | " + output);
-    }
-
-    public void StartRecording()
-    {
-        if (_isRecording) return;
-
-        _isRecording = true;
-
-        Timing.RunCoroutine(Record());
-    }
-
-    private float _actualFramerate;
-    private IEnumerator<float> Record()
-    {
-        var index = 0;
-        var startTime = UnityEngine.Time.realtimeSinceStartup;
-
-        while (_isRecording)
-        {
-            CaptureScreen(Path.Combine(_videoEncoder.ImageDirectory, $"image_{index}.png"));
-            index++;
-
-            yield return Timing.WaitForSeconds(1f / 60f);
-        }
-
-        var endTime = UnityEngine.Time.realtimeSinceStartup;
-        var totalTime = endTime - startTime;
-
-        _actualFramerate = index / totalTime;
-
-        Log.Info("Captured " + index + " frames in " + totalTime + " seconds. Actual framerate: " + _actualFramerate);
-
-        Task.Run(() => _videoEncoder.Encode(() =>
-        {
-            Log.Info("Encoding complete. Saved to " + _videoEncoder.VideoOutputPath);
-        }, index / totalTime));
-    }
-
-    public void StopRecording()
-    {
-        if (!_isRecording) return;
-
-        _isRecording = false;
-    }
-
-    private void OnDestroy()
-    {
-        if (_renderTexture != null)
-        {
-            _renderTexture.Release();
-            Destroy(_renderTexture);
-            _renderTexture = null;
-        }
-
-        if (_screenShot != null)
-        {
-            Destroy(_screenShot);
-            _screenShot = null;
-        }
-    }
-}
-
-[CommandHandler(typeof(RemoteAdminCommandHandler))]
-public class CaptureScreenCommand : ICommand
-{
-    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
-    {
-        var target = Player.Get(arguments.At(0));
-
-        if (target == null)
-        {
-            response = "플레이어를 찾을 수 없습니다.";
-            return false;
-        }
-
-        var screenCapture = target.CameraTransform.gameObject.GetComponent<ScreenCapture>();
-
-        if (screenCapture == null)
-        {
-            response = "화면 캡쳐 컴포넌트를 찾을 수 없습니다.";
-            return false;
-        }
-
-        if (screenCapture._isRecording)
-        {
-            screenCapture.StopRecording();
-            response = "녹화를 중지했습니다.";
-            return true;
-        }
-
-        screenCapture.StartRecording();
-
-        response = "녹화를 시작했습니다.";
-        return true;
-    }
-
-    public string Command { get; } = "capturescreen";
-    public string[] Aliases { get; } = { "cs" };
-    public string Description { get; } = "화면을 캡쳐합니다.";
-}
+// [CommandHandler(typeof(RemoteAdminCommandHandler))]
+// public class CaptureScreenCommand : ICommand
+// {
+//     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
+//     {
+//         var target = Player.Get(arguments.At(0));
+//
+//         if (target == null)
+//         {
+//             response = "플레이어를 찾을 수 없습니다.";
+//             return false;
+//         }
+//
+//         var screenCapture = target.CameraTransform.gameObject.GetComponent<ScreenCapture>();
+//
+//         if (screenCapture == null)
+//         {
+//             response = "화면 캡쳐 컴포넌트를 찾을 수 없습니다.";
+//             return false;
+//         }
+//
+//         if (screenCapture._isRecording)
+//         {
+//             screenCapture.StopRecording();
+//             response = "녹화를 중지했습니다.";
+//             return true;
+//         }
+//
+//         screenCapture.StartRecording();
+//
+//         response = "녹화를 시작했습니다.";
+//         return true;
+//     }
+//
+//     public string Command { get; } = "capturescreen";
+//     public string[] Aliases { get; } = { "cs" };
+//     public string Description { get; } = "화면을 캡쳐합니다.";
+// }

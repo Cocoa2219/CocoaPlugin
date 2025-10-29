@@ -8,6 +8,7 @@ using RemoteAdmin;
 
 namespace CocoaPlugin.Commands;
 
+[CommandHandler(typeof(ClientCommandHandler))]
 public class EasterEgg : ICommand
 {
     private List<string> _codes = new()

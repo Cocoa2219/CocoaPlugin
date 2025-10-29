@@ -12,6 +12,12 @@ public class DiscordCommandSender : CommandSender
 
     }
 
+    /// <inheritdoc />
+    public override bool Available()
+    {
+        return true;
+    }
+
     public override string SenderId { get; }
     public override string Nickname { get; }
     public override ulong Permissions { get; }

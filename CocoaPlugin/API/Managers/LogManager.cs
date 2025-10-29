@@ -81,8 +81,8 @@ public static class LogManager
 
             foreach (var player in Player.List)
             {
-                if (CocoaPlugin.Instance.ShootingRange.Instances.Any(x => x.Player == player))
-                    continue;
+                // if (CocoaPlugin.Instance.ShootingRange.Instances.Any(x => x.Player == player))
+                //     continue;
 
                 player.ShowHint($"<align=left><size=20><voffset=1335px><color=#ffffff66>{CurrentRoundIdentifier}</color></voffset></size></align>", 3f);
             }

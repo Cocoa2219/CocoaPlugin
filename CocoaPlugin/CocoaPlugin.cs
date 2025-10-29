@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Diagnostics;
 using CocoaPlugin.API;
-using CocoaPlugin.API.Beta;
 using CocoaPlugin.API.Managers;
 using CocoaPlugin.Commands;
 using CocoaPlugin.Configs;
 using CocoaPlugin.Handlers;
 using CocoaPlugin.Patches;
-using Exiled.API.Enums;
 using Exiled.API.Features;
 using HarmonyLib;
-using InventorySystem.Items.Firearms;
-using InventorySystem.Items.Firearms.Modules;
 using MEC;
-using Map = Exiled.Events.Handlers.Map;
 using Player = Exiled.Events.Handlers.Player;
 using Server = Exiled.Events.Handlers.Server;
-using ShootingRange = CocoaPlugin.API.Beta.ShootingRange;
 
 namespace CocoaPlugin;
 
@@ -36,9 +29,9 @@ public class CocoaPlugin : Plugin<Config>
 
     private Harmony Harmony { get; set; }
 
-    internal Store Store { get; private set; }
-    internal ShootingRange ShootingRange { get; private set; }
-    internal Pathfinding Pathfinding { get; private set; }
+    // internal Store Store { get; private set; }
+    // internal ShootingRange ShootingRange { get; private set; }
+    // internal Pathfinding Pathfinding { get; private set; }
 
     public override void OnEnabled()
     {
@@ -68,25 +61,25 @@ public class CocoaPlugin : Plugin<Config>
 
         NetworkManager.SendLog(new {}, LogType.Started);
 
-        Store = new Store();
-        Store.RegisterEvents();
+        // Store = new Store();
+        // Store.RegisterEvents();
 
-        ShootingRange = new ShootingRange();
+        // ShootingRange = new ShootingRange();
 
-        Pathfinding = new Pathfinding();
-        Pathfinding.RegisterEvents();
+        // Pathfinding = new Pathfinding();
+        // Pathfinding.RegisterEvents();
 
-        Server.RestartingRound += ForceRotation.OnRoundRestarting;
+        // Server.RestartingRound += ForceRotation.OnRoundRestarting;
         Server.RestartingRound += GeneratorDistributePatch.OnRestartingRound;
 
         Player.Left += NoScp.OnLeft;
         Server.RestartingRound += NoScp.OnRestarting;
 
-        Player.Left += ProcessConnectionRequestPatch.OnLeft;
-        Server.RestartingRound += ProcessConnectionRequestPatch.OnRestartingRound;
-        Player.Joined += ProcessConnectionRequestPatch.OnJoined;
-
-        Timing.RunCoroutine(ProcessConnectionRequestPatch.QueueHint());
+        // Player.Left += ProcessConnectionRequestPatch.OnLeft;
+        // Server.RestartingRound += ProcessConnectionRequestPatch.OnRestartingRound;
+        // Player.Joined += ProcessConnectionRequestPatch.OnJoined;
+        //
+        // Timing.RunCoroutine(ProcessConnectionRequestPatch.QueueHint());
 
         base.OnEnabled();
     }
@@ -105,20 +98,20 @@ public class CocoaPlugin : Plugin<Config>
         Server.RestartingRound -= NoScp.OnRestarting;
 
         Server.RestartingRound -= GeneratorDistributePatch.OnRestartingRound;
-        Server.RestartingRound -= ForceRotation.OnRoundRestarting;
+        // Server.RestartingRound -= ForceRotation.OnRoundRestarting;
 
-        Player.Left -= ProcessConnectionRequestPatch.OnLeft;
-        Server.RestartingRound -= ProcessConnectionRequestPatch.OnRestartingRound;
-        Player.Joined -= ProcessConnectionRequestPatch.OnJoined;
+        // Player.Left -= ProcessConnectionRequestPatch.OnLeft;
+        // Server.RestartingRound -= ProcessConnectionRequestPatch.OnRestartingRound;
+        // Player.Joined -= ProcessConnectionRequestPatch.OnJoined;
 
-        Pathfinding.Destroy();
-        Pathfinding = null;
+        // Pathfinding.Destroy();
+        // Pathfinding = null;
+        //
+        // ShootingRange.Destroy();
+        // ShootingRange = null;
 
-        ShootingRange.Destroy();
-        ShootingRange = null;
-
-        Store.UnregisterEvents();
-        Store = null;
+        // Store.UnregisterEvents();
+        // Store = null;
 
         LogManager.Destroy();
 

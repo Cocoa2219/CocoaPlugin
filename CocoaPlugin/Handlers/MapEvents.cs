@@ -22,6 +22,7 @@ public class MapEvents(CocoaPlugin plugin)
         Map.AnnouncingDecontamination += OnAnnouncingDecontamination;
         Map.AnnouncingScpTermination += OnAnnouncingScpTermination;
         Map.AnnouncingNtfEntrance += OnAnnouncingNtfEntrance;
+        Map.AnnouncingChaosEntrance += OnAnnouncingChaosEntrance;
         Warhead.Starting += OnWarheadStarting;
         Warhead.Stopping += OnWarheadStopping;
     }
@@ -32,6 +33,7 @@ public class MapEvents(CocoaPlugin plugin)
         Map.AnnouncingDecontamination += OnAnnouncingDecontamination;
         Map.AnnouncingScpTermination -= OnAnnouncingScpTermination;
         Map.AnnouncingNtfEntrance -= OnAnnouncingNtfEntrance;
+        Map.AnnouncingChaosEntrance -= OnAnnouncingChaosEntrance;
         Warhead.Starting -= OnWarheadStarting;
         Warhead.Stopping -= OnWarheadStopping;
     }
@@ -61,8 +63,15 @@ public class MapEvents(CocoaPlugin plugin)
 
     internal void OnAnnouncingNtfEntrance(AnnouncingNtfEntranceEventArgs ev)
     {
+        Log.Info($"NTF Entrance Announced: Unit {ev.UnitNumber} - {ev.UnitName}, SCPs Left: {ev.ScpsLeft}");
         MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.NtfSpawnMessage.Duration,
             Config.Broadcasts.NtfSpawnMessage.Format(ev.UnitNumber, ev.UnitName, ev.ScpsLeft), Config.Broadcasts.NtfSpawnMessage.Priority);
+    }
+
+    internal void OnAnnouncingChaosEntrance(AnnouncingChaosEntranceEventArgs ev)
+    {
+        MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration,
+            Config.Broadcasts.ChaosSpawnMessage.ParsedMessage, Config.Broadcasts.ChaosSpawnMessage.Priority);
     }
 
     internal void OnGeneratorActivating(GeneratorActivatingEventArgs ev)

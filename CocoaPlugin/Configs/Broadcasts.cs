@@ -17,7 +17,7 @@ public class Broadcasts
 
     public API.Broadcast NtfSpawnMessage { get; set; } = new("<cspace=0.05em><size=30><color=#2071d4>🚁 <b>NTF<size=15> | %unitName%-%unitNumber%</size> 지원</b></color>이 도착했습니다. 격리 대기 중인 <color=#d44b42>😈 <b>SCP 개체는 총 %scpsLeft%개체</b></color>입니다.</size>\n<size=25>남은 생존자 분들은 <color=#d44b42>SCP가 모두 격리될 때까지 대기</color>하여 주십시오.</size></cspace>", 10);
 
-    public API.Broadcast ChaosSpawnMessage { get; set; } = new("<cspace=0.05em><size=30><color=#258533>🚚 <b>혼돈의 반란 지원</b></color>이 도착했습니다.\n<size=25>남은 <color=#ff8000>D계급</color>들은 <color=#d44b42>SCP가 모두 격리될 때까지 대기</color>하여 주십시오.</size></cspace>", 10);
+    public API.Broadcast ChaosSpawnMessage { get; set; } = new("<cspace=0.05em><size=30><color=#258533>🚚 <b>혼돈의 반란 지원</b></color>이 도착했습니다.\n<size=25>남은 <color=#ff8000>D계급</color>들은 <color=#d44b42><color=#258533>혼돈의 반란</color>과 함께 탈출</color>하여 주십시오.</size></cspace>", 10);
 
     public API.Broadcast HandcuffMessage { get; set; } = new("<cspace=0.05em><size=25><color=%targetRoleColor%>%targetRoleName%<b> %targetNickname%</b></color>%targetNicknameParticle% <color=%attackerRoleColor%>%attackerRoleName% <b>%attackerNickname%</b></color>에게 <color=#d42b22>체포</color>되었습니다.</size></cspace>", 20);
 

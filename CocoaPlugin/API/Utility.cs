@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -10,6 +11,7 @@ using Mirror;
 using static HarmonyLib.AccessTools;
 using PlayerRoles;
 using UnityEngine;
+using Console = System.Console;
 
 namespace CocoaPlugin.API;
 
@@ -78,10 +80,10 @@ public static class Utility
         var text = ConfigFile.ServerConfig.GetString("team_respawn_queue", "4014314031441404134041434414");
         var count = new Dictionary<Team, int>
         {
-            {Team.SCPs, 0},
-            {Team.FoundationForces, 0},
-            {Team.ClassD, 0},
-            {Team.Scientists, 0}
+            { Team.SCPs, 0 },
+            { Team.FoundationForces, 0 },
+            { Team.ClassD, 0 },
+            { Team.Scientists, 0 }
         };
 
         for (var i = 0; i < playerCount; i++)

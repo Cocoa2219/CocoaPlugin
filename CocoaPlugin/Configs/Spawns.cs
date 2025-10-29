@@ -12,9 +12,9 @@ public class StartSpawn
 
 public class Spawns
 {
-    public Dictionary<SpawnableTeamType, StartSpawn> StartSpawnChances { get; set; } = new()
-    {
-        {SpawnableTeamType.ChaosInsurgency, new StartSpawn() {Role = RoleTypeId.ChaosRifleman, Chance = 0.2f}},
-        {SpawnableTeamType.NineTailedFox, new StartSpawn() {Role = RoleTypeId.NtfPrivate, Chance = 0.2f}},
-    };
+    // public Dictionary<SpawnableTeamType, StartSpawn> StartSpawnChances { get; set; } = new()
+    // {
+    //     {SpawnableTeamType.ChaosInsurgency, new StartSpawn() {Role = RoleTypeId.ChaosRifleman, Chance = 0.2f}},
+    //     {SpawnableTeamType.NineTailedFox, new StartSpawn() {Role = RoleTypeId.NtfPrivate, Chance = 0.2f}},
+    // };
 }

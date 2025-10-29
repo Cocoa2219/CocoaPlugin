@@ -117,8 +117,6 @@ public static class ProbabilityCalculator
                 var notScp = 1 - probability[player.UserId][Team.SCPs];
                 var weightOfTeam = teams.Where(x => x.Key != Team.SCPs).Sum(x => x.Value) == 0 ? 0 : (double)teams[team.Key] / teams.Where(x => x.Key != Team.SCPs).Sum(x => x.Value);
 
-                // Log.Info($"Player: {player.UserId}, Team: {team.Key}, WeightOnTeam: {weightOnTeam}, NotScp: {notScp}, WeightOfTeam: {weightOfTeam}, TotalHumanWeight: {totalHumanWeight[team.Key]}");
-
                 probability[player.UserId][team.Key] = weightOfTeam * notScp * weightOnTeam / totalHumanWeight[team.Key];
             }
         }

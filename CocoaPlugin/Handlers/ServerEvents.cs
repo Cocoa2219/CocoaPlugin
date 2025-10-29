@@ -12,6 +12,7 @@ using MEC;
 using MultiBroadcast.API;
 using PlayerRoles;
 using Respawning;
+using Respawning.Waves;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Server = Exiled.Events.Handlers.Server;
@@ -122,29 +123,29 @@ public class ServerEvents(CocoaPlugin plugin)
 
         MultiBroadcast.API.MultiBroadcast.AddMapBroadcast(Config.Broadcasts.RoundStartMessage.Duration, Config.Broadcasts.RoundStartMessage.ParsedMessage, Config.Broadcasts.RoundStartMessage.Priority);
 
-        Timing.CallDelayed(0.1f, () =>
-        {
-            var random = Random.value;
-
-            var spawnChances = Config.Spawns.StartSpawnChances.ToList();
-
-            spawnChances.ShuffleListSecure();
-
-            foreach (var (team, startSpawn) in spawnChances)
-            {
-                if (random <= startSpawn.Chance)
-                {
-                    if (team == SpawnableTeamType.None) break;
-
-                    foreach (var player in Player.Get(RoleTypeId.FacilityGuard))
-                    {
-                        player.Role.Set(startSpawn.Role, SpawnReason.RoundStart, RoleSpawnFlags.All);
-                    }
-
-                    break;
-                }
-            }
-        });
+        // Timing.CallDelayed(0.1f, () =>
+        // {
+        //     var random = Random.value;
+        //
+        //     var spawnChances = Config.Spawns.StartSpawnChances.ToList();
+        //
+        //     spawnChances.ShuffleListSecure();
+        //
+        //     foreach (var (team, startSpawn) in spawnChances)
+        //     {
+        //         if (random <= startSpawn.Chance)
+        //         {
+        //             if (team == SpawnableTeamType.None) break;
+        //
+        //             foreach (var player in Player.Get(RoleTypeId.FacilityGuard))
+        //             {
+        //                 player.Role.Set(startSpawn.Role, SpawnReason.RoundStart, RoleSpawnFlags.All);
+        //             }
+        //
+        //             break;
+        //         }
+        //     }
+        // });
     }
 
     private IEnumerator<float> AutoBroadcastCoroutine()
@@ -168,7 +169,7 @@ public class ServerEvents(CocoaPlugin plugin)
         if (player.IsDead) return true;
         if (player.IsGodModeEnabled && Config.Afk.IgnoreGodmode) return true;
         if (player.Role.Is(out FpcRole fpcRole) && fpcRole.IsNoclipEnabled && Config.Afk.IgnoreNoclip) return true;
-        if (Plugin.ShootingRange.Instances.Any(x => x.Player == player)) return true;
+        // if (Plugin.ShootingRange.Instances.Any(x => x.Player == player)) return true;
         return Config.Afk.ExcludedRoles.Contains(player.Role.Type) || player.CheckPermission("cocoa.afk.ignore");
     }
 
@@ -216,22 +217,22 @@ public class ServerEvents(CocoaPlugin plugin)
 
     internal void OnRespawningTeam(RespawningTeamEventArgs ev)
     {
-        if (ev.NextKnownTeam == Respawning.SpawnableTeamType.ChaosInsurgency)
-        {
-            Timing.CallDelayed(0.1f, () =>
-            {
-                foreach (var player in Player.List.Where(player => player.LeadingTeam == LeadingTeam.ChaosInsurgency))
-                {
-                    player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.ParsedMessage, Config.Broadcasts.ChaosSpawnMessage.Priority);
-                }
-            });
-        }
-
-        Timing.KillCoroutines(_elevatorCoroutine);
-
-        _elevatorCoroutine = Timing.RunCoroutine(ElevatorCoroutine(
-            ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? ElevatorType.GateA : ElevatorType.GateB,
-            ev.Players.Count));
+        // if (ev.NextKnownTeam == Respawning.SpawnableTeamType.ChaosInsurgency)
+        // {
+        //     Timing.CallDelayed(0.1f, () =>
+        //     {
+        //         foreach (var player in Player.List.Where(player => player.LeadingTeam == LeadingTeam.ChaosInsurgency))
+        //         {
+        //             player.AddBroadcast(Config.Broadcasts.ChaosSpawnMessage.Duration, Config.Broadcasts.ChaosSpawnMessage.ParsedMessage, Config.Broadcasts.ChaosSpawnMessage.Priority);
+        //         }
+        //     });
+        // }
+        //
+        // Timing.KillCoroutines(_elevatorCoroutine);
+        //
+        // _elevatorCoroutine = Timing.RunCoroutine(ElevatorCoroutine(
+        //     ev.NextKnownTeam == SpawnableTeamType.ChaosInsurgency ? ElevatorType.GateA : ElevatorType.GateB,
+        //     ev.Players.Count));
     }
 
     private IEnumerator<float> ElevatorCoroutine(ElevatorType type, int spawnCount)
@@ -281,15 +282,16 @@ public class ServerEvents(CocoaPlugin plugin)
 
     private IEnumerator<float> AutoNukeCoroutine()
     {
-        yield return Timing.WaitForSeconds(Config.AutoNuke.AutoNukeTimer);
-
-        if (Warhead.IsInProgress)
-        {
-            Warhead.IsLocked = true;
-            yield break;
-        }
-
-        Warhead.Start();
-        Warhead.IsLocked = true;
+        // yield return Timing.WaitForSeconds(Config.AutoNuke.AutoNukeTimer);
+        //
+        // if (Warhead.IsInProgress)
+        // {
+        //     Warhead.IsLocked = true;
+        //     yield break;
+        // }
+        //
+        // Warhead.Start();
+        // Warhead.IsLocked = true;
+        yield break;
     }
 }

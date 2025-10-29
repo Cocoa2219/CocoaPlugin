@@ -60,7 +60,8 @@ public class Translations
         { RoleTypeId.ChaosRepressor, "#258533" },
         { RoleTypeId.Overwatch, "#FFFFFF" },
         { RoleTypeId.Filmmaker, "#0D0D0D" },
-        { RoleTypeId.Scp3114, "#d44b42" }
+        { RoleTypeId.Scp3114, "#d44b42" },
+        { RoleTypeId.Destroyed, "#737373" }
     };
 
     public Dictionary<Team, string> TeamTranslations { get; set; } = new()
